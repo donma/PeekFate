@@ -155,6 +155,12 @@ small {
   gap: var(--spacing-sm);
 }
 
+.logo-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+}
+
 .logo-icon {
   font-size: 1.5rem;
 }
