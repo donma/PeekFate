@@ -24,6 +24,11 @@
 <body>
   <div id="progress" style="width:0%"></div>
   <h1>速窺運勢 - 命術引擎嚴格驗證</h1>
+  <div style="margin-bottom:15px;">
+    <button onclick="caches.keys().then(n=>n.forEach(c=>caches.delete(c))).then(()=>location.reload(true))" style="padding:10px 20px;background:#e74c3c;color:white;border:none;border-radius:5px;font-size:16px;cursor:pointer;">
+      清除緩存並重新載入
+    </button>
+  </div>
   <div id="output">載入引擎中...</div>
 
   <script>
