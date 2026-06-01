@@ -1101,33 +1101,47 @@ class App {
   }
 
   _render14Days(days) {
-    const cards = days.map(d => {
-      const barHeight = (d.score / 100) * 40;
-      const barColor = d.levelColor;
-      
+    // 計算最大最小分數用於圖表高度
+    const scores = days.map(d => d.score);
+    const maxScore = Math.max(...scores);
+    const minScore = Math.min(...scores);
+    
+    // 生成趨勢圖
+    const trendBars = days.map((d, i) => {
+      const height = ((d.score - 0) / 100) * 60;
       return `
-      <div class="fourteen-card">
-        <div class="fourteen-header">
-          <div class="fourteen-date">${d.date}</div>
-          <div class="fourteen-weekday">${d.weekday}</div>
+        <div class="trend-bar-wrapper" title="${d.date} ${d.weekday} ${d.score}分 ${d.level}">
+          <div class="trend-bar" style="height:${height}px;background-color:${d.levelColor}"></div>
+          <div class="trend-score">${d.score}</div>
+          <div class="trend-date">${d.date.split('-')[2]}</div>
         </div>
-        <div class="fourteen-chart">
-          <div class="fourteen-bar-bg">
-            <div class="fourteen-bar" style="height:${barHeight}px;background-color:${barColor}"></div>
-          </div>
-          <div class="fourteen-score" style="color:${barColor}">${d.score}</div>
-        </div>
-        <div class="fourteen-level" style="background-color:${barColor}">${d.level}</div>
-        <p class="fourteen-theme">${d.theme}</p>
-        ${d.bestHours.length > 0 ? `<p class="fourteen-best">吉：${d.bestHours.slice(0, 2).join('、')}</p>` : ''}
-      </div>
-    `;
+      `;
     }).join('');
+
+    // 生成簡潔卡片列表
+    const cards = days.map(d => `
+      <div class="fourteen-item">
+        <span class="fourteen-item-date">${d.date.split('-')[2]}日 ${d.weekday}</span>
+        <span class="fourteen-item-score" style="color:${d.levelColor}">${d.score}分</span>
+        <span class="fourteen-item-level" style="background-color:${d.levelColor}">${d.level}</span>
+        <span class="fourteen-item-theme">${d.theme}</span>
+      </div>
+    `).join('');
 
     return `
       <div class="result-card fourteen-section">
         <h3 class="card-title">接下來 14 天概述</h3>
-        <div class="fourteen-grid">${cards}</div>
+        
+        <div class="trend-chart">
+          <div class="trend-labels">
+            <span>100</span>
+            <span>50</span>
+            <span>0</span>
+          </div>
+          <div class="trend-bars">${trendBars}</div>
+        </div>
+        
+        <div class="fourteen-list">${cards}</div>
       </div>
     `;
   }

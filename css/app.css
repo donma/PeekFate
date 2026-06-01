@@ -1553,125 +1553,112 @@ small {
 }
 
 /* ========== 14 天概述 ========== */
-.fourteen-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-md);
-}
-
-.fourteen-card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
-  transition: all 0.2s ease;
-  border-top: 3px solid var(--border-color);
-}
-
-.fourteen-card.level-daji {
-  border-top-color: var(--lucky-color);
-}
-
-.fourteen-card.level-ji {
-  border-top-color: #3a8f3e;
-}
-
-.fourteen-card.level-xiaoji {
-  border-top-color: #5aad5e;
-}
-
-.fourteen-card.level-ping {
-  border-top-color: var(--neutral-color);
-}
-
-.fourteen-card.level-xiaoxiong {
-  border-top-color: #d4722a;
-}
-
-.fourteen-card.level-xiong {
-  border-top-color: var(--unlucky-color);
-}
-
-.fourteen-card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-}
-
-.fourteen-header {
+.trend-chart {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-sm);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.fourteen-date {
-  font-family: var(--font-serif);
-  font-size: 0.85rem;
+.trend-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  width: 25px;
+  text-align: right;
+  padding: 0 0 18px 0;
+}
+
+.trend-bars {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 80px;
+}
+
+.trend-bar-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.trend-bar {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  min-height: 2px;
+  transition: opacity 0.2s;
+}
+
+.trend-bar-wrapper:hover .trend-bar {
+  opacity: 0.8;
+}
+
+.trend-score {
+  font-size: 0.55rem;
   font-weight: 600;
   color: var(--text-color);
+  margin-top: 2px;
 }
 
-.fourteen-weekday {
-  font-size: 0.75rem;
+.trend-date {
+  font-size: 0.55rem;
   color: var(--text-secondary);
+  margin-top: 2px;
 }
 
-.fourteen-chart {
+.fourteen-list {
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.fourteen-item {
+  display: flex;
+  align-items: center;
   gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid rgba(230, 214, 184, 0.3);
 }
 
-.fourteen-bar-bg {
-  flex: 1;
-  height: 40px;
-  background-color: var(--border-color);
-  border-radius: 4px;
-  overflow: hidden;
-  display: flex;
-  align-items: flex-end;
+.fourteen-item:last-child {
+  border-bottom: none;
 }
 
-.fourteen-bar {
-  width: 100%;
-  border-radius: 4px 4px 0 0;
-  transition: height 0.3s ease;
-  min-height: 4px;
-}
-
-.fourteen-score {
-  font-family: var(--font-serif);
-  font-size: 1.2rem;
-  font-weight: 700;
-  min-width: 35px;
-  text-align: right;
-}
-
-.fourteen-level {
-  display: inline-block;
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #fff;
-  margin-bottom: var(--spacing-xs);
-}
-
-.fourteen-theme {
+.fourteen-item-date {
   font-size: 0.8rem;
   color: var(--text-secondary);
-  margin: var(--spacing-xs) 0;
-  line-height: 1.4;
+  min-width: 55px;
 }
 
-.fourteen-best, .fourteen-risk {
+.fourteen-item-score {
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  min-width: 35px;
+}
+
+.fourteen-item-level {
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: #fff;
+  min-width: 30px;
+  text-align: center;
+}
+
+.fourteen-item-theme {
   font-size: 0.75rem;
-  margin: 2px 0;
-}
-
-.fourteen-best {
-  color: var(--lucky-color);
+  color: var(--text-secondary);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .fourteen-header {
