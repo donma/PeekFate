@@ -107,27 +107,6 @@ class App {
         if (birthHour) birthHour.disabled = unknownTime.checked;
       });
     }
-
-    // 漢堡選單
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const navLinks = document.getElementById('navLinks');
-    if (mobileMenuBtn && navLinks) {
-      mobileMenuBtn.addEventListener('click', () => {
-        navLinks.classList.toggle('open');
-        const isOpen = navLinks.classList.contains('open');
-        mobileMenuBtn.textContent = isOpen ? '✕' : '☰';
-        mobileMenuBtn.setAttribute('aria-expanded', isOpen);
-      });
-
-      // 點擊選單項目後關閉選單
-      navLinks.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-          navLinks.classList.remove('open');
-          mobileMenuBtn.textContent = '☰';
-          mobileMenuBtn.setAttribute('aria-expanded', false);
-        });
-      });
-    }
   }
 
   _loadSavedProfile() {

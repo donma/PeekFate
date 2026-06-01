@@ -164,13 +164,15 @@ class BaziEngine {
       hour: hourPillar
     });
 
-    // 計算地支關係
-    const branchRels = this.getBranchRelations([
+    // 計算地支關係（排除未知的地支）
+    const branches = [
       yearPillar.branch,
       monthPillar.branch,
       dayPillar.branch,
       hourPillar.branch
-    ]);
+    ].filter(b => b && b !== '?' && !b.isUnknown);
+    
+    const branchRels = branches.length >= 2 ? this.getBranchRelations(branches) : [];
 
     // 獲取藏干
     const hiddenStemsList = this._getAllHiddenStems({
@@ -470,7 +472,16 @@ class BaziEngine {
       throw new Error('地支數組必須包含至少2個地支');
     }
 
-    branches.forEach(branch => this._validateBranch(branch));
+    // 過濾掉無效的地支值（如 '?'）
+    const validBranches = branches.filter(b => b && b !== '?' && typeof b === 'string');
+    
+    if (validBranches.length < 2) {
+      return {
+        liuHe: [], sanHe: [], sanHui: [], liuChong: [], sanXing: [], liuHai: [], summary: []
+      };
+    }
+
+    validBranches.forEach(branch => this._validateBranch(branch));
 
     const result = {
       liuHe: [],      // 六合
@@ -487,22 +498,22 @@ class BaziEngine {
     }
 
     // 檢查六合
-    this._checkLiuHe(branches, result);
+    this._checkLiuHe(validBranches, result);
 
     // 檢查三合
-    this._checkSanHe(branches, result);
+    this._checkSanHe(validBranches, result);
 
     // 檢查三會
-    this._checkSanHui(branches, result);
+    this._checkSanHui(validBranches, result);
 
     // 檢查六沖
-    this._checkLiuChong(branches, result);
+    this._checkLiuChong(validBranches, result);
 
     // 檢查三刑
-    this._checkSanXing(branches, result);
+    this._checkSanXing(validBranches, result);
 
     // 檢查六害
-    this._checkLiuHai(branches, result);
+    this._checkLiuHai(validBranches, result);
 
     // 生成摘要
     result.summary = this._generateRelationSummary(result);
