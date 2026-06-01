@@ -1513,43 +1513,43 @@ small {
   gap: var(--spacing-xs);
 }
 
+.trace-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
 .trace-item {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--spacing-xs);
-  font-size: 0.8rem;
-  padding: var(--spacing-xs) 0;
-  border-bottom: 1px dashed rgba(230, 214, 184, 0.5);
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  font-size: 0.85rem;
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid rgba(230, 214, 184, 0.3);
+  line-height: 1.5;
 }
 
 .trace-item:last-child {
   border-bottom: none;
 }
 
-.trace-system {
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-.trace-rule {
-  color: var(--text-secondary);
-}
-
-.trace-value {
-  color: var(--text-color);
-  font-weight: 500;
-}
-
 .trace-score {
-  font-weight: 600;
+  font-weight: 700;
+  min-width: 35px;
+  text-align: center;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.8rem;
 }
 
-.trace-reason {
-  width: 100%;
-  color: var(--text-secondary);
-  font-size: 0.78rem;
-  padding-left: var(--spacing-md);
+.trace-score.positive {
+  color: var(--lucky-color);
+  background-color: rgba(47, 125, 50, 0.1);
+}
+
+.trace-score.negative {
+  color: var(--unlucky-color);
+  background-color: rgba(163, 40, 40, 0.1);
 }
 
 /* ========== 14 天概述 ========== */

@@ -1085,7 +1085,12 @@ class App {
             ${h.trace.length > 0 ? `
             <div class="detail-section">
               <h4>計分來源</h4>
-              ${h.trace.map(t => `<p class="trace-item">[${t.system}] ${t.rule}：${t.value}（${t.score >= 0 ? '+' : ''}${t.score}）${t.reason}</p>`).join('')}
+              <div class="trace-list">
+                ${h.trace.map(t => {
+                  const desc = this._getTraceDescription(t);
+                  return `<div class="trace-item"><span class="trace-score ${t.score >= 0 ? 'positive' : 'negative'}">${t.score >= 0 ? '+' : ''}${t.score}</span> ${desc}</div>`;
+                }).join('')}
+              </div>
             </div>` : ''}
           </div>
         </div>
@@ -1144,6 +1149,99 @@ class App {
         <div class="fourteen-list">${cards}</div>
       </div>
     `;
+  }
+
+  _getTraceDescription(trace) {
+    // 把專業術語轉換成白話文
+    const { system, rule, value, score, reason } = trace;
+    
+    // 八字相關
+    if (system === 'bazi') {
+      if (rule === 'hourTenGod') {
+        const tenGodDesc = {
+          '正官': '遇到正官，代表有貴人相助、地位提升的機會',
+          '七殺': '遇到七殺，壓力較大，但有突破的機會',
+          '正財': '遇到正財，財運穩定，適合處理金錢事務',
+          '偏財': '遇到偏財，有意外之財或合作機會',
+          '食神': '遇到食神，心情愉悅，適合享受生活',
+          '傷官': '遇到傷官，創意豐富，但要注意口舌',
+          '正印': '遇到正印，有長輩或貴人幫助',
+          '偏印': '遇到偏印，學習運佳，適合進修',
+          '比肩': '遇到比肩，與同輩競爭或合作',
+          '劫財': '遇到劫財，要小心財務損失'
+        };
+        return tenGodDesc[value] || `時柱遇到${value}`;
+      }
+      if (rule === 'elementRelation') {
+        const relations = {
+          'metal-water': '時辰五行與日主相生，運勢順暢',
+          'water-wood': '時辰五行與日主相生，運勢順暢',
+          'wood-fire': '時辰五行與日主相生，運勢順暢',
+          'fire-earth': '時辰五行與日主相生，運勢順暢',
+          'earth-metal': '時辰五行與日主相生，運勢順暢',
+          'metal-wood': '時辰五行與日主相剋，需謹慎行事',
+          'wood-earth': '時辰五行與日主相剋，需謹慎行事',
+          'earth-water': '時辰五行與日主相剋，需謹慎行事',
+          'water-fire': '時辰五行與日主相剋，需謹慎行事',
+          'fire-metal': '時辰五行與日主相剋，需謹慎行事'
+        };
+        return relations[value] || `時辰五行與日主的關係`;
+      }
+    }
+    
+    // 奇門遁甲相關
+    if (system === 'qimen') {
+      if (rule === 'door') {
+        const doorDesc = {
+          '開門': '遇到開門，適合開始新計劃、開創新局',
+          '休門': '遇到休門，適合休息、等待、修復關係',
+          '生門': '遇到生門，財運佳、適合投資或交易',
+          '傷門': '遇到傷門，容易有衝突或損失，需謹慎',
+          '杜門': '遇到杜門，適合隱藏、保密、等待時機',
+          '景門': '遇到景門，適合考試、面試、展現才華',
+          '死門': '遇到死門，運勢較差，宜靜不宜動',
+          '驚門': '遇到驚門，容易有驚嚇或意外，需小心'
+        };
+        return doorDesc[value] || `遇到${value}`;
+      }
+      if (rule === 'star') {
+        const starDesc = {
+          '天輔': '天輔星相助，學習運佳、有貴人指點',
+          '天禽': '天禽星照臨，運勢穩定、適合處理重要事務',
+          '天心': '天心星守護，決策力強、適合做重要決定',
+          '天任': '天任星助力，責任感強、適合承擔重任',
+          '天沖': '天沖星影響，行動力強、但要避免衝動',
+          '天英': '天英星照耀，適合展現才華、但要務實',
+          '天蓬': '天蓬星干擾，要小心意外、避免冒險',
+          '天芮': '天芮星影響，健康運較差、要注意休息',
+          '天柱': '天柱星動搖，容易有變動、需穩定心神'
+        };
+        return starDesc[value] || `${value}影響`;
+      }
+      if (rule === 'god') {
+        const godDesc = {
+          '值符': '值符守護，運勢強旺、適合主動出擊',
+          '太陰': '太陰庇佑，暗中有貴人、適合私下進行',
+          '六合': '六合助力，人緣佳、適合合作或社交',
+          '九地': '九地穩固，基礎扎實、適合守成',
+          '九天': '九天開運，視野開闊、適合拓展',
+          '騰蛇': '騰蛇干擾，容易有虛驚、要保持冷靜',
+          '白虎': '白虎動怒，容易有衝突、要避免爭執',
+          '玄武': '玄武遮眼，容易被騙、要小心判斷'
+        };
+        return godDesc[value] || `${value}影響`;
+      }
+    }
+    
+    // 易經相關
+    if (system === 'iching') {
+      if (rule === 'hexagram') {
+        return `卦象：${value}`;
+      }
+    }
+    
+    // 預設
+    return reason || `${value}`;
   }
 
   _renderDisclaimer() {
