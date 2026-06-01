@@ -1139,34 +1139,90 @@ small {
 }
 
 /* ========== 日總覽 ========== */
-.day-info {
+.day-summary-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: var(--spacing-lg);
   margin-bottom: var(--spacing-md);
 }
 
-.day-date-row {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
+.day-score-chart {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+}
+
+.score-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(0deg);
+}
+
+.score-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.score-number {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+  line-height: 1;
+}
+
+.score-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.day-info {
+  flex: 1;
+}
+
+.day-info .card-title {
+  margin-bottom: var(--spacing-xs);
 }
 
 .day-date {
   font-family: var(--font-serif);
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-color);
-}
-
-.day-weekday {
   font-size: 0.9rem;
   color: var(--text-secondary);
+  margin-right: var(--spacing-sm);
 }
 
-.day-score-row {
-  display: flex;
-  align-items: center;
+.day-level {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.day-range {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: var(--spacing-xs);
+}
+
+.day-best, .day-risk {
+  font-size: 0.85rem;
+  margin: var(--spacing-xs) 0;
+}
+
+.day-best {
+  color: var(--lucky-color);
+}
+
+.day-risk {
+  color: var(--unlucky-color);
+}
   gap: var(--spacing-sm);
 }
 
@@ -1539,6 +1595,83 @@ small {
 .fourteen-card:hover {
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
+}
+
+.fourteen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.fourteen-date {
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.fourteen-weekday {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.fourteen-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.fourteen-bar-bg {
+  flex: 1;
+  height: 40px;
+  background-color: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.fourteen-bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.3s ease;
+  min-height: 4px;
+}
+
+.fourteen-score {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-width: 35px;
+  text-align: right;
+}
+
+.fourteen-level {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: var(--spacing-xs);
+}
+
+.fourteen-theme {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: var(--spacing-xs) 0;
+  line-height: 1.4;
+}
+
+.fourteen-best, .fourteen-risk {
+  font-size: 0.75rem;
+  margin: 2px 0;
+}
+
+.fourteen-best {
+  color: var(--lucky-color);
 }
 
 .fourteen-header {

@@ -1009,15 +1009,33 @@ class App {
   }
 
   _renderDaySummary(summary, title) {
+    const score = summary.averageScore;
+    const circumference = 2 * Math.PI * 40;
+    const dashoffset = circumference - (score / 100) * circumference;
+    const scoreColor = summary.levelColor;
+    
     return `
       <div class="result-card day-summary">
-        <h3 class="card-title">${title}</h3>
-        <div class="day-info">
-          <span class="day-date">${summary.date} ${summary.weekday}</span>
-          <span class="day-score" style="color:${summary.levelColor}">${summary.averageScore}分</span>
-          <span class="day-level" style="background-color:${summary.levelColor}">${summary.level}</span>
+        <div class="day-summary-header">
+          <div class="day-score-chart">
+            <svg viewBox="0 0 100 100" class="score-ring">
+              <circle cx="50" cy="50" r="40" fill="none" stroke="#E6D6B8" stroke-width="8"/>
+              <circle cx="50" cy="50" r="40" fill="none" stroke="${scoreColor}" stroke-width="8"
+                stroke-dasharray="${circumference}" stroke-dashoffset="${dashoffset}"
+                stroke-linecap="round" transform="rotate(-90 50 50)"/>
+            </svg>
+            <div class="score-text">
+              <span class="score-number">${score}</span>
+              <span class="score-label">分</span>
+            </div>
+          </div>
+          <div class="day-info">
+            <h3 class="card-title">${title}</h3>
+            <span class="day-date">${summary.date} ${summary.weekday}</span>
+            <span class="day-level" style="background-color:${scoreColor}">${summary.level}</span>
+            <div class="day-range">最高 ${summary.maxScore} / 最低 ${summary.minScore}</div>
+          </div>
         </div>
-        <div class="day-range">最高 ${summary.maxScore} 分 / 最低 ${summary.minScore} 分</div>
         ${summary.bestHours.length > 0 ? `<p class="day-best">最佳時辰：${summary.bestHours.join('、')}</p>` : ''}
         ${summary.riskHours.length > 0 ? `<p class="day-risk">注意時辰：${summary.riskHours.join('、')}</p>` : ''}
       </div>
@@ -1083,17 +1101,28 @@ class App {
   }
 
   _render14Days(days) {
-    const cards = days.map(d => `
+    const cards = days.map(d => {
+      const barHeight = (d.score / 100) * 40;
+      const barColor = d.levelColor;
+      
+      return `
       <div class="fourteen-card">
-        <div class="fourteen-date">${d.date}</div>
-        <div class="fourteen-weekday">${d.weekday}</div>
-        <div class="fourteen-score" style="color:${d.levelColor}">${d.score}分</div>
-        <div class="fourteen-level" style="background-color:${d.levelColor}">${d.level}</div>
+        <div class="fourteen-header">
+          <div class="fourteen-date">${d.date}</div>
+          <div class="fourteen-weekday">${d.weekday}</div>
+        </div>
+        <div class="fourteen-chart">
+          <div class="fourteen-bar-bg">
+            <div class="fourteen-bar" style="height:${barHeight}px;background-color:${barColor}"></div>
+          </div>
+          <div class="fourteen-score" style="color:${barColor}">${d.score}</div>
+        </div>
+        <div class="fourteen-level" style="background-color:${barColor}">${d.level}</div>
         <p class="fourteen-theme">${d.theme}</p>
-        ${d.bestHours.length > 0 ? `<p class="fourteen-best">吉時：${d.bestHours.join('、')}</p>` : ''}
-        ${d.riskHours.length > 0 ? `<p class="fourteen-risk">凶時：${d.riskHours.join('、')}</p>` : ''}
+        ${d.bestHours.length > 0 ? `<p class="fourteen-best">吉：${d.bestHours.slice(0, 2).join('、')}</p>` : ''}
       </div>
-    `).join('');
+    `;
+    }).join('');
 
     return `
       <div class="result-card fourteen-section">
