@@ -446,10 +446,28 @@ class App {
       { branch: '亥', name: '亥時', start: '21:00', end: '22:59', crossDay: false }
     ];
 
+    // 判斷是否是今天，過濾已過去的時辰
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const isToday = date.getTime() === today.getTime();
+    const currentHour = now.getHours();
+
+    let filteredBranches = hourBranches;
+    if (isToday) {
+      filteredBranches = hourBranches.filter(hb => {
+        const startHour = parseInt(hb.start.split(':')[0]);
+        // 子時特殊處理（23:00 開始）
+        if (hb.branch === '子') {
+          return currentHour >= 23 || currentHour < 1;
+        }
+        return startHour >= currentHour;
+      });
+    }
+
     const results = [];
     const dayMasterElement = baziResult.dayMaster.element;
 
-    for (const hb of hourBranches) {
+    for (const hb of filteredBranches) {
       try {
         const hourResult = this._calculateSingleHour(baziResult, date, hb, dayMasterElement);
         results.push(hourResult);
