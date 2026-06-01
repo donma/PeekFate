@@ -654,14 +654,21 @@ class App {
   }
 
   _calculateElementRelationScore(dayElement, hourElement) {
+    // 五行生剋關係計分
+    // 比和：穩定 +2
+    // 生我（生入）：有利 +4
+    // 我生（生出）：消耗 -1
+    // 我剋（剋出）：控制 +2
+    // 剋我（剋入）：壓力 -4
+    
     const generateMap = { wood: 'fire', fire: 'earth', earth: 'metal', metal: 'water', water: 'wood' };
     const controlMap = { wood: 'earth', earth: 'water', water: 'fire', fire: 'metal', metal: 'wood' };
 
-    if (dayElement === hourElement) return 1;
-    if (generateMap[dayElement] === hourElement) return -2;
-    if (generateMap[hourElement] === dayElement) return 3;
-    if (controlMap[dayElement] === hourElement) return 4;
-    if (controlMap[hourElement] === dayElement) return -4;
+    if (dayElement === hourElement) return 2;      // 比和：穩定
+    if (generateMap[hourElement] === dayElement) return 4;  // 生我：有利
+    if (generateMap[dayElement] === hourElement) return -1;  // 我生：消耗
+    if (controlMap[dayElement] === hourElement) return 2;    // 我剋：控制
+    if (controlMap[hourElement] === dayElement) return -4;   // 剋我：壓力
     return 0;
   }
 
