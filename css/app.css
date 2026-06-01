@@ -2076,3 +2076,151 @@ small {
 .required {
   color: var(--unlucky-color);
 }
+
+/* ========================================
+   性能優化樣式
+   ======================================== */
+
+/* ========== 骨架屏載入 ========== */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-text {
+  height: 1em;
+  margin-bottom: 0.5em;
+}
+
+.skeleton-title {
+  height: 1.5em;
+  width: 60%;
+  margin-bottom: 1em;
+}
+
+.skeleton-card {
+  height: 120px;
+  margin-bottom: var(--spacing-md);
+}
+
+/* ========== 渲染優化 ========== */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.contain-content {
+  contain: content;
+}
+
+.contain-layout {
+  contain: layout;
+}
+
+/* ========== 卡片懸停動畫 ========== */
+.result-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.result-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.hour-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hour-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.fourteen-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fourteen-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ========== 虛擬滾動支持 ========== */
+.virtual-list {
+  contain: content;
+  overflow-y: auto;
+}
+
+/* ========== 按鈕動畫 ========== */
+.btn {
+  transition: all 0.2s ease;
+  transform: translateZ(0);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* ========== 表單輸入動畫 ========== */
+.form-input,
+.form-select {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* ========== 載入進度條 ========== */
+.loading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), var(--accent-gold));
+  transition: width 0.3s ease;
+  z-index: 10000;
+}
+
+/* ========== 平滑顯示 ========== */
+.fade-in-up {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ========== 性能提示 ========== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
