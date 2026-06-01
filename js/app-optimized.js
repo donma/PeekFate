@@ -1043,6 +1043,19 @@ class App {
   }
 
   _renderHourCards(hours, title) {
+    // 生成時辰趨勢圖
+    const trendBars = hours.map(h => {
+      const height = (h.score / 100) * 50;
+      const shortName = h.hourName.replace('時', '');
+      return `
+        <div class="hour-bar-wrapper" title="${h.hourName} ${h.score}分 ${h.level}">
+          <div class="hour-bar" style="height:${height}px;background-color:${h.levelColor}"></div>
+          <div class="hour-bar-score">${h.score}</div>
+          <div class="hour-bar-name">${shortName}</div>
+        </div>
+      `;
+    }).join('');
+
     const cards = hours.map(h => {
       const suitableHtml = h.suitable.length > 0
         ? `<div class="hour-suitable"><strong>適合：</strong>${h.suitable.slice(0, 2).join('、')}</div>` : '';
@@ -1100,6 +1113,9 @@ class App {
     return `
       <div class="result-card hour-section">
         <h3 class="card-title">${title}</h3>
+        <div class="hour-trend-chart">
+          <div class="hour-trend-bars">${trendBars}</div>
+        </div>
         <div class="hour-grid">${cards}</div>
       </div>
     `;
