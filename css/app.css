@@ -392,7 +392,7 @@ small {
 
 /* ========== 命盤結果區塊 ========== */
 .result-page {
-  padding: var(--spacing-lg) 0;
+  padding: var(--spacing-sm) 0;
 }
 
 .result-header {
