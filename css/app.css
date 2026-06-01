@@ -2085,6 +2085,18 @@ small {
   color: var(--unlucky-color);
 }
 
+/* ========== 結果區域操作按鈕 ========== */
+.result-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: var(--spacing-lg);
+}
+
+.result-actions .btn {
+  font-size: 0.9rem;
+  padding: 8px 16px;
+}
+
 /* ========================================
    性能優化樣式
    ======================================== */
