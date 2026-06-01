@@ -1548,6 +1548,18 @@ small {
   color: var(--unlucky-color);
 }
 
+/* ========== 錯誤顯示 ========== */
+.engine-error {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: var(--unlucky-color);
+  padding: var(--spacing-md);
+  margin: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
 /* ========== 計分來源 ========== */
 .trace-section {
   background-color: rgba(201, 164, 92, 0.06);

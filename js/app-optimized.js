@@ -205,6 +205,12 @@ class App {
     const failed = loadResults.filter(r => r.status === 'rejected' || r.value === false);
     if (failed.length > 0) {
       console.warn(`${failed.length} 個引擎載入部分數據失敗，將使用備用數據`);
+      // 顯示錯誤在頁面上
+      const errorDiv = document.getElementById('engineError');
+      if (errorDiv) {
+        errorDiv.textContent = `${failed.length} 個引擎載入失敗，部分功能可能受限`;
+        errorDiv.style.display = 'block';
+      }
     }
 
     this.enginesLoaded = true;
@@ -519,10 +525,14 @@ class App {
             system: 'iching', rule: 'hexagram', value: ichingResult.hexagram.name,
             score: ichingScore, reason: `卦象${ichingResult.hexagram.name}，五行${personalized.strengthLevel}`
           });
+        } else {
+          console.warn('易經引擎返回空結果');
         }
+      } else {
+        console.warn('易經引擎未載入', this.ichingEngine?.loaded);
       }
     } catch (error) {
-      console.warn('易經計算錯誤:', error);
+      console.warn('易經計算錯誤:', error.message);
       ichingScore = 0;
     }
     ichingScore = Math.max(-20, Math.min(20, ichingScore));
