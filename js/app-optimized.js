@@ -949,14 +949,15 @@ class App {
       btnToggle.textContent = '▼ 展開輸入區';
     }
     
-    // 滾動到結果區域（精確定位）
+    // 滾動到個人基本盤卡片上方
     setTimeout(() => {
-      if (section) {
+      const baziSummary = document.querySelector('.bazi-summary');
+      if (baziSummary) {
         const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
-        const sectionTop = section.getBoundingClientRect().top + window.pageYOffset - headerHeight - 10;
-        window.scrollTo({ top: sectionTop, behavior: 'smooth' });
+        const cardTop = baziSummary.getBoundingClientRect().top + window.pageYOffset - headerHeight - 16;
+        window.scrollTo({ top: cardTop, behavior: 'smooth' });
       }
-    }, 100);
+    }, 150);
   }
 
   _renderResult(result) {
