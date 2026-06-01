@@ -295,7 +295,11 @@ class App {
           if (birthTimeInput) birthTimeInput.disabled = true;
         }
         
-        console.log('已載入儲存的用戶資料');
+        // 有資料時自動推算
+        if (profile.birthDate) {
+          console.log('已載入儲存的用戶資料，自動推算中...');
+          setTimeout(() => this._handleFormSubmit(), 100);
+        }
       }
     } catch (error) {
       console.warn('無法載入已儲存的資料:', error);
@@ -941,15 +945,6 @@ class App {
 
     let html = '';
 
-    // 添加返回按鈕
-    html += `
-      <div class="result-actions" style="margin-bottom: 20px;">
-        <button class="btn btn-secondary" id="btnBackToForm">
-          ← 返回重新推算
-        </button>
-      </div>
-    `;
-
     html += this._renderBaziSummary(bazi);
     html += this._renderDaySummary(today.summary, '今日總覽');
     html += this._renderHourCards(today.hours, '今日時辰');
@@ -1105,35 +1100,6 @@ class App {
         }
       });
     });
-
-    // 綁定返回按鈕
-    const btnBack = document.getElementById('btnBackToForm');
-    if (btnBack) {
-      btnBack.addEventListener('click', () => {
-        this._showFormSection();
-      });
-    }
-  }
-
-  _showFormSection() {
-    const resultSection = document.getElementById('resultSection');
-    const formContainer = document.getElementById('formContainer');
-    const btnToggle = document.getElementById('btnToggleSection');
-    
-    if (resultSection) {
-      resultSection.style.display = 'none';
-    }
-    
-    // 展開表單區域
-    if (formContainer) {
-      formContainer.classList.remove('collapsed');
-    }
-    if (btnToggle) {
-      btnToggle.textContent = '▲ 收合輸入區';
-    }
-    
-    // 滾動到頂部
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 

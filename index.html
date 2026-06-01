@@ -28,15 +28,15 @@
       <div class="container">
         <!-- 首頁表單區塊 -->
         <section class="hero-section">
-          <div class="section-toggle" id="sectionToggle">
+          <div class="section-header">
             <h1 class="hero-title">速窺運勢</h1>
             <p class="hero-subtitle">八字 × 易經 × 奇門遁甲，每日時辰推演工具</p>
             <button type="button" class="btn-toggle-section" id="btnToggleSection">
-              ▲ 收合輸入區
+              ▼ 修改資料
             </button>
           </div>
           
-          <div class="form-container" id="formContainer">
+          <div class="form-container collapsed" id="formContainer">
             <form id="birthForm" class="birth-form">
               <div class="form-group">
                 <label for="birthDate" class="form-label">
@@ -97,7 +97,7 @@
 
               <div class="form-actions">
                 <button type="submit" class="btn btn-primary btn-block btn-lg" id="btnStart">
-                  開始推算
+                  儲存並推算
                 </button>
                 <button type="button" class="btn btn-secondary btn-block" id="btnClear">
                   清除資料

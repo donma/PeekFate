@@ -2098,12 +2098,12 @@ small {
 }
 
 /* ========== 區塊收合功能 ========== */
-.section-toggle {
+.section-header {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: var(--spacing-md) 0;
+  padding: var(--spacing-md) 0 var(--spacing-sm);
 }
 
 .btn-toggle-section {
@@ -2126,13 +2126,15 @@ small {
 .form-container {
   max-height: 1000px;
   overflow: hidden;
-  transition: max-height 0.5s ease, opacity 0.3s ease;
+  transition: max-height 0.5s ease, opacity 0.3s ease, padding 0.3s ease;
   opacity: 1;
+  padding: 0;
 }
 
 .form-container.collapsed {
   max-height: 0;
   opacity: 0;
+  padding: 0;
 }
 
 /* ========================================
