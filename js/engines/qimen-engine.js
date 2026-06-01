@@ -17,6 +17,7 @@ class QimenEngine {
     this.doors = null;
     this.stars = null;
     this.gods = null;
+    this.loaded = false;
     this.tianGan = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
     this.diZhi = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
     this.jiuGong = ['坎一', '坤二', '震三', '巽四', '中五', '乾六', '兌七', '艮八', '離九'];
@@ -187,6 +188,7 @@ class QimenEngine {
         '九天': { nature: '吉' }
       };
 
+      this.loaded = true;
       return true;
     } catch (error) {
       console.error('載入數據失敗:', error.message);
