@@ -205,12 +205,21 @@ class App {
     const failed = loadResults.filter(r => r.status === 'rejected' || r.value === false);
     if (failed.length > 0) {
       console.warn(`${failed.length} 個引擎載入部分數據失敗，將使用備用數據`);
-      // 顯示錯誤在頁面上
+      // 顯示錯誤在頁面上，並提供清除緩存按鈕
       const errorDiv = document.getElementById('engineError');
       if (errorDiv) {
-        errorDiv.textContent = `${failed.length} 個引擎載入失敗，部分功能可能受限`;
+        errorDiv.innerHTML = `
+          ${failed.length} 個引擎載入失敗，部分功能可能受限。
+          <button onclick="caches.keys().then(names => names.forEach(name => caches.delete(name))).then(() => location.reload(true))" style="margin-left:10px;padding:4px 8px;font-size:12px;cursor:pointer;">
+            清除緩存並重新載入
+          </button>
+        `;
         errorDiv.style.display = 'block';
       }
+    } else {
+      // 隱藏錯誤訊息
+      const errorDiv = document.getElementById('engineError');
+      if (errorDiv) errorDiv.style.display = 'none';
     }
 
     this.enginesLoaded = true;
