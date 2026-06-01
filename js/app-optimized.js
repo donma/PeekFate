@@ -814,14 +814,12 @@ class App {
 
   _handleRememberMe(formData) {
     try {
-      if (formData.rememberMe) {
-        localStorage.setItem('fortunePwaUserProfile', JSON.stringify({
-          birthDate: formData.birthDate,
-          birthTime: formData.birthTime
-        }));
-      } else {
-        localStorage.removeItem('fortunePwaUserProfile');
-      }
+      // 自動儲存用戶資料到 localStorage
+      localStorage.setItem('fortunePwaUserProfile', JSON.stringify({
+        birthDate: formData.birthDate,
+        birthTime: formData.birthTime,
+        unknownTime: formData.unknownTime
+      }));
     } catch (error) {
       console.warn('無法儲存資料:', error);
     }
@@ -840,6 +838,10 @@ class App {
 
     const resultSection = document.getElementById('resultSection');
     if (resultSection) resultSection.style.display = 'none';
+
+    // 恢復表單區域顯示
+    const inputSection = document.querySelector('.hero-section');
+    if (inputSection) inputSection.style.display = 'block';
 
     this.currentResult = null;
   }
@@ -882,9 +884,20 @@ class App {
 
   _showResultSection() {
     const section = document.getElementById('resultSection');
+    const inputSection = document.querySelector('.hero-section');
+    
     if (section) {
       section.style.display = 'block';
-      section.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // 收合表單區域
+    if (inputSection) {
+      inputSection.style.display = 'none';
+    }
+    
+    // 滾動到結果區域
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 
@@ -895,6 +908,15 @@ class App {
     const { bazi, today, tomorrow, fourteenDays } = result;
 
     let html = '';
+
+    // 添加返回按鈕
+    html += `
+      <div class="result-actions" style="margin-bottom: 20px;">
+        <button class="btn btn-secondary" id="btnBackToForm">
+          ← 返回重新推算
+        </button>
+      </div>
+    `;
 
     html += this._renderBaziSummary(bazi);
     html += this._renderDaySummary(today.summary, '今日總覽');
@@ -1051,6 +1073,28 @@ class App {
         }
       });
     });
+
+    // 綁定返回按鈕
+    const btnBack = document.getElementById('btnBackToForm');
+    if (btnBack) {
+      btnBack.addEventListener('click', () => {
+        this._showFormSection();
+      });
+    }
+  }
+
+  _showFormSection() {
+    const resultSection = document.getElementById('resultSection');
+    const inputSection = document.querySelector('.hero-section');
+    
+    if (resultSection) {
+      resultSection.style.display = 'none';
+    }
+    
+    if (inputSection) {
+      inputSection.style.display = 'block';
+      inputSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 }
 
