@@ -1273,6 +1273,28 @@ small {
   font-weight: 600;
 }
 
+/* ========== 時辰預測 ========== */
+.hour-predictions {
+  margin: var(--spacing-sm) 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: rgba(201, 164, 92, 0.08);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent-gold);
+}
+
+.prediction-item {
+  font-size: 0.85rem;
+  color: var(--text-color);
+  padding: 3px 0;
+  line-height: 1.5;
+}
+
+.prediction-item::before {
+  content: "• ";
+  color: var(--accent-gold);
+  font-weight: bold;
+}
+
 /* ========== 時辰卡片 ========== */
 .hour-trend-chart {
   margin-bottom: var(--spacing-lg);

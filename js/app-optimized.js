@@ -1083,11 +1083,9 @@ class App {
     }).join('');
 
     const cards = hours.map(h => {
-      const suitableHtml = h.suitable.length > 0
-        ? `<div class="hour-suitable"><strong>適合：</strong>${h.suitable.slice(0, 2).join('、')}</div>` : '';
-      const avoidHtml = h.avoid.length > 0
-        ? `<div class="hour-avoid"><strong>避免：</strong>${h.avoid.slice(0, 2).join('、')}</div>` : '';
-
+      // 生成具體事件預測
+      const predictions = this._generatePredictions(h);
+      
       return `
         <div class="hour-card" data-hour="${h.hourBranch}">
           <div class="hour-header">
@@ -1096,9 +1094,11 @@ class App {
             <span class="hour-score" style="color:${h.levelColor}">${h.score}分</span>
             <span class="hour-level" style="background-color:${h.levelColor}">${h.level}</span>
           </div>
-          <p class="hour-headline">${h.headline}</p>
-          ${suitableHtml}
-          ${avoidHtml}
+          
+          <div class="hour-predictions">
+            ${predictions.map(p => `<div class="prediction-item">${p}</div>`).join('')}
+          </div>
+          
           <button class="btn-toggle-detail">展開詳細</button>
           <div class="hour-detail" style="display:none;">
             <div class="detail-section">
@@ -1194,26 +1194,185 @@ class App {
   }
 
   _getTraceDescription(trace) {
-    // 把專業術語轉換成白話文
+    // 把專業術語轉換成具體事件預測
     const { system, rule, value, score, reason } = trace;
     
-    // 八字相關
+    // 八字相關 - 根據十神推算具體事件
     if (system === 'bazi') {
       if (rule === 'hourTenGod') {
-        const tenGodDesc = {
-          '正官': '遇到正官，代表有貴人相助、地位提升的機會',
-          '七殺': '遇到七殺，壓力較大，但有突破的機會',
-          '正財': '遇到正財，財運穩定，適合處理金錢事務',
-          '偏財': '遇到偏財，有意外之財或合作機會',
-          '食神': '遇到食神，心情愉悅，適合享受生活',
-          '傷官': '遇到傷官，創意豐富，但要注意口舌',
-          '正印': '遇到正印，有長輩或貴人幫助',
-          '偏印': '遇到偏印，學習運佳，適合進修',
-          '比肩': '遇到比肩，與同輩競爭或合作',
-          '劫財': '遇到劫財，要小心財務損失'
+        const tenGodEvents = {
+          '正官': '有貴人相助或上司提拔的機會，適合處理公務、考試、面試',
+          '七殺': '壓力較大，可能遇到挑戰或競爭，需要堅持才能突破',
+          '正財': '財運穩定，適合處理財務、簽約、收帳',
+          '偏財': '有意外之財或合作機會，適合投資、交易、社交',
+          '食神': '心情愉悅，適合享受美食、聚會、創作',
+          '傷官': '創意豐富但容易口舌是非，適合寫作、表達，避免與人爭執',
+          '正印': '有長輩或貴人幫助，適合學習、進修、請教',
+          '偏印': '學習運佳但容易鑽牛角尖，適合研究、思考',
+          '比肩': '與同輩競爭或合作，適合團隊工作、社交活動',
+          '劫財': '要小心財務損失或被借錢，避免衝動消費'
         };
-        return tenGodDesc[value] || `時柱遇到${value}`;
+        return tenGodEvents[value] || `時柱遇到${value}`;
       }
+      if (rule === 'elementRelation') {
+        const elementEvents = {
+          'metal-water': '思維清晰，適合思考、規劃、溝通',
+          'water-wood': '創意豐富，適合學習、進修、創作',
+          'wood-fire': '充滿活力，適合表現、展示、社交',
+          'fire-earth': '穩定踏實，適合處理日常事務、整理',
+          'earth-metal': '果斷有力，適合決策、執行、清理',
+          'metal-wood': '容易有衝突或壓力，需要謹慎行事',
+          'wood-earth': '容易感到疲憊，需要休息調整',
+          'earth-water': '容易有阻礙，需要耐心等待',
+          'water-fire': '情緒波動較大，需要保持冷靜',
+          'fire-metal': '容易有意外或變動，需要靈活應對'
+        };
+        return elementEvents[value] || `時辰五行與日主的關係`;
+      }
+    }
+    
+    // 奇門遁甲相關 - 根據八門推算具體事件
+    if (system === 'qimen') {
+      if (rule === 'door') {
+        const doorEvents = {
+          '開門': '適合開始新計劃、開會、談判、出行',
+          '休門': '適合休息、等待、修復關係、養生',
+          '生門': '財運佳，適合投資、簽約、拜訪客戶',
+          '傷門': '容易有衝突或損失，避免爭執、手術、冒險',
+          '杜門': '適合保密、隱藏、等待時機、閉關修煉',
+          '景門': '適合考試、面試、展示才華、文書工作',
+          '死門': '運勢較差，宜靜不宜動，避免重大決策',
+          '驚門': '容易有驚嚇或意外，開車要小心，避免衝動'
+        };
+        return doorEvents[value] || `遇到${value}`;
+      }
+      if (rule === 'star') {
+        const starEvents = {
+          '天輔': '學習運佳，適合進修、考試、請教貴人',
+          '天禽': '運勢穩定，適合處理重要事務、簽約',
+          '天心': '決策力強，適合做重要決定、領導團隊',
+          '天任': '責任感強，適合承擔重任、照顧他人',
+          '天沖': '行動力強，適合開始新計劃，但要避免衝動',
+          '天英': '適合展現才華、參加社交活動，但要務實',
+          '天蓬': '要小心意外、盜賊，避免冒險投資',
+          '天芮': '健康運較差，要注意休息、養生、看醫生',
+          '天柱': '容易有變動或破壞，需要穩定心神'
+        };
+        return starEvents[value] || `${value}影響`;
+      }
+    }
+    
+    // 預設
+    return reason || `${value}`;
+  }
+
+  _generatePredictions(hourData) {
+    const predictions = [];
+    const { systems, score, level } = hourData;
+    
+    // 根據十神推算
+    const tenGod = systems.bazi?.tenGod;
+    if (tenGod) {
+      const tenGodPredictions = {
+        '正官': ['可能收到上司或長輩的好消息', '適合處理公務或正式場合'],
+        '七殺': ['可能遇到挑戰或競爭', '需要堅持才能突破困境'],
+        '正財': ['財運穩定，可能有穩定收入', '適合處理財務事務'],
+        '偏財': ['可能有意外之財或合作機會', '適合社交和投資'],
+        '食神': ['心情愉悅，適合享受生活', '可能有美食或聚會機會'],
+        '傷官': ['創意豐富，適合表達想法', '但要注意口舌是非'],
+        '正印': ['可能得到長輩或貴人幫助', '適合學習和進修'],
+        '偏印': ['適合深入研究和思考', '但避免鑽牛角尖'],
+        '比肩': ['適合與同輩合作', '可能有團隊活動機會'],
+        '劫財': ['要小心財務損失', '避免借錢給他人']
+      };
+      if (tenGodPredictions[tenGod]) {
+        predictions.push(...tenGodPredictions[tenGod]);
+      }
+    }
+    
+    // 根據八門推算
+    const door = systems.qimen?.door;
+    if (door) {
+      const doorPredictions = {
+        '開門': ['適合開始新計劃或出行', '可能有新的機會出現'],
+        '休門': ['適合休息和調整', '可能有修復關係的機會'],
+        '生門': ['財運佳，適合投資', '可能有賺錢機會'],
+        '傷門': ['要小心衝突或損失', '避免爭執和冒險'],
+        '杜門': ['適合保密和等待', '不宜公開行動'],
+        '景門': ['適合考試或展示', '可能有文書或消息'],
+        '死門': ['運勢較差，宜靜不宜動', '避免重大決策'],
+        '驚門': ['要小心意外或驚嚇', '開車要特別注意']
+      };
+      if (doorPredictions[door]) {
+        predictions.push(...doorPredictions[door]);
+      }
+    }
+    
+    // 根據九星推算
+    const star = systems.qimen?.star;
+    if (star) {
+      const starPredictions = {
+        '天輔': ['學習運佳，適合進修', '可能有貴人指點'],
+        '天禽': ['運勢穩定，適合處理事務', '可能有簽約機會'],
+        '天心': ['決策力強，適合做決定', '可能有領導機會'],
+        '天任': ['責任感強，適合承擔重任', '可能需要照顧他人'],
+        '天沖': ['行動力強，適合開始新計劃', '但要避免衝動'],
+        '天英': ['適合展現才華', '可能有社交活動'],
+        '天蓬': ['要小心意外或盜賊', '避免冒險投資'],
+        '天芮': ['健康運較差，要注意休息', '可能需要看醫生'],
+        '天柱': ['容易有變動或破壞', '需要穩定心神']
+      };
+      if (starPredictions[star]) {
+        predictions.push(...starPredictions[star]);
+      }
+    }
+    
+    // 根據卦象推算
+    const hexagram = systems.iching?.hexagram;
+    if (hexagram) {
+      const hexagramPredictions = {
+        '乾為天': ['充滿活力，適合積極行動', '可能有領導機會'],
+        '坤為地': ['穩定踏實，適合執行計劃', '可能有合作機會'],
+        '水雷屯': ['初期困難，需要耐心', '適合積蓄力量'],
+        '山水蒙': ['需要學習和啟蒙', '適合請教他人'],
+        '水天需': ['需要等待時機', '適合養精蓄銳'],
+        '天水訟': ['可能有爭訟或衝突', '適合尋求和解'],
+        '地水師': ['適合組織和領導', '可能有團隊活動'],
+        '水地比': ['適合合作和親附', '可能有貴人相助'],
+        '風天小畜': ['小有蓄積，適合穩步發展', '避免冒進'],
+        '天澤履': ['踐行禮儀，適合正式場合', '要謹慎行事'],
+        '地天泰': ['通泰順利，適合積極行動', '可能有好消息'],
+        '天地否': ['閉塞不通，適合退守', '避免重大決策'],
+        '天火同人': ['志同道合，適合合作', '可能有社交機會'],
+        '火天大有': ['大有收穫，適合積極行動', '可能有成功機會'],
+        '地山謙': ['謙虛處世，適合學習', '可能有貴人相助'],
+        '雷地豫': ['喜悅和豫，適合享受生活', '但不可沉溺安樂']
+      };
+      if (hexagramPredictions[hexagram]) {
+        predictions.push(...hexagramPredictions[hexagram]);
+      }
+    }
+    
+    // 如果沒有具體預測，使用通用預測
+    if (predictions.length === 0) {
+      if (score >= 70) {
+        predictions.push('運勢良好，適合積極行動');
+        predictions.push('可能有好消息或機會出現');
+      } else if (score >= 55) {
+        predictions.push('運勢平穩，適合按部就班');
+        predictions.push('可能有小確幸或小機會');
+      } else if (score >= 45) {
+        predictions.push('運勢普通，適合維持現狀');
+        predictions.push('避免重大決策');
+      } else {
+        predictions.push('運勢較差，宜靜不宜動');
+        predictions.push('避免冒險和衝動');
+      }
+    }
+    
+    // 限制預測數量
+    return predictions.slice(0, 4);
+  }
       if (rule === 'elementRelation') {
         const relations = {
           'metal-water': '時辰五行與日主相生，運勢順暢',
