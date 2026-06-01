@@ -262,6 +262,17 @@ class App {
         if (birthHour) birthHour.disabled = unknownTime.checked;
       });
     }
+
+    // 收合按鈕
+    const btnToggle = document.getElementById('btnToggleSection');
+    const formContainer = document.getElementById('formContainer');
+    if (btnToggle && formContainer) {
+      btnToggle.addEventListener('click', () => {
+        const isCollapsed = formContainer.classList.contains('collapsed');
+        formContainer.classList.toggle('collapsed');
+        btnToggle.textContent = isCollapsed ? '▲ 收合輸入區' : '▼ 展開輸入區';
+      });
+    }
   }
 
   _loadSavedProfile() {
@@ -271,10 +282,20 @@ class App {
         const profile = JSON.parse(saved);
         const birthDateInput = document.getElementById('birthDate');
         const birthTimeInput = document.getElementById('birthTime');
-        const rememberMe = document.getElementById('rememberMe');
-        if (birthDateInput && profile.birthDate) birthDateInput.value = profile.birthDate;
-        if (birthTimeInput && profile.birthTime) birthTimeInput.value = profile.birthTime;
-        if (rememberMe) rememberMe.checked = true;
+        const unknownTimeCheckbox = document.getElementById('unknownTime');
+        
+        if (birthDateInput && profile.birthDate) {
+          birthDateInput.value = profile.birthDate;
+        }
+        if (birthTimeInput && profile.birthTime) {
+          birthTimeInput.value = profile.birthTime;
+        }
+        if (unknownTimeCheckbox && profile.unknownTime) {
+          unknownTimeCheckbox.checked = true;
+          if (birthTimeInput) birthTimeInput.disabled = true;
+        }
+        
+        console.log('已載入儲存的用戶資料');
       }
     } catch (error) {
       console.warn('無法載入已儲存的資料:', error);
@@ -839,9 +860,15 @@ class App {
     const resultSection = document.getElementById('resultSection');
     if (resultSection) resultSection.style.display = 'none';
 
-    // 恢復表單區域顯示
-    const inputSection = document.querySelector('.hero-section');
-    if (inputSection) inputSection.style.display = 'block';
+    // 展開表單區域
+    const formContainer = document.getElementById('formContainer');
+    const btnToggle = document.getElementById('btnToggleSection');
+    if (formContainer) {
+      formContainer.classList.remove('collapsed');
+    }
+    if (btnToggle) {
+      btnToggle.textContent = '▲ 收合輸入區';
+    }
 
     this.currentResult = null;
   }
@@ -884,15 +911,20 @@ class App {
 
   _showResultSection() {
     const section = document.getElementById('resultSection');
-    const inputSection = document.querySelector('.hero-section');
+    const formContainer = document.getElementById('formContainer');
+    const btnToggle = document.getElementById('btnToggleSection');
     
+    // 顯示結果區域
     if (section) {
       section.style.display = 'block';
     }
     
-    // 收合表單區域
-    if (inputSection) {
-      inputSection.style.display = 'none';
+    // 收合表單區域（不隱藏）
+    if (formContainer) {
+      formContainer.classList.add('collapsed');
+    }
+    if (btnToggle) {
+      btnToggle.textContent = '▼ 展開輸入區';
     }
     
     // 滾動到結果區域
@@ -1085,16 +1117,23 @@ class App {
 
   _showFormSection() {
     const resultSection = document.getElementById('resultSection');
-    const inputSection = document.querySelector('.hero-section');
+    const formContainer = document.getElementById('formContainer');
+    const btnToggle = document.getElementById('btnToggleSection');
     
     if (resultSection) {
       resultSection.style.display = 'none';
     }
     
-    if (inputSection) {
-      inputSection.style.display = 'block';
-      inputSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // 展開表單區域
+    if (formContainer) {
+      formContainer.classList.remove('collapsed');
     }
+    if (btnToggle) {
+      btnToggle.textContent = '▲ 收合輸入區';
+    }
+    
+    // 滾動到頂部
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 

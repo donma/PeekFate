@@ -2097,6 +2097,44 @@ small {
   padding: 8px 16px;
 }
 
+/* ========== 區塊收合功能 ========== */
+.section-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--spacing-md) 0;
+}
+
+.btn-toggle-section {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-top: var(--spacing-sm);
+  transition: all 0.3s ease;
+}
+
+.btn-toggle-section:hover {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+.form-container {
+  max-height: 1000px;
+  overflow: hidden;
+  transition: max-height 0.5s ease, opacity 0.3s ease;
+  opacity: 1;
+}
+
+.form-container.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
 /* ========================================
    性能優化樣式
    ======================================== */
