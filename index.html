@@ -13,124 +13,145 @@
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-  <div class="app-container">
-    <header class="app-header">
-      <div class="logo-area">
-        <div class="logo-icon">&#9776;</div>
-        <h1 class="app-title">窺天命</h1>
-        <p class="app-subtitle">八字 × 易經 × 奇門遁甲</p>
+  <div class="page-wrapper">
+    <!-- 頂部導航 -->
+    <header class="header">
+      <div class="container header-inner">
+        <div class="logo">
+          <span class="logo-icon">☰</span>
+          <span>窺天命</span>
+        </div>
+        <nav>
+          <ul class="nav-links" id="navLinks">
+            <li><a href="#" class="active">首頁</a></li>
+            <li><a href="#resultSection">推算結果</a></li>
+            <li><a href="#about">關於</a></li>
+          </ul>
+        </nav>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="選單">
+          ☰
+        </button>
       </div>
     </header>
 
+    <!-- 主要內容 -->
     <main class="main-content">
-      <section class="input-section">
-        <div class="section-header">
-          <h2 class="section-title">輸入您的出生資訊</h2>
-          <p class="section-desc">請填寫您的生日與出生時間，以進行命盤推算</p>
-        </div>
+      <div class="container">
+        <!-- 首頁表單區塊 -->
+        <section class="hero-section">
+          <h1 class="hero-title">窺天命</h1>
+          <p class="hero-subtitle">八字 × 易經 × 奇門遁甲，每日時辰推演工具</p>
+          
+          <form id="birthForm" class="birth-form">
+            <div class="form-group">
+              <label for="birthDate" class="form-label">
+                西元生日 <span class="required">*</span>
+              </label>
+              <input 
+                type="date" 
+                id="birthDate" 
+                name="birthDate" 
+                class="form-input"
+                required
+              >
+            </div>
 
-        <form id="birthForm" class="birth-form">
-          <div class="form-group">
-            <label for="birthDate" class="form-label">
-              西元生日 <span class="required">*</span>
-            </label>
-            <input 
-              type="date" 
-              id="birthDate" 
-              name="birthDate" 
-              class="form-input"
-              required
-              placeholder="yyyy-mm-dd"
-            >
+            <div class="form-group">
+              <label for="birthTime" class="form-label">
+                出生時間
+              </label>
+              <input 
+                type="time" 
+                id="birthTime" 
+                name="birthTime" 
+                class="form-input"
+                placeholder="HH:mm"
+              >
+              <span class="form-hint">選填，如已知請填寫以獲得更精確的推算</span>
+            </div>
+
+            <div class="form-group">
+              <label for="birthHour" class="form-label">
+                出生時辰
+              </label>
+              <select id="birthHour" name="birthHour" class="form-select">
+                <option value="">-- 請選擇時辰 --</option>
+                <option value="zi">子時 (23:00-01:00)</option>
+                <option value="chou">丑時 (01:00-03:00)</option>
+                <option value="yin">寅時 (03:00-05:00)</option>
+                <option value="mao">卯時 (05:00-07:00)</option>
+                <option value="chen">辰時 (07:00-09:00)</option>
+                <option value="si">巳時 (09:00-11:00)</option>
+                <option value="wu">午時 (11:00-13:00)</option>
+                <option value="wei">未時 (13:00-15:00)</option>
+                <option value="shen">申時 (15:00-17:00)</option>
+                <option value="you">酉時 (17:00-19:00)</option>
+                <option value="xu">戌時 (19:00-21:00)</option>
+                <option value="hai">亥時 (21:00-23:00)</option>
+              </select>
+              <span class="form-hint">選填，若不確定精確時間可選擇時辰</span>
+            </div>
+
+            <div class="form-group form-group-checkbox">
+              <label class="checkbox-label">
+                <input type="checkbox" id="unknownTime" name="unknownTime" class="form-checkbox">
+                <span class="checkbox-custom"></span>
+                不知道出生時間
+              </label>
+            </div>
+
+            <div class="form-group form-group-checkbox">
+              <label class="checkbox-label">
+                <input type="checkbox" id="rememberMe" name="rememberMe" class="form-checkbox">
+                <span class="checkbox-custom"></span>
+                記住我的生日與出生時間，僅儲存在本裝置
+              </label>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-block btn-lg" id="btnStart">
+                開始推算
+              </button>
+              <button type="button" class="btn btn-secondary btn-block" id="btnClear">
+                清除資料
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- 結果區塊 -->
+        <section class="result-page" id="resultSection" style="display: none;">
+          <div class="result-header">
+            <h1>推算結果</h1>
+            <div class="result-meta" id="resultMeta"></div>
           </div>
-
-          <div class="form-group">
-            <label for="birthTime" class="form-label">
-              出生時間
-            </label>
-            <input 
-              type="time" 
-              id="birthTime" 
-              name="birthTime" 
-              class="form-input"
-              placeholder="HH:mm"
-            >
-            <span class="form-hint">選填，如已知請填寫以獲得更精確的推算</span>
+          <div id="resultContent">
+            <!-- 結果將由 JavaScript 動態填充 -->
           </div>
-
-          <div class="form-group">
-            <label for="birthHour" class="form-label">
-              出生時辰
-            </label>
-            <select id="birthHour" name="birthHour" class="form-select">
-              <option value="">-- 請選擇時辰 --</option>
-              <option value="zi">子時 (23:00-01:00)</option>
-              <option value="chou">丑時 (01:00-03:00)</option>
-              <option value="yin">寅時 (03:00-05:00)</option>
-              <option value="mao">卯時 (05:00-07:00)</option>
-              <option value="chen">辰時 (07:00-09:00)</option>
-              <option value="si">巳時 (09:00-11:00)</option>
-              <option value="wu">午時 (11:00-13:00)</option>
-              <option value="wei">未時 (13:00-15:00)</option>
-              <option value="shen">申時 (15:00-17:00)</option>
-              <option value="you">酉時 (17:00-19:00)</option>
-              <option value="xu">戌時 (19:00-21:00)</option>
-              <option value="hai">亥時 (21:00-23:00)</option>
-            </select>
-            <span class="form-hint">選填，若不確定精確時間可選擇時辰</span>
-          </div>
-
-          <div class="form-group form-group-checkbox">
-            <label class="checkbox-label">
-              <input type="checkbox" id="unknownTime" name="unknownTime" class="form-checkbox">
-              <span class="checkbox-custom"></span>
-              不知道出生時間
-            </label>
-          </div>
-
-          <div class="form-group form-group-checkbox">
-            <label class="checkbox-label">
-              <input type="checkbox" id="rememberMe" name="rememberMe" class="form-checkbox">
-              <span class="checkbox-custom"></span>
-              記住我的生日與出生時間
-            </label>
-          </div>
-
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary" id="btnStart">
-              開始推算
-            </button>
-            <button type="button" class="btn btn-secondary" id="btnClear">
-              清除資料
-            </button>
-          </div>
-        </form>
-      </section>
-
-      <section class="result-section" id="resultSection" style="display: none;">
-        <div class="section-header">
-          <h2 class="section-title">推算結果</h2>
-        </div>
-        <div class="result-content" id="resultContent">
-          <!-- 結果將由 JavaScript 動態填充 -->
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
 
-    <footer class="app-footer">
-      <div class="disclaimer">
-        <p class="disclaimer-text">
-          免責聲明：本工具僅供參考與娛樂用途，不構成任何專業建議。
-          命理推算結果不代表實際人生走向，請理性看待。
-          本應用不會儲存任何個人資料，所有資訊僅保存於您的本機瀏覽器中。
-        </p>
-      </div>
-      <div class="copyright">
-        <p>&copy; 2024 窺天命 - 純前端命術規則引擎</p>
+    <!-- 底部 -->
+    <footer class="footer" id="about">
+      <div class="container">
+        <div class="disclaimer">
+          <p>免責聲明：本工具依傳統命術規則推算，內容屬民俗文化與個人參考，不作為醫療、法律、投資、婚姻或人生重大決策保證。</p>
+        </div>
+        <div class="copyright">
+          <p>&copy; 2024 窺天命 - 純前端命術規則引擎 PWA</p>
+        </div>
       </div>
     </footer>
   </div>
 
+  <!-- 安裝提示 -->
+  <div class="install-prompt" id="installPrompt" style="display: none;">
+    <button class="install-btn" id="installBtn">安裝到桌面</button>
+    <button class="install-close" id="installClose">×</button>
+  </div>
+
   <script src="js/app.js"></script>
+  <script src="js/pwa-install.js"></script>
 </body>
 </html>
