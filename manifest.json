@@ -1,6 +1,6 @@
 {
-  "name": "窺天命",
-  "short_name": "窺天命",
+  "name": "速窺運勢",
+  "short_name": "速窺運勢",
   "description": "八字、易經與奇門遁甲的每日時辰推演工具。",
   "start_url": "./",
   "scope": "./",

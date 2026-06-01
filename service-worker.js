@@ -1,6 +1,6 @@
 /**
  * 服務工作者 (Service Worker)
- * 時運知錄 - 八字、易經與奇門遁甲的每日時辰推演工具
+ * 速窺運勢 - 八字、易經與奇門遁甲的每日時辰推演工具
  *
  * 功能：
  * 1. 快取應用程式資源以支援離線使用
@@ -330,7 +330,7 @@ function createOfflineResponse(request) {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>時運知錄 - 離線模式</title>
+        <title>速窺運勢 - 離線模式</title>
         <style>
           body {
             font-family: "Noto Serif TC", "Noto Sans TC", serif;
@@ -447,7 +447,7 @@ self.addEventListener('push', (event) => {
     };
 
     event.waitUntil(
-      self.registration.showNotification(data.title || '時運知錄', options)
+      self.registration.showNotification(data.title || '速窺運勢', options)
     );
   }
 });
