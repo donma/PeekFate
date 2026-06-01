@@ -660,17 +660,19 @@ class App {
     if (!chart) return 0;
 
     let score = 0;
-    const doorScores = {
-      '開門': 10, '休門': 8, '生門': 9, '傷門': -7,
-      '杜門': -5, '景門': 3, '死門': -10, '驚門': -6
+    
+    // 使用 scoringEngine 的規則，如果沒有則使用預設值
+    const doorScores = this.scoringEngine.scoreRules?.qimenScores?.doors || {
+      '開門': 12, '休門': 10, '生門': 11, '傷門': -5,
+      '杜門': -3, '景門': 5, '死門': -8, '驚門': -4
     };
-    const starScores = {
-      '天蓬': -6, '天芮': -5, '天沖': 4, '天輔': 7,
-      '天禽': 6, '天心': 8, '天柱': -3, '天任': 5, '天英': 2
+    const starScores = this.scoringEngine.scoreRules?.qimenScores?.stars || {
+      '天蓬': -4, '天芮': -3, '天沖': 6, '天輔': 9,
+      '天禽': 8, '天心': 10, '天柱': -1, '天任': 7, '天英': 4
     };
-    const godScores = {
-      '值符': 8, '騰蛇': -4, '太陰': 5, '六合': 6,
-      '白虎': -7, '玄武': -5, '九地': 3, '九天': 4
+    const godScores = this.scoringEngine.scoreRules?.qimenScores?.gods || {
+      '值符': 10, '騰蛇': -2, '太陰': 7, '六合': 8,
+      '白虎': -5, '玄武': -3, '九地': 5, '九天': 6
     };
 
     if (chart.zhiShi?.door) score += doorScores[chart.zhiShi.door] || 0;
@@ -693,9 +695,9 @@ class App {
   }
 
   _getQimenDoorScore(door) {
-    const scores = {
-      '開門': 10, '休門': 8, '生門': 9, '傷門': -7,
-      '杜門': -5, '景門': 3, '死門': -10, '驚門': -6
+    const scores = this.scoringEngine.scoreRules?.qimenScores?.doors || {
+      '開門': 12, '休門': 10, '生門': 11, '傷門': -5,
+      '杜門': -3, '景門': 5, '死門': -8, '驚門': -4
     };
     return scores[door] || 0;
   }
