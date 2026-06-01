@@ -62,11 +62,11 @@ class IChingEngine {
   async loadData() {
     try {
       const [hexagrams, linesData, changeMap, trigrams, hexagramRelations] = await Promise.all([
-        this._fetchJSON('../../data/iching/hexagrams.json'),
-        this._fetchJSON('../../data/iching/lines.json'),
-        this._fetchJSON('../../data/iching/change-map.json'),
-        this._fetchJSON('../../data/iching/trigrams.json'),
-        this._fetchJSON('../../data/iching/hexagram-relations.json')
+        this._fetchJSON('data/iching/hexagrams.json'),
+        this._fetchJSON('data/iching/lines.json'),
+        this._fetchJSON('data/iching/change-map.json'),
+        this._fetchJSON('data/iching/trigrams.json'),
+        this._fetchJSON('data/iching/hexagram-relations.json')
       ]);
 
       this.hexagrams = hexagrams;
@@ -634,3 +634,4 @@ class IChingEngine {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = IChingEngine;
 }
+

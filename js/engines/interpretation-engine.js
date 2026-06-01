@@ -57,9 +57,9 @@ class InterpretationEngine {
   async loadData() {
     try {
       const [eventTemplates, adviceTemplates, riskTemplates] = await Promise.all([
-        this._fetchJSON('../../data/interpretation/event-templates.json'),
-        this._fetchJSON('../../data/interpretation/advice-templates.json'),
-        this._fetchJSON('../../data/interpretation/risk-templates.json')
+        this._fetchJSON('data/interpretation/event-templates.json'),
+        this._fetchJSON('data/interpretation/advice-templates.json'),
+        this._fetchJSON('data/interpretation/risk-templates.json')
       ]);
 
       this.eventTemplates = eventTemplates;
@@ -686,3 +686,4 @@ if (typeof module !== 'undefined' && module.exports) {
 if (typeof window !== 'undefined') {
   window.InterpretationEngine = InterpretationEngine;
 }
+

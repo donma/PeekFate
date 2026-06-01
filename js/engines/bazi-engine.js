@@ -84,10 +84,10 @@ class BaziEngine {
   async loadData() {
     try {
       const [tenGods, branchRelations, hiddenStems, solarTerms] = await Promise.all([
-        this._fetchJSON('../../data/bazi/ten-gods.json'),
-        this._fetchJSON('../../data/bazi/branch-relations.json'),
-        this._fetchJSON('../../data/bazi/hidden-stems.json'),
-        this._fetchJSON('../../data/core/solar-terms.json')
+        this._fetchJSON('data/bazi/ten-gods.json'),
+        this._fetchJSON('data/bazi/branch-relations.json'),
+        this._fetchJSON('data/bazi/hidden-stems.json'),
+        this._fetchJSON('data/core/solar-terms.json')
       ]);
 
       this.tenGods = tenGods;
@@ -1324,3 +1324,4 @@ if (typeof module !== 'undefined' && module.exports) {
 if (typeof window !== 'undefined') {
   window.BaziEngine = BaziEngine;
 }
+

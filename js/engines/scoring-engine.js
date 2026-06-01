@@ -43,7 +43,7 @@ class ScoringEngine {
    */
   async loadData() {
     try {
-      const scoreRules = await this._fetchJSON('../../data/interpretation/score-rules.json');
+      const scoreRules = await this._fetchJSON('data/interpretation/score-rules.json');
       this.scoreRules = scoreRules;
       this.loaded = true;
       this.loadError = null;
@@ -694,3 +694,4 @@ if (typeof module !== 'undefined' && module.exports) {
 if (typeof window !== 'undefined') {
   window.ScoringEngine = ScoringEngine;
 }
+

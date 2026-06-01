@@ -83,12 +83,12 @@ class GanzhiEngine {
   async loadData() {
     try {
       const [stems, branches, ganzhi60, nayin, hiddenStems, elements] = await Promise.all([
-        this._fetchJSON('../../data/core/stems.json'),
-        this._fetchJSON('../../data/core/branches.json'),
-        this._fetchJSON('../../data/core/ganzhi-60.json'),
-        this._fetchJSON('../../data/bazi/nayin.json'),
-        this._fetchJSON('../../data/bazi/hidden-stems.json'),
-        this._fetchJSON('../../data/core/elements.json')
+        this._fetchJSON('data/core/stems.json'),
+        this._fetchJSON('data/core/branches.json'),
+        this._fetchJSON('data/core/ganzhi-60.json'),
+        this._fetchJSON('data/bazi/nayin.json'),
+        this._fetchJSON('data/bazi/hidden-stems.json'),
+        this._fetchJSON('data/core/elements.json')
       ]);
 
       this.stems = stems;
@@ -727,3 +727,4 @@ if (typeof module !== 'undefined' && module.exports) {
 if (typeof window !== 'undefined') {
   window.GanzhiEngine = GanzhiEngine;
 }
+
