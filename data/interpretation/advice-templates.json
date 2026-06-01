@@ -1,0 +1,302 @@
+{
+  "wealthAdvice": {
+    "contract_clear": {
+      "conditions": ["tenGod:偏財", "risk:not_high"],
+      "advice": "可以主動處理合作與財務事項，但條件要寫清楚，不要只靠口頭承諾。",
+      "positive": "適合談合作、簽合同、處理財務。",
+      "negative": "避免衝動投資、過度承諾。"
+    },
+    "investment_stable": {
+      "conditions": ["tenGod:正財", "door:生門", "risk:low"],
+      "advice": "財運穩定，適合穩健型投資，可考慮長期理財規劃。",
+      "positive": "適合儲蓄、定期投資、購置不動產。",
+      "negative": "避免高風險投機、借貸投資。"
+    },
+    "windfall_chance": {
+      "conditions": ["tenGod:偏財", "star:天輔", "risk:medium"],
+      "advice": "有意外之財的機會，但不可過度依賴，仍需腳踏實地。",
+      "positive": "適合小額投資、參與抽獎、接受他人好意。",
+      "negative": "避免沉迷賭博、過度冒險。"
+    },
+    "financial_caution": {
+      "conditions": ["tenGod:劫財", "risk:high"],
+      "advice": "財運不佳，容易破財，建議保守理財，減少不必要開支。",
+      "positive": "適合整理財務、還清債務、節約開支。",
+      "negative": "避免大額投資、借貸、擔保。"
+    },
+    "business_expansion": {
+      "conditions": ["tenGod:正財", "door:開門", "star:天心"],
+      "advice": "適合拓展業務，可考慮增加投資或擴大經營規模。",
+      "positive": "適合開新店、拓展市場、簽訂大單。",
+      "negative": "避免盲目擴張、忽略風險評估。"
+    },
+    "debt_management": {
+      "conditions": ["tenGod:七殺", "door:驚門"],
+      "advice": "可能面臨債務壓力，建議積極處理，避免拖延。",
+      "positive": "適合協商還款計劃、清理舊帳。",
+      "negative": "避免逃避債務、新增借貸。"
+    },
+    "savings_period": {
+      "conditions": ["tenGod:正印", "door:休門", "risk:low"],
+      "advice": "適合儲蓄和積累，不宜大動作投資。",
+      "positive": "適合存錢、購買保險、規劃退休金。",
+      "negative": "避免衝動消費、奢侈浪費。"
+    },
+    "partner_finance": {
+      "conditions": ["tenGod:正財", "door:六合", "star:天柱"],
+      "advice": "與他人合作理財有好處，但需選擇信任的夥伴。",
+      "positive": "適合合夥投資、共同經營。",
+      "negative": "避免與不熟的人財務往來、輕信承諾。"
+    }
+  },
+  "careerAdvice": {
+    "career_development": {
+      "conditions": ["tenGod:正官", "door:開門"],
+      "advice": "適合展現能力，爭取機會，但要注意方式方法。",
+      "positive": "適合表現自己、爭取機會、接受挑戰。",
+      "negative": "避免過於強勢、忽略團隊。"
+    },
+    "job_change": {
+      "conditions": ["tenGod:偏官", "door:開門", "risk:medium"],
+      "advice": "有變動的機會，可以考慮轉換跑道，但需做好準備。",
+      "positive": "適合面試、投履歷、學習新技能。",
+      "negative": "避免裸辭、衝動離職。"
+    },
+    "stable_career": {
+      "conditions": ["tenGod:正官", "door:休門", "risk:low"],
+      "advice": "工作穩定，適合深耕現有領域，不宜輕易變動。",
+      "positive": "適合進修、提升專業、建立人脈。",
+      "negative": "避免三心二意、輕率跳槽。"
+    },
+    "leadership_opportunity": {
+      "conditions": ["tenGod:正官", "star:天心", "door:開門"],
+      "advice": "有升遷或領導機會，適合主動承擔責任。",
+      "positive": "適合爭取管理職、帶領團隊、提案。",
+      "negative": "避免獨斷專行、忽略下屬意見。"
+    },
+    "career_obstacle": {
+      "conditions": ["tenGod:七殺", "door:死門", "risk:high"],
+      "advice": "事業上可能遇到阻礙，建議低調行事，避免衝突。",
+      "positive": "適合反思、調整策略、充實自己。",
+      "negative": "避免與人爭執、衝動決策。"
+    },
+    "study_enhance": {
+      "conditions": ["tenGod:正印", "star:天輔", "door:杜門"],
+      "advice": "適合學習進修，提升專業能力，為未來發展打基礎。",
+      "positive": "適合上課、考證、閱讀專業書籍。",
+      "negative": "避免好高騖遠、急於求成。"
+    },
+    "business_startup": {
+      "conditions": ["tenGod:偏財", "door:開門", "star:天沖"],
+      "advice": "有創業的機會，但需做好市場調查和資金準備。",
+      "positive": "適合規劃創業、尋找合作夥伴。",
+      "negative": "避免盲目創業、資金不足就開業。"
+    },
+    "workplace_politics": {
+      "conditions": ["tenGod:傷官", "door:驚門", "risk:medium"],
+      "advice": "職場上可能有人事紛爭，建議保持中立，專注工作。",
+      "positive": "適合專注本業、建立良好關係。",
+      "negative": "避免捲入派系、背後議論他人。"
+    }
+  },
+  "relationshipAdvice": {
+    "love_opportunity": {
+      "conditions": ["tenGod:正財", "door:六合", "gender:male"],
+      "advice": "有遇到心儀對象的機會，適合主動出擊。",
+      "positive": "適合表白、約會、參加社交活動。",
+      "negative": "避免過於急躁、給對方壓力。"
+    },
+    "love_opportunity_female": {
+      "conditions": ["tenGod:正官", "door:六合", "gender:female"],
+      "advice": "有遇到好對象的機會，適合把握緣分。",
+      "positive": "適合參加聯誼、接受介紹、主動認識。",
+      "negative": "避免過於被動、挑剔條件。"
+    },
+    "relationship_stable": {
+      "conditions": ["tenGod:正財", "door:休門", "risk:low"],
+      "advice": "感情穩定，適合經營現有關係，加深彼此了解。",
+      "positive": "適合約會、旅行、見家長。",
+      "negative": "避免忽略對方、冷落感情。"
+    },
+    "marriage_timing": {
+      "conditions": ["tenGod:正財", "door:六合", "star:天喜", "risk:low"],
+      "advice": "適合談婚論嫁，如有對象可考慮進一步發展。",
+      "positive": "適合求婚、訂婚、結婚。",
+      "negative": "避免猶豫不決、錯失良機。"
+    },
+    "relationship_conflict": {
+      "conditions": ["tenGod:傷官", "door:驚門", "risk:high"],
+      "advice": "感情上可能有爭執，建議多溝通，互相包容。",
+      "positive": "適合坦誠溝通、表達感受。",
+      "negative": "避免冷戰、翻舊帳、衝動分手。"
+    },
+    "third_party_risk": {
+      "conditions": ["tenGod:偏財", "door:玄武", "risk:high"],
+      "advice": "感情上可能有第三者介入的風險，需多加注意。",
+      "positive": "適合加強與伴侶的互動、增加信任。",
+      "negative": "避免與異性過度曖昧、忽略伴侶感受。"
+    },
+    "single_period": {
+      "conditions": ["tenGod:比肩", "door:杜門", "risk:low"],
+      "advice": "目前適合單身，專注自我成長，感情隨緣。",
+      "positive": "適合培養興趣、拓展社交圈。",
+      "negative": "避免強求感情、隨便找對象。"
+    },
+    "reconciliation": {
+      "conditions": ["tenGod:正印", "door:六合", "risk:medium"],
+      "advice": "如有舊情，可考慮復合，但需先解決根本問題。",
+      "positive": "適合反思過去、真誠溝通。",
+      "negative": "避免重蹈覆轍、逃避問題。"
+    }
+  },
+  "healthAdvice": {
+    "health_good": {
+      "conditions": ["tenGod:正印", "door:休門", "risk:low"],
+      "advice": "身體狀況良好，適合維持健康的生活習慣。",
+      "positive": "適合運動、養生、定期健檢。",
+      "negative": "避免熬夜、暴飲暴食。"
+    },
+    "health_warning": {
+      "conditions": ["tenGod:七殺", "door:死門", "risk:high"],
+      "advice": "健康狀況需注意，建議定期檢查，避免過勞。",
+      "positive": "適合休息、調養、看醫生。",
+      "negative": "避免熬夜、壓力過大、忽略身體警訊。"
+    },
+    "mental_health": {
+      "conditions": ["tenGod:傷官", "door:驚門", "risk:medium"],
+      "advice": "心理壓力較大，建議適時放鬆，尋求支持。",
+      "positive": "適合冥想、運動、與朋友聊天。",
+      "negative": "避免獨處、鑽牛角尖、壓抑情緒。"
+    },
+    "chronic_care": {
+      "conditions": ["tenGod:偏印", "door:死門", "risk:medium"],
+      "advice": "有慢性疾病的風險，建議注意飲食和作息。",
+      "positive": "適合養生、調理、定期回診。",
+      "negative": "避免油膩飲食、缺乏運動。"
+    },
+    "accident_risk": {
+      "conditions": ["tenGod:七殺", "door:傷門", "risk:high"],
+      "advice": "有意外傷害的風險，外出需小心，注意安全。",
+      "positive": "適合檢查家居安全、購買保險。",
+      "negative": "避免危險活動、酒後駕車。"
+    },
+    "recovery_period": {
+      "conditions": ["tenGod:正印", "door:生門", "risk:low"],
+      "advice": "身體正在恢復中，適合調養，不宜操勞。",
+      "positive": "適合休息、營養補充、輕度運動。",
+      "negative": "避免劇烈運動、工作過度。"
+    },
+    "diet_advice": {
+      "conditions": ["tenGod:偏印", "door:死門", "star:天芮"],
+      "advice": "腸胃較弱，建議注意飲食，避免刺激性食物。",
+      "positive": "適合清淡飲食、規律進餐。",
+      "negative": "避免辛辣、油膩、冰冷食物。"
+    },
+    "exercise_benefit": {
+      "conditions": ["tenGod:比肩", "door:開門", "risk:low"],
+      "advice": "體力充沛，適合增加運動量，強化體質。",
+      "positive": "適合跑步、游泳、健身。",
+      "negative": "避免過度訓練、忽略熱身。"
+    }
+  },
+  "travelAdvice": {
+    "travel_good": {
+      "conditions": ["tenGod:正財", "door:開門", "risk:low"],
+      "advice": "出行順利，適合旅行或出差，會有好收穫。",
+      "positive": "適合旅遊、出差、拜訪客戶。",
+      "negative": "避免疲勞駕駛、忽略行程規劃。"
+    },
+    "travel_caution": {
+      "conditions": ["tenGod:七殺", "door:傷門", "risk:high"],
+      "advice": "出行需謹慎，可能有意外或延誤，建議做好準備。",
+      "positive": "適合購買旅遊保險、備好應急物品。",
+      "negative": "避免前往危險地區、單獨行動。"
+    },
+    "business_trip": {
+      "conditions": ["tenGod:正官", "door:開門", "star:天心"],
+      "advice": "商務出行順利，適合洽談業務或參加會議。",
+      "positive": "適合出差、談判、簽約。",
+      "negative": "避免準備不足、忽略細節。"
+    },
+    "travel_delay": {
+      "conditions": ["tenGod:偏印", "door:杜門", "risk:medium"],
+      "advice": "出行可能遇到延誤或阻礙，建議預留緩衝時間。",
+      "positive": "適合提前出發、備選方案。",
+      "negative": "避免趕時間、忽略交通狀況。"
+    },
+    "travel_favorable": {
+      "conditions": ["tenGod:偏財", "door:生門", "risk:low"],
+      "advice": "出行有利，可能有意外收穫或好運。",
+      "positive": "適合旅行、購物、社交活動。",
+      "negative": "避免過度消費、輕信陌生人。"
+    },
+    "travel_danger": {
+      "conditions": ["tenGod:七殺", "door:死門", "risk:high"],
+      "advice": "出行危險，建議取消或延後行程。",
+      "positive": "適合待在家中、改為室內活動。",
+      "negative": "避免遠行、夜間外出。"
+    },
+    "short_trip": {
+      "conditions": ["tenGod:比肩", "door:開門", "risk:low"],
+      "advice": "短途出行順利，適合附近遊玩或辦事。",
+      "positive": "適合逛街、探訪朋友、郊遊。",
+      "negative": "避免長途跋涉、疲勞過度。"
+    },
+    "travel_group": {
+      "conditions": ["tenGod:正財", "door:六合", "risk:low"],
+      "advice": "與人同行較好，適合結伴旅遊或團體活動。",
+      "positive": "適合團體旅遊、與朋友出遊。",
+      "negative": "避免單獨行動、忽略同伴需求。"
+    }
+  },
+  "generalAdvice": {
+    "positive_period": {
+      "conditions": ["risk:low", "tenGod:正財"],
+      "advice": "運勢良好，適合積極行動，把握機會。",
+      "positive": "適合主動出擊、爭取機會。",
+      "negative": "避免驕傲自滿、得意忘形。"
+    },
+    "caution_period": {
+      "conditions": ["risk:high", "tenGod:七殺"],
+      "advice": "運勢較弱，建議保守行事，避免冒險。",
+      "positive": "適合觀察、等待、充實自己。",
+      "negative": "避免衝動決策、與人衝突。"
+    },
+    "neutral_period": {
+      "conditions": ["risk:medium", "tenGod:比肩"],
+      "advice": "運勢平穩，適合按部就班，不宜大動作。",
+      "positive": "適合維持現狀、穩定發展。",
+      "negative": "避免投機取巧、貪多求快。"
+    },
+    "learning_period": {
+      "conditions": ["tenGod:正印", "star:天輔"],
+      "advice": "適合學習新知識，提升自我能力。",
+      "positive": "適合閱讀、上課、請教他人。",
+      "negative": "避免閉門造車、拒絕新知。"
+    },
+    "social_period": {
+      "conditions": ["tenGod:正財", "door:六合", "risk:low"],
+      "advice": "人際關係良好，適合社交活動，拓展人脈。",
+      "positive": "適合聚會、 networking、合作。",
+      "negative": "避免孤立自己、忽略人情世故。"
+    },
+    "reflection_period": {
+      "conditions": ["tenGod:偏印", "door:杜門", "risk:medium"],
+      "advice": "適合獨處思考，反思過去，規劃未來。",
+      "positive": "適合寫日記、冥想、設定目標。",
+      "negative": "避免過度焦慮、鑽牛角尖。"
+    },
+    "action_period": {
+      "conditions": ["tenGod:比肩", "door:開門", "star:天沖"],
+      "advice": "適合採取行動，執行計劃，不宜拖延。",
+      "positive": "適合執行計劃、開始新項目。",
+      "negative": "避免猶豫不決、錯失時機。"
+    },
+    "patience_period": {
+      "conditions": ["tenGod:正印", "door:休門", "risk:medium"],
+      "advice": "時機未到，建議耐心等待，不宜急躁。",
+      "positive": "適合等待、準備、觀察。",
+      "negative": "避免強求、急於求成。"
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "甲": {
+    "index": 1,
+    "element": "wood",
+    "yinYang": "yang",
+    "label": "陽木",
+    "image": "大樹、棟樑、直上之木"
+  },
+  "乙": {
+    "index": 2,
+    "element": "wood",
+    "yinYang": "yin",
+    "label": "陰木",
+    "image": "花草、藤蔓、柔木"
+  },
+  "丙": {
+    "index": 3,
+    "element": "fire",
+    "yinYang": "yang",
+    "label": "陽火",
+    "image": "太陽、光明、外放之火"
+  },
+  "丁": {
+    "index": 4,
+    "element": "fire",
+    "yinYang": "yin",
+    "label": "陰火",
+    "image": "燈火、爐火、細緻之火"
+  },
+  "戊": {
+    "index": 5,
+    "element": "earth",
+    "yinYang": "yang",
+    "label": "陽土",
+    "image": "高山、城牆、厚重之土"
+  },
+  "己": {
+    "index": 6,
+    "element": "earth",
+    "yinYang": "yin",
+    "label": "陰土",
+    "image": "田園、土壤、包容之土"
+  },
+  "庚": {
+    "index": 7,
+    "element": "metal",
+    "yinYang": "yang",
+    "label": "陽金",
+    "image": "刀劍、礦石、剛硬之金"
+  },
+  "辛": {
+    "index": 8,
+    "element": "metal",
+    "yinYang": "yin",
+    "label": "陰金",
+    "image": "珠玉、首飾、精緻之金"
+  },
+  "壬": {
+    "index": 9,
+    "element": "water",
+    "yinYang": "yang",
+    "label": "陽水",
+    "image": "江海、大河、奔流之水"
+  },
+  "癸": {
+    "index": 10,
+    "element": "water",
+    "yinYang": "yin",
+    "label": "陰水",
+    "image": "雨露、霧氣、細密之水"
+  }
+}

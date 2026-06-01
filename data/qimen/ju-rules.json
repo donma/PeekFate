@@ -1,0 +1,411 @@
+{
+  "solarTerms": {
+    "冬至": {
+      "upper": 1,
+      "middle": 7,
+      "lower": 4,
+      "dun": "陽遁",
+      "group": "冬至組"
+    },
+    "小寒": {
+      "upper": 2,
+      "middle": 8,
+      "lower": 5,
+      "dun": "陽遁",
+      "group": "冬至組"
+    },
+    "大寒": {
+      "upper": 3,
+      "middle": 9,
+      "lower": 6,
+      "dun": "陽遁",
+      "group": "冬至組"
+    },
+    "立春": {
+      "upper": 8,
+      "middle": 5,
+      "lower": 2,
+      "dun": "陽遁",
+      "group": "冬至組"
+    },
+    "雨水": {
+      "upper": 9,
+      "middle": 6,
+      "lower": 3,
+      "dun": "陽遁",
+      "group": "冬至組"
+    },
+    "驚蟄": {
+      "upper": 1,
+      "middle": 7,
+      "lower": 4,
+      "dun": "陽遁",
+      "group": "冬至組"
+    },
+    "春分": {
+      "upper": 3,
+      "middle": 9,
+      "lower": 6,
+      "dun": "陽遁",
+      "group": "春分組"
+    },
+    "清明": {
+      "upper": 4,
+      "middle": 1,
+      "lower": 7,
+      "dun": "陽遁",
+      "group": "春分組"
+    },
+    "穀雨": {
+      "upper": 5,
+      "middle": 2,
+      "lower": 8,
+      "dun": "陽遁",
+      "group": "春分組"
+    },
+    "立夏": {
+      "upper": 4,
+      "middle": 1,
+      "lower": 7,
+      "dun": "陽遁",
+      "group": "春分組"
+    },
+    "小滿": {
+      "upper": 5,
+      "middle": 2,
+      "lower": 8,
+      "dun": "陽遁",
+      "group": "春分組"
+    },
+    "芒種": {
+      "upper": 6,
+      "middle": 3,
+      "lower": 9,
+      "dun": "陽遁",
+      "group": "春分組"
+    },
+    "夏至": {
+      "upper": 9,
+      "middle": 3,
+      "lower": 6,
+      "dun": "陰遁",
+      "group": "夏至組"
+    },
+    "小暑": {
+      "upper": 8,
+      "middle": 2,
+      "lower": 5,
+      "dun": "陰遁",
+      "group": "夏至組"
+    },
+    "大暑": {
+      "upper": 7,
+      "middle": 1,
+      "lower": 4,
+      "dun": "陰遁",
+      "group": "夏至組"
+    },
+    "立秋": {
+      "upper": 2,
+      "middle": 5,
+      "lower": 8,
+      "dun": "陰遁",
+      "group": "夏至組"
+    },
+    "處暑": {
+      "upper": 1,
+      "middle": 4,
+      "lower": 7,
+      "dun": "陰遁",
+      "group": "夏至組"
+    },
+    "白露": {
+      "upper": 9,
+      "middle": 3,
+      "lower": 6,
+      "dun": "陰遁",
+      "group": "夏至組"
+    },
+    "秋分": {
+      "upper": 7,
+      "middle": 1,
+      "lower": 4,
+      "dun": "陰遁",
+      "group": "秋分組"
+    },
+    "寒露": {
+      "upper": 6,
+      "middle": 9,
+      "lower": 3,
+      "dun": "陰遁",
+      "group": "秋分組"
+    },
+    "霜降": {
+      "upper": 5,
+      "middle": 8,
+      "lower": 2,
+      "dun": "陰遁",
+      "group": "秋分組"
+    },
+    "立冬": {
+      "upper": 6,
+      "middle": 9,
+      "lower": 3,
+      "dun": "陰遁",
+      "group": "秋分組"
+    },
+    "小雪": {
+      "upper": 5,
+      "middle": 8,
+      "lower": 2,
+      "dun": "陰遁",
+      "group": "秋分組"
+    },
+    "大雪": {
+      "upper": 4,
+      "middle": 7,
+      "lower": 1,
+      "dun": "陰遁",
+      "group": "秋分組"
+    }
+  },
+  "juDescriptions": {
+    "陽遁一局": {
+      "ju": 1,
+      "dun": "陽遁",
+      "palace": "坎一宮",
+      "element": "水",
+      "description": "陽遁一局，坎一宮起甲子，順飛九宮"
+    },
+    "陽遁二局": {
+      "ju": 2,
+      "dun": "陽遁",
+      "palace": "坤二宮",
+      "element": "土",
+      "description": "陽遁二局，坤二宮起甲子，順飛九宮"
+    },
+    "陽遁三局": {
+      "ju": 3,
+      "dun": "陽遁",
+      "palace": "震三宮",
+      "element": "木",
+      "description": "陽遁三局，震三宮起甲子，順飛九宮"
+    },
+    "陽遁四局": {
+      "ju": 4,
+      "dun": "陽遁",
+      "palace": "巽四宮",
+      "element": "木",
+      "description": "陽遁四局，巽四宮起甲子，順飛九宮"
+    },
+    "陽遁五局": {
+      "ju": 5,
+      "dun": "陽遁",
+      "palace": "中五宮",
+      "element": "土",
+      "description": "陽遁五局，中五宮起甲子，寄坤二宮，順飛九宮"
+    },
+    "陽遁六局": {
+      "ju": 6,
+      "dun": "陽遁",
+      "palace": "乾六宮",
+      "element": "金",
+      "description": "陽遁六局，乾六宮起甲子，順飛九宮"
+    },
+    "陽遁七局": {
+      "ju": 7,
+      "dun": "陽遁",
+      "palace": "兌七宮",
+      "element": "金",
+      "description": "陽遁七局，兌七宮起甲子，順飛九宮"
+    },
+    "陽遁八局": {
+      "ju": 8,
+      "dun": "陽遁",
+      "palace": "艮八宮",
+      "element": "土",
+      "description": "陽遁八局，艮八宮起甲子，順飛九宮"
+    },
+    "陽遁九局": {
+      "ju": 9,
+      "dun": "陽遁",
+      "palace": "離九宮",
+      "element": "火",
+      "description": "陽遁九局，離九宮起甲子，順飛九宮"
+    },
+    "陰遁一局": {
+      "ju": 1,
+      "dun": "陰遁",
+      "palace": "坎一宮",
+      "element": "水",
+      "description": "陰遁一局，坎一宮起甲子，逆飛九宮"
+    },
+    "陰遁二局": {
+      "ju": 2,
+      "dun": "陰遁",
+      "palace": "坤二宮",
+      "element": "土",
+      "description": "陰遁二局，坤二宮起甲子，逆飛九宮"
+    },
+    "陰遁三局": {
+      "ju": 3,
+      "dun": "陰遁",
+      "palace": "震三宮",
+      "element": "木",
+      "description": "陰遁三局，震三宮起甲子，逆飛九宮"
+    },
+    "陰遁四局": {
+      "ju": 4,
+      "dun": "陰遁",
+      "palace": "巽四宮",
+      "element": "木",
+      "description": "陰遁四局，巽四宮起甲子，逆飛九宮"
+    },
+    "陰遁五局": {
+      "ju": 5,
+      "dun": "陰遁",
+      "palace": "中五宮",
+      "element": "土",
+      "description": "陰遁五局，中五宮起甲子，寄坤二宮，逆飛九宮"
+    },
+    "陰遁六局": {
+      "ju": 6,
+      "dun": "陰遁",
+      "palace": "乾六宮",
+      "element": "金",
+      "description": "陰遁六局，乾六宮起甲子，逆飛九宮"
+    },
+    "陰遁七局": {
+      "ju": 7,
+      "dun": "陰遁",
+      "palace": "兌七宮",
+      "element": "金",
+      "description": "陰遁七局，兌七宮起甲子，逆飛九宮"
+    },
+    "陰遁八局": {
+      "ju": 8,
+      "dun": "陰遁",
+      "palace": "艮八宮",
+      "element": "土",
+      "description": "陰遁八局，艮八宮起甲子，逆飛九宮"
+    },
+    "陰遁九局": {
+      "ju": 9,
+      "dun": "陰遁",
+      "palace": "離九宮",
+      "element": "火",
+      "description": "陰遁九局，離九宮起甲子，逆飛九宮"
+    }
+  },
+  "calculationRules": {
+    "陽遁": {
+      "direction": "順行",
+      "sequence": [1, 8, 3, 4, 9, 2, 7, 6],
+      "palaceOrder": ["坎一宮", "坤二宮", "震三宮", "巽四宮", "中五宮", "乾六宮", "兌七宮", "艮八宮", "離九宮"],
+      "description": "陽遁順行，從一宮到九宮，冬至後用陽遁",
+      "startTerm": "冬至",
+      "endTerm": "芒種"
+    },
+    "陰遁": {
+      "direction": "逆行",
+      "sequence": [9, 2, 7, 6, 1, 8, 3, 4],
+      "palaceOrder": ["離九宮", "艮八宮", "兌七宮", "乾六宮", "中五宮", "巽四宮", "震三宮", "坤二宮", "坎一宮"],
+      "description": "陰遁逆行，從九宮到一宮，夏至後用陰遁",
+      "startTerm": "夏至",
+      "endTerm": "大雪"
+    },
+    "符頭規則": {
+      "description": "以甲子、甲午、甲卯、甲酉為符頭，定上中下三元",
+      "上元": "甲子、甲午日為上元符頭",
+      "中元": "甲寅、甲申日為中元符頭",
+      "下元": "甲辰、甲戌日為下元符頭"
+    },
+    "超接置閏": {
+      "description": "節氣交接時，若符頭與節氣不相應，需用超接置閏法調整",
+      "超神": "符頭在節氣之前到來",
+      "接氣": "符頭在節氣之後到來",
+      "置閏": "超神過九日以上，需置閏處理"
+    }
+  },
+  "ninePalaces": {
+    "坎一宮": {
+      "number": 1,
+      "element": "水",
+      "direction": "北",
+      "trigram": "坎",
+      "organ": "腎"
+    },
+    "坤二宮": {
+      "number": 2,
+      "element": "土",
+      "direction": "西南",
+      "trigram": "坤",
+      "organ": "脾"
+    },
+    "震三宮": {
+      "number": 3,
+      "element": "木",
+      "direction": "東",
+      "trigram": "震",
+      "organ": "肝"
+    },
+    "巽四宮": {
+      "number": 4,
+      "element": "木",
+      "direction": "東南",
+      "trigram": "巽",
+      "organ": "膽"
+    },
+    "中五宮": {
+      "number": 5,
+      "element": "土",
+      "direction": "中",
+      "trigram": "無",
+      "organ": "脾",
+      "note": "中五宮寄坤二宮"
+    },
+    "乾六宮": {
+      "number": 6,
+      "element": "金",
+      "direction": "西北",
+      "trigram": "乾",
+      "organ": "大腸"
+    },
+    "兌七宮": {
+      "number": 7,
+      "element": "金",
+      "direction": "西",
+      "trigram": "兌",
+      "organ": "肺"
+    },
+    "艮八宮": {
+      "number": 8,
+      "element": "土",
+      "direction": "東北",
+      "trigram": "艮",
+      "organ": "胃"
+    },
+    "離九宮": {
+      "number": 9,
+      "element": "火",
+      "direction": "南",
+      "trigram": "離",
+      "organ": "心"
+    }
+  },
+  "luoshuSquare": [
+    [4, 9, 2],
+    [3, 5, 7],
+    [8, 1, 6]
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "description": "奇門遁甲局數規則數據",
+    "source": "傳統奇門遁甲經典",
+    "encoding": "UTF-8",
+    "totalSolarTerms": 24,
+    "totalJuCombinations": 72,
+    "yangDunTerms": 12,
+    "yinDunTerms": 12
+  }
+}

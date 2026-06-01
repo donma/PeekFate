@@ -1,0 +1,339 @@
+{
+  "testCases": [
+    {
+      "id": 1,
+      "description": "隱私功能測試 - 預設不儲存客戶資料",
+      "type": "privacy",
+      "expected": {
+        "defaultNotSave": true,
+        "rememberOnlyWhenChecked": true,
+        "clearDataDeletesStorage": true
+      }
+    },
+    {
+      "id": 2,
+      "description": "PWA 功能測試 - Manifest 可讀",
+      "type": "pwa",
+      "expected": {
+        "manifestReadable": true,
+        "serviceWorkerRegistered": true,
+        "cacheStorageHasData": true,
+        "offlineCanOpen": true
+      }
+    },
+    {
+      "id": 3,
+      "description": "性能測試 - 首屏加載時間",
+      "type": "performance",
+      "expected": {
+        "firstContentfulPaint": "<2000ms",
+        "largestContentfulPaint": "<2500ms",
+        "cumulativeLayoutShift": "<0.1",
+        "firstInputDelay": "<100ms",
+        "timeToInteractive": "<3500ms"
+      }
+    },
+    {
+      "id": 4,
+      "description": "端到端測試 - 完整用戶流程",
+      "type": "e2e",
+      "expected": {
+        "pageLoads": true,
+        "formSubmissionWorks": true,
+        "navigationWorks": true,
+        "errorHandlingWorks": true,
+        "responsiveDesignWorks": true
+      }
+    },
+    {
+      "id": 5,
+      "description": "隱私功能測試 - LocalStorage 清除驗證",
+      "type": "privacy",
+      "expected": {
+        "clearButtonVisible": true,
+        "clearRemovesAllKeys": true,
+        "clearConfirmationShown": true,
+        "afterClearStateEmpty": true
+      }
+    },
+    {
+      "id": 6,
+      "description": "PWA 功能測試 - Service Worker 更新",
+      "type": "pwa",
+      "expected": {
+        "updateDetected": true,
+        "updatePromptShown": true,
+        "skipWaitingWorks": true,
+        "clientsClaimWorks": true
+      }
+    },
+    {
+      "id": 7,
+      "description": "性能測試 - 資源加載優化",
+      "type": "performance",
+      "expected": {
+        "imageOptimized": true,
+        "cssMinified": true,
+        "jsMinified": true,
+        "gzipEnabled": true,
+        "browserCaching": true
+      }
+    },
+    {
+      "id": 8,
+      "description": "端到端測試 - 表單驗證",
+      "type": "e2e",
+      "expected": {
+        "requiredFieldValidation": true,
+        "emailFormatValidation": true,
+        "maxLengthValidation": true,
+        "errorMessageDisplayed": true,
+        "successMessageDisplayed": true
+      }
+    },
+    {
+      "id": 9,
+      "description": "隱私功能測試 - Cookie 政策",
+      "type": "privacy",
+      "expected": {
+        "cookieConsentBannerShown": true,
+        "acceptCookiesWorks": true,
+        "rejectCookiesWorks": true,
+        "cookiePolicyAccessible": true
+      }
+    },
+    {
+      "id": 10,
+      "description": "PWA 功能測試 - 離線功能",
+      "type": "pwa",
+      "expected": {
+        "offlinePageShown": true,
+        "cachedContentAccessible": true,
+        "offlineFormQueued": true,
+        "onlineSyncWorks": true
+      }
+    },
+    {
+      "id": 11,
+      "description": "性能測試 - 動畫流暢度",
+      "type": "performance",
+      "expected": {
+        "frameRate60fps": true,
+        "noJankyAnimations": true,
+        "smoothScrolling": true,
+        "transitionPerformance": true
+      }
+    },
+    {
+      "id": 12,
+      "description": "端到端測試 - 響應式設計",
+      "type": "e2e",
+      "expected": {
+        "mobileLayout": true,
+        "tabletLayout": true,
+        "desktopLayout": true,
+        "touchInteractions": true,
+        "viewportMetaTag": true
+      }
+    },
+    {
+      "id": 13,
+      "description": "隱私功能測試 - 數據加密",
+      "type": "privacy",
+      "expected": {
+        "sensitiveDataEncrypted": true,
+        "httpsEnforced": true,
+        "noMixedContent": true,
+        "secureHeadersPresent": true
+      }
+    },
+    {
+      "id": 14,
+      "description": "PWA 功能測試 - 安裝提示",
+      "type": "pwa",
+      "expected": {
+        "installPromptShown": true,
+        "installSuccess": true,
+        "appIconAdded": true,
+        "splashScreenShown": true
+      }
+    },
+    {
+      "id": 15,
+      "description": "性能測試 - 內存使用",
+      "type": "performance",
+      "expected": {
+        "noMemoryLeaks": true,
+        "memoryUsageStable": true,
+        "garbageCollectionWorks": true,
+        "domNodesOptimized": true
+      }
+    },
+    {
+      "id": 16,
+      "description": "端到端測試 - 錯誤處理",
+      "type": "e2e",
+      "expected": {
+        "404PageShown": true,
+        "500ErrorHandled": true,
+        "networkErrorHandled": true,
+        "timeoutHandled": true,
+        "userFriendlyMessages": true
+      }
+    },
+    {
+      "id": 17,
+      "description": "隱私功能測試 - 第三方追蹤",
+      "type": "privacy",
+      "expected": {
+        "noUnwantedTrackers": true,
+        "analyticsAnonymized": true,
+        "thirdPartyScriptsLimited": true,
+        "privacyPolicyAccessible": true
+      }
+    },
+    {
+      "id": 18,
+      "description": "PWA 功能測試 - 推送通知",
+      "type": "pwa",
+      "expected": {
+        "permissionRequested": true,
+        "notificationShown": true,
+        "clickNotificationWorks": true,
+        "unsubscribeWorks": true
+      }
+    },
+    {
+      "id": 19,
+      "description": "性能測試 - 網絡優化",
+      "type": "performance",
+      "expected": {
+        "http2Enabled": true,
+        "preloadCriticalResources": true,
+        "dnsPrefetch": true,
+        "connectionPooling": true
+      }
+    },
+    {
+      "id": 20,
+      "description": "端到端測試 - 無障礙功能",
+      "type": "e2e",
+      "expected": {
+        "keyboardNavigation": true,
+        "screenReaderCompatible": true,
+        "ariaLabelsPresent": true,
+        "colorContrastSufficient": true,
+        "focusVisible": true
+      }
+    }
+  ],
+  "privacyTests": {
+    "defaultNotSave": "預設不儲存客戶資料",
+    "rememberOnlyWhenChecked": "只有勾選才儲存",
+    "clearDataDeletesStorage": "清除資料會刪除 localStorage",
+    "clearButtonVisible": "清除按鈕可見",
+    "clearRemovesAllKeys": "清除移除所有鍵值",
+    "clearConfirmationShown": "顯示清除確認對話框",
+    "afterClearStateEmpty": "清除後狀態為空",
+    "cookieConsentBannerShown": "顯示 Cookie 同意橫幅",
+    "acceptCookiesWorks": "接受 Cookie 功能正常",
+    "rejectCookiesWorks": "拒絕 Cookie 功能正常",
+    "cookiePolicyAccessible": "Cookie 政策可訪問",
+    "sensitiveDataEncrypted": "敏感資料已加密",
+    "httpsEnforced": "強制使用 HTTPS",
+    "noMixedContent": "無混合內容",
+    "secureHeadersPresent": "安全標頭存在",
+    "noUnwantedTrackers": "無不需要的追蹤器",
+    "analyticsAnonymized": "分析資料匿名化",
+    "thirdPartyScriptsLimited": "第三方腳本受限",
+    "privacyPolicyAccessible": "隱私政策可訪問"
+  },
+  "pwaTests": {
+    "manifestReadable": "Manifest 可讀",
+    "serviceWorkerRegistered": "Service Worker 註冊成功",
+    "cacheStorageHasData": "Cache Storage 有資料",
+    "offlineCanOpen": "離線可開首頁",
+    "updateDetected": "偵測到更新",
+    "updatePromptShown": "顯示更新提示",
+    "skipWaitingWorks": "SkipWaiting 功能正常",
+    "clientsClaimWorks": "ClientsClaim 功能正常",
+    "offlinePageShown": "顯示離線頁面",
+    "cachedContentAccessible": "快取內容可訪問",
+    "offlineFormQueued": "離線表單已排隊",
+    "onlineSyncWorks": "上線同步功能正常",
+    "installPromptShown": "顯示安裝提示",
+    "installSuccess": "安裝成功",
+    "appIconAdded": "應用圖標已添加",
+    "splashScreenShown": "顯示啟動畫面",
+    "permissionRequested": "請求通知權限",
+    "notificationShown": "顯示通知",
+    "clickNotificationWorks": "點擊通知功能正常",
+    "unsubscribeWorks": "取消訂閱功能正常"
+  },
+  "performanceTests": {
+    "firstContentfulPaint": "首次內容繪製時間 < 2000ms",
+    "largestContentfulPaint": "最大內容繪製時間 < 2500ms",
+    "cumulativeLayoutShift": "累積佈局偏移 < 0.1",
+    "firstInputDelay": "首次輸入延遲 < 100ms",
+    "timeToInteractive": "可互動時間 < 3500ms",
+    "imageOptimized": "圖片已優化",
+    "cssMinified": "CSS 已壓縮",
+    "jsMinified": "JS 已壓縮",
+    "gzipEnabled": "Gzip 已啟用",
+    "browserCaching": "瀏覽器快取已啟用",
+    "frameRate60fps": "幀率 60fps",
+    "noJankyAnimations": "無卡頓動畫",
+    "smoothScrolling": "滾動流暢",
+    "transitionPerformance": "過渡性能良好",
+    "noMemoryLeaks": "無記憶體洩漏",
+    "memoryUsageStable": "記憶體使用穩定",
+    "garbageCollectionWorks": "垃圾回收正常",
+    "domNodesOptimized": "DOM 節點已優化",
+    "http2Enabled": "HTTP/2 已啟用",
+    "preloadCriticalResources": "預載關鍵資源",
+    "dnsPrefetch": "DNS 預取",
+    "connectionPooling": "連線池化"
+  },
+  "e2eTests": {
+    "pageLoads": "頁面載入成功",
+    "formSubmissionWorks": "表單提交功能正常",
+    "navigationWorks": "導航功能正常",
+    "errorHandlingWorks": "錯誤處理功能正常",
+    "responsiveDesignWorks": "響應式設計功能正常",
+    "requiredFieldValidation": "必填欄位驗證",
+    "emailFormatValidation": "電子郵件格式驗證",
+    "maxLengthValidation": "最大長度驗證",
+    "errorMessageDisplayed": "錯誤訊息顯示",
+    "successMessageDisplayed": "成功訊息顯示",
+    "mobileLayout": "手機佈局",
+    "tabletLayout": "平板佈局",
+    "desktopLayout": "桌面佈局",
+    "touchInteractions": "觸控互動",
+    "viewportMetaTag": "Viewport Meta 標籤",
+    "404PageShown": "顯示 404 頁面",
+    "500ErrorHandled": "處理 500 錯誤",
+    "networkErrorHandled": "處理網絡錯誤",
+    "timeoutHandled": "處理超時",
+    "userFriendlyMessages": "用戶友好的訊息",
+    "keyboardNavigation": "鍵盤導航",
+    "screenReaderCompatible": "螢幕閱讀器相容",
+    "ariaLabelsPresent": "Aria 標籤存在",
+    "colorContrastSufficient": "顏色對比足夠",
+    "focusVisible": "焦點可見"
+  },
+  "testConfig": {
+    "timeout": 30000,
+    "retries": 2,
+    "parallel": true,
+    "browser": "chrome",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "devices": [
+      "desktop",
+      "tablet",
+      "mobile"
+    ]
+  }
+}

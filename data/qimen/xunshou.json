@@ -1,0 +1,188 @@
+{
+  "xunshouList": [
+    {
+      "name": "甲子旬",
+      "index": 0,
+      "tianGan": "甲",
+      "diZhi": "子",
+      "ganzhi": "甲子",
+      "members": ["甲子", "乙丑", "丙寅", "丁卯", "戊辰", "己巳", "庚午", "辛未", "壬申", "癸酉"],
+      "kongWang": ["戌", "亥"]
+    },
+    {
+      "name": "甲戌旬",
+      "index": 1,
+      "tianGan": "甲",
+      "diZhi": "戌",
+      "ganzhi": "甲戌",
+      "members": ["甲戌", "乙亥", "丙子", "丁丑", "戊寅", "己卯", "庚辰", "辛巳", "壬午", "癸未"],
+      "kongWang": ["申", "酉"]
+    },
+    {
+      "name": "甲申旬",
+      "index": 2,
+      "tianGan": "甲",
+      "diZhi": "申",
+      "ganzhi": "甲申",
+      "members": ["甲申", "乙酉", "丙戌", "丁亥", "戊子", "己丑", "庚寅", "辛卯", "壬辰", "癸巳"],
+      "kongWang": ["午", "未"]
+    },
+    {
+      "name": "甲午旬",
+      "index": 3,
+      "tianGan": "甲",
+      "diZhi": "午",
+      "ganzhi": "甲午",
+      "members": ["甲午", "乙未", "丙申", "丁酉", "戊戌", "己亥", "庚子", "辛丑", "壬寅", "癸卯"],
+      "kongWang": ["辰", "巳"]
+    },
+    {
+      "name": "甲辰旬",
+      "index": 4,
+      "tianGan": "甲",
+      "diZhi": "辰",
+      "ganzhi": "甲辰",
+      "members": ["甲辰", "乙巳", "丙午", "丁未", "戊申", "己酉", "庚戌", "辛亥", "壬子", "癸丑"],
+      "kongWang": ["寅", "卯"]
+    },
+    {
+      "name": "甲寅旬",
+      "index": 5,
+      "tianGan": "甲",
+      "diZhi": "寅",
+      "ganzhi": "甲寅",
+      "members": ["甲寅", "乙卯", "丙辰", "丁巳", "戊午", "己未", "庚申", "辛酉", "壬戌", "癸亥"],
+      "kongWang": ["子", "丑"]
+    }
+  ],
+  "xunshouMapping": {
+    "甲子": { "xunshou": "甲子旬", "index": 0, "position": 0 },
+    "乙丑": { "xunshou": "甲子旬", "index": 0, "position": 1 },
+    "丙寅": { "xunshou": "甲子旬", "index": 0, "position": 2 },
+    "丁卯": { "xunshou": "甲子旬", "index": 0, "position": 3 },
+    "戊辰": { "xunshou": "甲子旬", "index": 0, "position": 4 },
+    "己巳": { "xunshou": "甲子旬", "index": 0, "position": 5 },
+    "庚午": { "xunshou": "甲子旬", "index": 0, "position": 6 },
+    "辛未": { "xunshou": "甲子旬", "index": 0, "position": 7 },
+    "壬申": { "xunshou": "甲子旬", "index": 0, "position": 8 },
+    "癸酉": { "xunshou": "甲子旬", "index": 0, "position": 9 },
+    "甲戌": { "xunshou": "甲戌旬", "index": 1, "position": 0 },
+    "乙亥": { "xunshou": "甲戌旬", "index": 1, "position": 1 },
+    "丙子": { "xunshou": "甲戌旬", "index": 1, "position": 2 },
+    "丁丑": { "xunshou": "甲戌旬", "index": 1, "position": 3 },
+    "戊寅": { "xunshou": "甲戌旬", "index": 1, "position": 4 },
+    "己卯": { "xunshou": "甲戌旬", "index": 1, "position": 5 },
+    "庚辰": { "xunshou": "甲戌旬", "index": 1, "position": 6 },
+    "辛巳": { "xunshou": "甲戌旬", "index": 1, "position": 7 },
+    "壬午": { "xunshou": "甲戌旬", "index": 1, "position": 8 },
+    "癸未": { "xunshou": "甲戌旬", "index": 1, "position": 9 },
+    "甲申": { "xunshou": "甲申旬", "index": 2, "position": 0 },
+    "乙酉": { "xunshou": "甲申旬", "index": 2, "position": 1 },
+    "丙戌": { "xunshou": "甲申旬", "index": 2, "position": 2 },
+    "丁亥": { "xunshou": "甲申旬", "index": 2, "position": 3 },
+    "戊子": { "xunshou": "甲申旬", "index": 2, "position": 4 },
+    "己丑": { "xunshou": "甲申旬", "index": 2, "position": 5 },
+    "庚寅": { "xunshou": "甲申旬", "index": 2, "position": 6 },
+    "辛卯": { "xunshou": "甲申旬", "index": 2, "position": 7 },
+    "壬辰": { "xunshou": "甲申旬", "index": 2, "position": 8 },
+    "癸巳": { "xunshou": "甲申旬", "index": 2, "position": 9 },
+    "甲午": { "xunshou": "甲午旬", "index": 3, "position": 0 },
+    "乙未": { "xunshou": "甲午旬", "index": 3, "position": 1 },
+    "丙申": { "xunshou": "甲午旬", "index": 3, "position": 2 },
+    "丁酉": { "xunshou": "甲午旬", "index": 3, "position": 3 },
+    "戊戌": { "xunshou": "甲午旬", "index": 3, "position": 4 },
+    "己亥": { "xunshou": "甲午旬", "index": 3, "position": 5 },
+    "庚子": { "xunshou": "甲午旬", "index": 3, "position": 6 },
+    "辛丑": { "xunshou": "甲午旬", "index": 3, "position": 7 },
+    "壬寅": { "xunshou": "甲午旬", "index": 3, "position": 8 },
+    "癸卯": { "xunshou": "甲午旬", "index": 3, "position": 9 },
+    "甲辰": { "xunshou": "甲辰旬", "index": 4, "position": 0 },
+    "乙巳": { "xunshou": "甲辰旬", "index": 4, "position": 1 },
+    "丙午": { "xunshou": "甲辰旬", "index": 4, "position": 2 },
+    "丁未": { "xunshou": "甲辰旬", "index": 4, "position": 3 },
+    "戊申": { "xunshou": "甲辰旬", "index": 4, "position": 4 },
+    "己酉": { "xunshou": "甲辰旬", "index": 4, "position": 5 },
+    "庚戌": { "xunshou": "甲辰旬", "index": 4, "position": 6 },
+    "辛亥": { "xunshou": "甲辰旬", "index": 4, "position": 7 },
+    "壬子": { "xunshou": "甲辰旬", "index": 4, "position": 8 },
+    "癸丑": { "xunshou": "甲辰旬", "index": 4, "position": 9 },
+    "甲寅": { "xunshou": "甲寅旬", "index": 5, "position": 0 },
+    "乙卯": { "xunshou": "甲寅旬", "index": 5, "position": 1 },
+    "丙辰": { "xunshou": "甲寅旬", "index": 5, "position": 2 },
+    "丁巳": { "xunshou": "甲寅旬", "index": 5, "position": 3 },
+    "戊午": { "xunshou": "甲寅旬", "index": 5, "position": 4 },
+    "己未": { "xunshou": "甲寅旬", "index": 5, "position": 5 },
+    "庚申": { "xunshou": "甲寅旬", "index": 5, "position": 6 },
+    "辛酉": { "xunshou": "甲寅旬", "index": 5, "position": 7 },
+    "壬戌": { "xunshou": "甲寅旬", "index": 5, "position": 8 },
+    "癸亥": { "xunshou": "甲寅旬", "index": 5, "position": 9 }
+  },
+  "descriptions": {
+    "甲子旬": {
+      "name": "甲子旬",
+      "overview": "甲子為六十甲子之首，萬物之始，生機萌動。甲子旬包含甲子至癸酉十個干支，為旬首之始。",
+      "kongWang": "戌亥空亡",
+      "meaning": "旬首為甲，甲為天干之首，主生發、開創。甲子旬主事物初始，氣機初動，宜於開創事業、開始新的計劃。",
+      "characteristics": [
+        "主事物之始，氣機初萌",
+        "甲木藏於子水之中，水生木旺",
+        "戌亥為空亡，主虛空、缺失"
+      ]
+    },
+    "甲戌旬": {
+      "name": "甲戌旬",
+      "overview": "甲戌旬包含甲戌至癸未十個干支，為第二旬。",
+      "kongWang": "申酉空亡",
+      "meaning": "甲戌旬中甲木藏於戌土，土中有火，主收藏、積蓄。此旬主事物穩固，根基紮實。",
+      "characteristics": [
+        "甲木入戌土庫中，主收藏",
+        "戌為火庫，內含火氣",
+        "申酉為空亡，金氣空缺"
+      ]
+    },
+    "甲申旬": {
+      "name": "甲申旬",
+      "overview": "甲申旬包含甲申至癸巳十個干支，為第三旬。",
+      "kongWang": "午未空亡",
+      "meaning": "甲申旬中甲木逢申金，金克木，主變動、轉化。此旬主事物變化較多，需注意應對。",
+      "characteristics": [
+        "甲木逢申金相克，主變動",
+        "申為驛馬，主奔波",
+        "午未為空亡，火氣空缺"
+      ]
+    },
+    "甲午旬": {
+      "name": "甲午旬",
+      "overview": "甲午旬包含甲午至癸卯十個干支，為第四旬。",
+      "kongWang": "辰巳空亡",
+      "meaning": "甲午旬中甲木生午火，火氣炎上，主光明、顯達。此旬主事物發展順暢，易有成就。",
+      "characteristics": [
+        "甲木生午火，木火通明",
+        "午為文明之象，主顯達",
+        "辰巳為空亡，土氣空缺"
+      ]
+    },
+    "甲辰旬": {
+      "name": "甲辰旬",
+      "overview": "甲辰旬包含甲辰至癸丑十個干支，為第五旬。",
+      "kongWang": "寅卯空亡",
+      "meaning": "甲辰旬中甲木入辰土濕庫，水氣蘊藏，主潛伏、孕育。此旬主事物暗中發展，需要耐心等待。",
+      "characteristics": [
+        "甲木入辰為濕庫，水氣潛藏",
+        "辰為水庫，主孕育",
+        "寅卯為空亡，木氣空缺"
+      ]
+    },
+    "甲寅旬": {
+      "name": "甲寅旬",
+      "overview": "甲寅旬包含甲寅至癸亥十個干支，為第六旬。",
+      "kongWang": "子丑空亡",
+      "meaning": "甲寅旬中甲木坐寅木祿地，木氣旺盛，主生長、繁榮。此旬主事物發展迅速，生機勃勃。",
+      "characteristics": [
+        "甲木坐寅為得祿，木氣最旺",
+        "寅為甲木本氣，力量強盛",
+        "子丑為空亡，水氣空缺"
+      ]
+    }
+  }
+}

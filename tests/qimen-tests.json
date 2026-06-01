@@ -1,0 +1,592 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "description": "奇門遁甲系統測試數據",
+    "author": "FASTFATE",
+    "created": "2026-06-01",
+    "encoding": "UTF-8"
+  },
+  "testCases": [
+    {
+      "id": 1,
+      "description": "九宮數據完整性測試",
+      "type": "data_integrity",
+      "expected": {
+        "palaceCount": 9,
+        "hasAllElements": true,
+        "hasAllDirections": true
+      }
+    },
+    {
+      "id": 2,
+      "description": "時家盤計算測試 - 甲子日午時",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "午",
+        "method": "時家奇門"
+      },
+      "expected": {
+        "hasYinYangDun": true,
+        "hasJuNumber": true,
+        "hasZhiFu": true,
+        "hasZhiShi": true,
+        "validJuRange": [1, 9]
+      }
+    },
+    {
+      "id": 3,
+      "description": "八門數據完整性測試",
+      "type": "data_integrity",
+      "expected": {
+        "doorCount": 8,
+        "doors": ["休門", "生門", "傷門", "杜門", "景門", "死門", "驚門", "開門"],
+        "hasAllDoors": true
+      }
+    },
+    {
+      "id": 4,
+      "description": "九星數據完整性測試",
+      "type": "data_integrity",
+      "expected": {
+        "starCount": 9,
+        "stars": ["天蓬", "天芮", "天沖", "天輔", "天禽", "天心", "天柱", "天任", "天英"],
+        "hasAllStars": true
+      }
+    },
+    {
+      "id": 5,
+      "description": "八神數據完整性測試",
+      "type": "data_integrity",
+      "expected": {
+        "godCount": 8,
+        "gods": ["值符", "騰蛇", "太陰", "六合", "白虎", "玄武", "九地", "九天"],
+        "hasAllGods": true
+      }
+    },
+    {
+      "id": 6,
+      "description": "天干數據完整性測試",
+      "type": "data_integrity",
+      "expected": {
+        "heavenlyStemCount": 10,
+        "heavenlyStems": ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"],
+        "hasAllStems": true
+      }
+    },
+    {
+      "id": 7,
+      "description": "地支數據完整性測試",
+      "type": "data_integrity",
+      "expected": {
+        "earthlyBranchCount": 12,
+        "earthlyBranches": ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"],
+        "hasAllBranches": true
+      }
+    },
+    {
+      "id": 8,
+      "description": "陰遁計算測試",
+      "type": "function",
+      "input": {
+        "date": "2026-06-15",
+        "hourBranch": "子",
+        "method": "時家奇門"
+      },
+      "expected": {
+        "yinYangDun": "陰遁",
+        "hasJuNumber": true,
+        "validJuRange": [1, 9]
+      }
+    },
+    {
+      "id": 9,
+      "description": "陽遁計算測試",
+      "type": "function",
+      "input": {
+        "date": "2026-01-15",
+        "hourBranch": "子",
+        "method": "時家奇門"
+      },
+      "expected": {
+        "yinYangDun": "陽遁",
+        "hasJuNumber": true,
+        "validJuRange": [1, 9]
+      }
+    },
+    {
+      "id": 10,
+      "description": "值符落宮測試",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "午"
+      },
+      "expected": {
+        "zhiFuPalace": {
+          "range": [1, 9],
+          "type": "integer"
+        },
+        "zhiFuStar": {
+          "type": "string",
+          "notNull": true
+        }
+      }
+    },
+    {
+      "id": 11,
+      "description": "值使落宮測試",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "午"
+      },
+      "expected": {
+        "zhiShiPalace": {
+          "range": [1, 9],
+          "type": "integer"
+        },
+        "zhiShiDoor": {
+          "type": "string",
+          "notNull": true
+        }
+      }
+    },
+    {
+      "id": 12,
+      "description": "六儀測試 - 戊己庚辛壬癸",
+      "type": "data_integrity",
+      "expected": {
+        "liuYiCount": 6,
+        "liuYi": ["戊", "己", "庚", "辛", "壬", "癸"],
+        "hasAllLiuYi": true
+      }
+    },
+    {
+      "id": 13,
+      "description": "三奇測試 - 乙丙丁",
+      "type": "data_integrity",
+      "expected": {
+        "sanQiCount": 3,
+        "sanQi": ["乙", "丙", "丁"],
+        "hasAllSanQi": true
+      }
+    },
+    {
+      "id": 14,
+      "description": "空亡計算測試",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "午"
+      },
+      "expected": {
+        "hasKongWang": true,
+        "kongWangBranches": {
+          "type": "array",
+          "count": 2
+        }
+      }
+    },
+    {
+      "id": 15,
+      "description": "馬星計算測試",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "午"
+      },
+      "expected": {
+        "hasMaXing": true,
+        "maXingBranch": {
+          "type": "string",
+          "notNull": true
+        }
+      }
+    },
+    {
+      "id": 16,
+      "description": "邊界情況 - 子時開始",
+      "type": "boundary",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "子"
+      },
+      "expected": {
+        "isValid": true,
+        "hasResult": true
+      }
+    },
+    {
+      "id": 17,
+      "description": "邊界情況 - 亥時結束",
+      "type": "boundary",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "亥"
+      },
+      "expected": {
+        "isValid": true,
+        "hasResult": true
+      }
+    },
+    {
+      "id": 18,
+      "description": "邊界情況 - 冬至節氣",
+      "type": "boundary",
+      "input": {
+        "date": "2026-12-22",
+        "hourBranch": "子",
+        "solarTerm": "冬至"
+      },
+      "expected": {
+        "isValid": true,
+        "yinYangDun": "陽遁",
+        "hasResult": true
+      }
+    },
+    {
+      "id": 19,
+      "description": "邊界情況 - 夏至節氣",
+      "type": "boundary",
+      "input": {
+        "date": "2026-06-21",
+        "hourBranch": "子",
+        "solarTerm": "夏至"
+      },
+      "expected": {
+        "isValid": true,
+        "yinYangDun": "陰遁",
+        "hasResult": true
+      }
+    },
+    {
+      "id": 20,
+      "description": "錯誤情況 - 無效日期格式",
+      "type": "error",
+      "input": {
+        "date": "invalid-date",
+        "hourBranch": "午"
+      },
+      "expected": {
+        "hasError": true,
+        "errorCode": "INVALID_DATE_FORMAT",
+        "errorMessage": "日期格式無效"
+      }
+    },
+    {
+      "id": 21,
+      "description": "錯誤情況 - 無效時辰",
+      "type": "error",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "無效"
+      },
+      "expected": {
+        "hasError": true,
+        "errorCode": "INVALID_HOUR_BRANCH",
+        "errorMessage": "時辰無效"
+      }
+    },
+    {
+      "id": 22,
+      "description": "錯誤情況 - 空日期",
+      "type": "error",
+      "input": {
+        "date": "",
+        "hourBranch": "午"
+      },
+      "expected": {
+        "hasError": true,
+        "errorCode": "EMPTY_DATE",
+        "errorMessage": "日期不能為空"
+      }
+    },
+    {
+      "id": 23,
+      "description": "九宮方位對應測試",
+      "type": "data_integrity",
+      "expected": {
+        "palaceDirections": {
+          "1": "坎宮",
+          "2": "坤宮",
+          "3": "震宮",
+          "4": "巽宮",
+          "5": "中宮",
+          "6": "乾宮",
+          "7": "兌宮",
+          "8": "艮宮",
+          "9": "離宮"
+        },
+        "hasAllPalaceNames": true
+      }
+    },
+    {
+      "id": 24,
+      "description": "五行屬性測試",
+      "type": "data_integrity",
+      "expected": {
+        "wuXing": ["金", "木", "水", "火", "土"],
+        "wuXingCount": 5,
+        "hasAllWuXing": true
+      }
+    },
+    {
+      "id": 25,
+      "description": "日家奇門測試",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "method": "日家奇門"
+      },
+      "expected": {
+        "hasYinYangDun": true,
+        "hasJuNumber": true,
+        "hasZhiFu": true,
+        "hasZhiShi": true
+      }
+    },
+    {
+      "id": 26,
+      "description": "月家奇門測試",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "method": "月家奇門"
+      },
+      "expected": {
+        "hasYinYangDun": true,
+        "hasJuNumber": true,
+        "hasZhiFu": true,
+        "hasZhiShi": true
+      }
+    },
+    {
+      "id": 27,
+      "description": "年家奇門測試",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "method": "年家奇門"
+      },
+      "expected": {
+        "hasYinYangDun": true,
+        "hasJuNumber": true,
+        "hasZhiFu": true,
+        "hasZhiShi": true
+      }
+    },
+    {
+      "id": 28,
+      "description": "天盤地盤測試",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "午"
+      },
+      "expected": {
+        "hasTianPan": true,
+        "hasDiPan": true,
+        "tianPanCount": 9,
+        "diPanCount": 9
+      }
+    },
+    {
+      "id": 29,
+      "description": "格局判斷測試 - 吉格",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "午"
+      },
+      "expected": {
+        "hasGeJu": true,
+        "geJuTypes": ["天遁", "地遁", "人遁", "神遁", "鬼遁", "風遁", "雲遁", "龍遁", "虎遁"]
+      }
+    },
+    {
+      "id": 30,
+      "description": "格局判斷測試 - 凶格",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "午"
+      },
+      "expected": {
+        "hasXiongGe": true,
+        "xiongGeTypes": ["六儀擊刑", "入墓", "空亡", "馬星"]
+      }
+    },
+    {
+      "id": 31,
+      "description": "閏奇處理測試",
+      "type": "boundary",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "午",
+        "isRunQi": true
+      },
+      "expected": {
+        "isValid": true,
+        "hasRunQiHandling": true
+      }
+    },
+    {
+      "id": 32,
+      "description": "置閏法測試",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "午",
+        "method": "置閏法"
+      },
+      "expected": {
+        "isValid": true,
+        "hasResult": true
+      }
+    },
+    {
+      "id": 33,
+      "description": "拆補法測試",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "午",
+        "method": "拆補法"
+      },
+      "expected": {
+        "isValid": true,
+        "hasResult": true
+      }
+    },
+    {
+      "id": 34,
+      "description": "超接法測試",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "午",
+        "method": "超接法"
+      },
+      "expected": {
+        "isValid": true,
+        "hasResult": true
+      }
+    },
+    {
+      "id": 35,
+      "description": "完整盤面輸出測試",
+      "type": "function",
+      "input": {
+        "date": "2026-06-01",
+        "hourBranch": "午"
+      },
+      "expected": {
+        "hasCompletePanMian": true,
+        "requiredFields": [
+          "yinYangDun",
+          "juNumber",
+          "zhiFu",
+          "zhiShi",
+          "tianPan",
+          "diPan",
+          "baMen",
+          "jiuXing",
+          "baShen",
+          "kongWang",
+          "maXing"
+        ]
+      }
+    }
+  ],
+  "dataIntegrityTests": {
+    "palaceCount": "九宮數量必須為9",
+    "doorCount": "八門數量必須為8",
+    "starCount": "九星數量必須為9",
+    "godCount": "八神數量必須為8",
+    "heavenlyStemCount": "天干數量必須為10",
+    "earthlyBranchCount": "地支數量必須為12",
+    "liuYiCount": "六儀數量必須為6",
+    "sanQiCount": "三奇數量必須為3",
+    "wuXingCount": "五行數量必須為5",
+    "palaceDirections": "九宮方位必須完整對應",
+    "doorNames": "八門名稱必須完整且正確",
+    "starNames": "九星名稱必須完整且正確",
+    "godNames": "八神名稱必須完整且正確",
+    "stemOrder": "天干順序必須正確",
+    "branchOrder": "地支順序必須正確"
+  },
+  "functionTests": {
+    "yinYangDunCalculation": "陰陽遁計算必須正確",
+    "juNumberCalculation": "局數計算必須在1-9範圍內",
+    "zhiFuCalculation": "值符計算必須正確",
+    "zhiShiCalculation": "值使計算必須正確",
+    "kongWangCalculation": "空亡計算必須正確",
+    "maXingCalculation": "馬星計算必須正確",
+    "tianPanLayout": "天盤排列必須正確",
+    "diPanLayout": "地盤排列必須正確",
+    "baMenLayout": "八門排列必須正確",
+    "jiuXingLayout": "九星排列必須正確",
+    "baShenLayout": "八神排列必須正確",
+    "geJuJudgment": "格局判斷必須正確",
+    "solarTermHandling": "節氣處理必須正確",
+    "runQiHandling": "閏奇處理必須正確"
+  },
+  "boundaryTests": {
+    "ziShiStart": "子時開始必須正確處理",
+    "haiShiEnd": "亥時結束必須正確處理",
+    "dongZhiSolarTerm": "冬至節氣必須正確處理",
+    "xiaZhiSolarTerm": "夏至節氣必須正確處理",
+    "yearBoundary": "年份邊界必須正確處理",
+    "monthBoundary": "月份邊界必須正確處理",
+    "dayBoundary": "日期邊界必須正確處理"
+  },
+  "errorTests": {
+    "invalidDateFormat": "無效日期格式必須返回錯誤",
+    "invalidHourBranch": "無效時辰必須返回錯誤",
+    "emptyDate": "空日期必須返回錯誤",
+    "nullInput": "空輸入必須返回錯誤",
+    "undefinedInput": "未定義輸入必須返回錯誤",
+    "futureDate": "未來日期必須正確處理",
+    "pastDate": "過去日期必須正確處理"
+  },
+  "constants": {
+    "ninePalaces": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "eightDoors": ["休門", "生門", "傷門", "杜門", "景門", "死門", "驚門", "開門"],
+    "nineStars": ["天蓬", "天芮", "天沖", "天輔", "天禽", "天心", "天柱", "天任", "天英"],
+    "eightGods": ["值符", "騰蛇", "太陰", "六合", "白虎", "玄武", "九地", "九天"],
+    "tenHeavenlyStems": ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"],
+    "twelveEarthlyBranches": ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"],
+    "sixLiuYi": ["戊", "己", "庚", "辛", "壬", "癸"],
+    "threeSanQi": ["乙", "丙", "丁"],
+    "fiveWuXing": ["金", "木", "水", "火", "土"],
+    "ninePalaceNames": {
+      "1": "坎宮",
+      "2": "坤宮",
+      "3": "震宮",
+      "4": "巽宮",
+      "5": "中宮",
+      "6": "乾宮",
+      "7": "兌宮",
+      "8": "艮宮",
+      "9": "離宮"
+    },
+    "palaceDirections": {
+      "1": "北",
+      "2": "西南",
+      "3": "東",
+      "4": "東南",
+      "5": "中",
+      "6": "西北",
+      "7": "西",
+      "8": "東北",
+      "9": "南"
+    },
+    "solarTerms": [
+      "立春", "雨水", "驚蟄", "春分", "清明", "穀雨",
+      "立夏", "小滿", "芒種", "夏至", "小暑", "大暑",
+      "立秋", "處暑", "白露", "秋分", "寒露", "霜降",
+      "立冬", "小雪", "大雪", "冬至", "小寒", "大寒"
+    ]
+  }
+}

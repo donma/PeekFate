@@ -1,0 +1,579 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "description": "八字引擎測試數據集",
+    "author": "FastFate",
+    "createdAt": "2026-06-01",
+    "testCount": 25
+  },
+  "testDescriptions": {
+    "normal": "正常情況測試 - 標準八字計算",
+    "boundary": "邊界情況測試 - 特殊日期和時間",
+    "error": "錯誤情況測試 - 無效輸入處理",
+    "unknown_time": "時間未知測試 - 缺少出生時間",
+    "special": "特殊情況測試 - 節氣交界等"
+  },
+  "testCategories": {
+    "normal": {
+      "count": 10,
+      "priority": "high"
+    },
+    "boundary": {
+      "count": 6,
+      "priority": "high"
+    },
+    "error": {
+      "count": 4,
+      "priority": "medium"
+    },
+    "unknown_time": {
+      "count": 3,
+      "priority": "medium"
+    },
+    "special": {
+      "count": 2,
+      "priority": "low"
+    }
+  },
+  "testCases": [
+    {
+      "id": 1,
+      "category": "normal",
+      "description": "標準八字計算 - 甲子日主",
+      "birthDate": "1984-02-02",
+      "birthTime": "12:00",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "yearPillar": {
+          "stem": "甲",
+          "branch": "子",
+          "name": "甲子"
+        },
+        "monthPillar": {
+          "stem": "丙",
+          "branch": "寅",
+          "name": "丙寅"
+        },
+        "dayPillar": {
+          "stem": "甲",
+          "branch": "子",
+          "name": "甲子"
+        },
+        "hourPillar": {
+          "stem": "庚",
+          "branch": "午",
+          "name": "庚午"
+        },
+        "dayMaster": {
+          "stem": "甲",
+          "element": "wood",
+          "yinYang": "yang"
+        },
+        "accuracy": "exact",
+        "isTimeKnown": true
+      }
+    },
+    {
+      "id": 2,
+      "category": "normal",
+      "description": "標準八字計算 - 壬水日主",
+      "birthDate": "1990-05-15",
+      "birthTime": "14:30",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "yearPillar": {
+          "stem": "庚",
+          "branch": "午",
+          "name": "庚午"
+        },
+        "monthPillar": {
+          "stem": "辛",
+          "branch": "巳",
+          "name": "辛巳"
+        },
+        "dayMaster": {
+          "element": "water"
+        },
+        "accuracy": "exact",
+        "isTimeKnown": true
+      }
+    },
+    {
+      "id": 3,
+      "category": "normal",
+      "description": "標準八字計算 - 丙火日主",
+      "birthDate": "1988-08-08",
+      "birthTime": "10:00",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "yearPillar": {
+          "stem": "戊",
+          "branch": "辰",
+          "name": "戊辰"
+        },
+        "dayMaster": {
+          "element": "fire"
+        },
+        "accuracy": "exact",
+        "isTimeKnown": true
+      }
+    },
+    {
+      "id": 4,
+      "category": "normal",
+      "description": "標準八字計算 - 庚金日主",
+      "birthDate": "1975-10-20",
+      "birthTime": "08:00",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "yearPillar": {
+          "stem": "乙",
+          "branch": "卯",
+          "name": "乙卯"
+        },
+        "dayMaster": {
+          "element": "metal"
+        },
+        "accuracy": "exact",
+        "isTimeKnown": true
+      }
+    },
+    {
+      "id": 5,
+      "category": "normal",
+      "description": "標準八字計算 - 戊土日主",
+      "birthDate": "2000-01-01",
+      "birthTime": "00:00",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "yearPillar": {
+          "stem": "己",
+          "branch": "卯",
+          "name": "己卯"
+        },
+        "dayMaster": {
+          "element": "earth"
+        },
+        "accuracy": "exact",
+        "isTimeKnown": true
+      }
+    },
+    {
+      "id": 6,
+      "category": "normal",
+      "description": "標準八字計算 - 乙木日主",
+      "birthDate": "1995-03-21",
+      "birthTime": "06:30",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "yearPillar": {
+          "stem": "乙",
+          "branch": "亥",
+          "name": "乙亥"
+        },
+        "dayMaster": {
+          "element": "wood",
+          "yinYang": "yin"
+        },
+        "accuracy": "exact",
+        "isTimeKnown": true
+      }
+    },
+    {
+      "id": 7,
+      "category": "normal",
+      "description": "標準八字計算 - 丁火日主",
+      "birthDate": "1987-07-07",
+      "birthTime": "18:00",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "yearPillar": {
+          "stem": "丁",
+          "branch": "卯",
+          "name": "丁卯"
+        },
+        "dayMaster": {
+          "element": "fire",
+          "yinYang": "yin"
+        },
+        "accuracy": "exact",
+        "isTimeKnown": true
+      }
+    },
+    {
+      "id": 8,
+      "category": "normal",
+      "description": "標準八字計算 - 辛金日主",
+      "birthDate": "1991-11-11",
+      "birthTime": "20:00",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "yearPillar": {
+          "stem": "辛",
+          "branch": "未",
+          "name": "辛未"
+        },
+        "dayMaster": {
+          "element": "metal",
+          "yinYang": "yin"
+        },
+        "accuracy": "exact",
+        "isTimeKnown": true
+      }
+    },
+    {
+      "id": 9,
+      "category": "normal",
+      "description": "標準八字計算 - 癸水日主",
+      "birthDate": "1993-12-25",
+      "birthTime": "22:00",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "yearPillar": {
+          "stem": "癸",
+          "branch": "酉",
+          "name": "癸酉"
+        },
+        "dayMaster": {
+          "element": "water",
+          "yinYang": "yin"
+        },
+        "accuracy": "exact",
+        "isTimeKnown": true
+      }
+    },
+    {
+      "id": 10,
+      "category": "normal",
+      "description": "標準八字計算 - 己土日主",
+      "birthDate": "1986-04-15",
+      "birthTime": "16:00",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "yearPillar": {
+          "stem": "丙",
+          "branch": "寅",
+          "name": "丙寅"
+        },
+        "dayMaster": {
+          "element": "earth",
+          "yinYang": "yin"
+        },
+        "accuracy": "exact",
+        "isTimeKnown": true
+      }
+    },
+    {
+      "id": 11,
+      "category": "boundary",
+      "description": "邊界情況 - 子時開始 (23:00)",
+      "birthDate": "2000-06-15",
+      "birthTime": "23:00",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "hourPillar": {
+          "branch": "子"
+        },
+        "isCrossDay": true,
+        "accuracy": "exact"
+      }
+    },
+    {
+      "id": 12,
+      "category": "boundary",
+      "description": "邊界情況 - 子時結束 (00:59)",
+      "birthDate": "2000-06-15",
+      "birthTime": "00:30",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "hourPillar": {
+          "branch": "子"
+        },
+        "isCrossDay": false,
+        "accuracy": "exact"
+      }
+    },
+    {
+      "id": 13,
+      "category": "boundary",
+      "description": "邊界情況 - 丑時 (01:00-02:59)",
+      "birthDate": "2000-06-15",
+      "birthTime": "02:00",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "hourPillar": {
+          "branch": "丑"
+        },
+        "accuracy": "exact"
+      }
+    },
+    {
+      "id": 14,
+      "category": "boundary",
+      "description": "邊界情況 - 午時 (11:00-12:59)",
+      "birthDate": "2000-06-15",
+      "birthTime": "12:00",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "hourPillar": {
+          "branch": "午"
+        },
+        "accuracy": "exact"
+      }
+    },
+    {
+      "id": 15,
+      "category": "boundary",
+      "description": "邊界情況 - 亥時 (21:00-22:59)",
+      "birthDate": "2000-06-15",
+      "birthTime": "22:00",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "hourPillar": {
+          "branch": "亥"
+        },
+        "accuracy": "exact"
+      }
+    },
+    {
+      "id": 16,
+      "category": "boundary",
+      "description": "邊界情況 - 23:59 子時",
+      "birthDate": "2000-06-15",
+      "birthTime": "23:59",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "hourPillar": {
+          "branch": "子"
+        },
+        "isCrossDay": true,
+        "accuracy": "exact"
+      }
+    },
+    {
+      "id": 17,
+      "category": "error",
+      "description": "錯誤情況 - 無效日期格式",
+      "birthDate": "invalid-date",
+      "birthTime": "12:00",
+      "expected": {
+        "shouldThrow": true,
+        "errorCode": "INVALID_DATE",
+        "errorMessage": "無效的出生日期"
+      }
+    },
+    {
+      "id": 18,
+      "category": "error",
+      "description": "錯誤情況 - 無效時間格式",
+      "birthDate": "2000-01-01",
+      "birthTime": "25:00",
+      "expected": {
+        "shouldThrow": true,
+        "errorCode": "INVALID_TIME",
+        "errorMessage": "無效的時間值"
+      }
+    },
+    {
+      "id": 19,
+      "category": "error",
+      "description": "錯誤情況 - 不存在的日期",
+      "birthDate": "2000-02-30",
+      "birthTime": "12:00",
+      "expected": {
+        "shouldThrow": true,
+        "errorCode": "INVALID_DATE",
+        "errorMessage": "無效的出生日期"
+      }
+    },
+    {
+      "id": 20,
+      "category": "error",
+      "description": "錯誤情況 - 時間格式錯誤",
+      "birthDate": "2000-01-01",
+      "birthTime": "12-00",
+      "expected": {
+        "shouldThrow": true,
+        "errorCode": "INVALID_FORMAT",
+        "errorMessage": "時間格式必須為 HH:mm"
+      }
+    },
+    {
+      "id": 21,
+      "category": "unknown_time",
+      "description": "時間未知 - 只有日期",
+      "birthDate": "1990-01-01",
+      "birthTime": null,
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": false,
+        "hourPillar": {
+          "isUnknown": true,
+          "stem": "?",
+          "branch": "?"
+        },
+        "accuracy": "estimated",
+        "isTimeKnown": false
+      }
+    },
+    {
+      "id": 22,
+      "category": "unknown_time",
+      "description": "時間未知 - 時間為空字符串",
+      "birthDate": "1985-06-15",
+      "birthTime": "",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": false,
+        "accuracy": "estimated",
+        "isTimeKnown": false
+      }
+    },
+    {
+      "id": 23,
+      "category": "unknown_time",
+      "description": "時間未知 - 時間為 undefined",
+      "birthDate": "2000-12-31",
+      "birthTime": "undefined",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": false,
+        "accuracy": "estimated",
+        "isTimeKnown": false
+      }
+    },
+    {
+      "id": 24,
+      "category": "special",
+      "description": "特殊情況 - 立春前後（年柱變化）",
+      "birthDate": "2026-02-03",
+      "birthTime": "12:00",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "yearPillar": {
+          "stem": "乙",
+          "branch": "巳",
+          "name": "乙巳",
+          "note": "2026-02-04 立春前，仍為乙巳年"
+        },
+        "accuracy": "exact"
+      }
+    },
+    {
+      "id": 25,
+      "category": "special",
+      "description": "特殊情況 - 立春當天（年柱變化）",
+      "birthDate": "2026-02-04",
+      "birthTime": "12:00",
+      "expected": {
+        "hasYearPillar": true,
+        "hasMonthPillar": true,
+        "hasDayPillar": true,
+        "hasHourPillar": true,
+        "yearPillar": {
+          "stem": "丙",
+          "branch": "午",
+          "name": "丙午",
+          "note": "2026-02-04 立春當天，為丙午年"
+        },
+        "accuracy": "exact"
+      }
+    }
+  ],
+  "expectedResults": {
+    "pillarStructure": {
+      "requiredFields": ["stem", "branch", "name", "nayin", "label"],
+      "optionalFields": ["year", "solarTerm", "isUnknown"]
+    },
+    "dayMasterStructure": {
+      "requiredFields": ["stem", "element", "elementName", "yinYang", "label"]
+    },
+    "tenGodsStructure": {
+      "requiredFields": ["name", "type", "description"],
+      "validTypes": ["peer", "output", "wealth", "officer", "resource", "unknown"]
+    },
+    "branchRelationsStructure": {
+      "requiredFields": ["liuHe", "sanHe", "sanHui", "liuChong", "sanXing", "liuHai", "summary"]
+    },
+    "hiddenStemsStructure": {
+      "requiredFields": ["year", "month", "day", "hour"],
+      "valueType": "array"
+    }
+  },
+  "validationRules": {
+    "dateFormats": [
+      "YYYY-MM-DD",
+      "YYYY/MM/DD"
+    ],
+    "timeFormats": [
+      "HH:mm"
+    ],
+    "validStems": ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"],
+    "validBranches": ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"],
+    "validElements": ["wood", "fire", "earth", "metal", "water"],
+    "validYinYang": ["yang", "yin"]
+  },
+  "testDataNotes": {
+    "yearPillarCalculation": "以立春為界，立春前屬於前一年",
+    "monthPillarCalculation": "以節氣為界換月，非農曆月份",
+    "dayPillarCalculation": "基於1900年1月1日甲戌日為基準",
+    "hourPillarCalculation": "23:00-00:59 為子時，可能跨日"
+  }
+}

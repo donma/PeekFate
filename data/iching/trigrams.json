@@ -1,0 +1,66 @@
+{
+  "乾": {
+    "binary": "111",
+    "element": "metal",
+    "image": "天",
+    "direction": "西北",
+    "family": "父",
+    "keywords": ["剛健", "主動", "開創"]
+  },
+  "兌": {
+    "binary": "110",
+    "element": "metal",
+    "image": "澤",
+    "direction": "西",
+    "family": "少女",
+    "keywords": ["喜悅", "溝通", "開放"]
+  },
+  "離": {
+    "binary": "101",
+    "element": "fire",
+    "image": "火",
+    "direction": "南",
+    "family": "中女",
+    "keywords": ["光明", "美麗", "文明"]
+  },
+  "震": {
+    "binary": "100",
+    "element": "wood",
+    "image": "雷",
+    "direction": "東",
+    "family": "長男",
+    "keywords": ["震動", "起始", "行動"]
+  },
+  "巽": {
+    "binary": "011",
+    "element": "wood",
+    "image": "風",
+    "direction": "東南",
+    "family": "長女",
+    "keywords": ["進入", "順從", "傳播"]
+  },
+  "坎": {
+    "binary": "010",
+    "element": "water",
+    "image": "水",
+    "direction": "北",
+    "family": "中男",
+    "keywords": ["危險", "智慧", "隱藏"]
+  },
+  "艮": {
+    "binary": "001",
+    "element": "earth",
+    "image": "山",
+    "direction": "東北",
+    "family": "少男",
+    "keywords": ["停止", "穩定", "思考"]
+  },
+  "坤": {
+    "binary": "000",
+    "element": "earth",
+    "image": "地",
+    "direction": "西南",
+    "family": "母",
+    "keywords": ["承載", "順勢", "包容"]
+  }
+}

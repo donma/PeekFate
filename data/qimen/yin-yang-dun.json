@@ -1,0 +1,496 @@
+{
+  "metadata": {
+    "name": "奇門遁甲陰陽遁規則",
+    "version": "1.0.0",
+    "description": "包含完整的陰陽遁判斷規則、節氣對應及局數配置",
+    "encoding": "UTF-8"
+  },
+  "rules": {
+    "陽遁": {
+      "condition": "冬至後",
+      "description": "冬至後陽氣上升，用陽遁順行",
+      "direction": "順行",
+      "order": ["一", "二", "三", "四", "五", "六", "七", "八", "九"]
+    },
+    "陰遁": {
+      "condition": "夏至後",
+      "description": "夏至後陰氣上升，用陰遁逆行",
+      "direction": "逆行",
+      "order": ["九", "八", "七", "六", "五", "四", "三", "二", "一"]
+    }
+  },
+  "solarTerms": {
+    "陽遁": {
+      "terms": [
+        {
+          "name": "冬至",
+          "index": 1,
+          "month": 12,
+          "day": 21,
+          "endMonth": 1,
+          "endDay": 5,
+          "startJu": 1,
+          "endJu": 3,
+          "juCount": 3,
+          "symbol": "☵"
+        },
+        {
+          "name": "小寒",
+          "index": 2,
+          "month": 1,
+          "day": 5,
+          "endMonth": 1,
+          "endDay": 20,
+          "startJu": 1,
+          "endJu": 3,
+          "juCount": 3,
+          "symbol": "☶"
+        },
+        {
+          "name": "大寒",
+          "index": 3,
+          "month": 1,
+          "day": 20,
+          "endMonth": 2,
+          "endDay": 4,
+          "startJu": 1,
+          "endJu": 3,
+          "juCount": 3,
+          "symbol": "☷"
+        },
+        {
+          "name": "立春",
+          "index": 4,
+          "month": 2,
+          "day": 4,
+          "endMonth": 2,
+          "endDay": 19,
+          "startJu": 4,
+          "endJu": 6,
+          "juCount": 3,
+          "symbol": "☳"
+        },
+        {
+          "name": "雨水",
+          "index": 5,
+          "month": 2,
+          "day": 19,
+          "endMonth": 3,
+          "endDay": 6,
+          "startJu": 4,
+          "endJu": 6,
+          "juCount": 3,
+          "symbol": "☵"
+        },
+        {
+          "name": "驚蟄",
+          "index": 6,
+          "month": 3,
+          "day": 6,
+          "endMonth": 3,
+          "endDay": 21,
+          "startJu": 4,
+          "endJu": 6,
+          "juCount": 3,
+          "symbol": "☳"
+        },
+        {
+          "name": "春分",
+          "index": 7,
+          "month": 3,
+          "day": 21,
+          "endMonth": 4,
+          "endDay": 5,
+          "startJu": 7,
+          "endJu": 9,
+          "juCount": 3,
+          "symbol": "☴"
+        },
+        {
+          "name": "清明",
+          "index": 8,
+          "month": 4,
+          "day": 5,
+          "endMonth": 4,
+          "endDay": 20,
+          "startJu": 7,
+          "endJu": 9,
+          "juCount": 3,
+          "symbol": "☲"
+        },
+        {
+          "name": "穀雨",
+          "index": 9,
+          "month": 4,
+          "day": 20,
+          "endMonth": 5,
+          "endDay": 6,
+          "startJu": 7,
+          "endJu": 9,
+          "juCount": 3,
+          "symbol": "☴"
+        },
+        {
+          "name": "立夏",
+          "index": 10,
+          "month": 5,
+          "day": 6,
+          "endMonth": 5,
+          "endDay": 21,
+          "startJu": 1,
+          "endJu": 3,
+          "juCount": 3,
+          "symbol": "☲"
+        },
+        {
+          "name": "小滿",
+          "index": 11,
+          "month": 5,
+          "day": 21,
+          "endMonth": 6,
+          "endDay": 6,
+          "startJu": 1,
+          "endJu": 3,
+          "juCount": 3,
+          "symbol": "☴"
+        },
+        {
+          "name": "芒種",
+          "index": 12,
+          "month": 6,
+          "day": 6,
+          "endMonth": 6,
+          "endDay": 21,
+          "startJu": 1,
+          "endJu": 3,
+          "juCount": 3,
+          "symbol": "☰"
+        }
+      ],
+      "totalTerms": 12
+    },
+    "陰遁": {
+      "terms": [
+        {
+          "name": "夏至",
+          "index": 1,
+          "month": 6,
+          "day": 21,
+          "endMonth": 7,
+          "endDay": 7,
+          "startJu": 9,
+          "endJu": 7,
+          "juCount": 3,
+          "symbol": "☲"
+        },
+        {
+          "name": "小暑",
+          "index": 2,
+          "month": 7,
+          "day": 7,
+          "endMonth": 7,
+          "endDay": 23,
+          "startJu": 9,
+          "endJu": 7,
+          "juCount": 3,
+          "symbol": "☴"
+        },
+        {
+          "name": "大暑",
+          "index": 3,
+          "month": 7,
+          "day": 23,
+          "endMonth": 8,
+          "endDay": 7,
+          "startJu": 9,
+          "endJu": 7,
+          "juCount": 3,
+          "symbol": "☷"
+        },
+        {
+          "name": "立秋",
+          "index": 4,
+          "month": 8,
+          "day": 7,
+          "endMonth": 8,
+          "endDay": 23,
+          "startJu": 6,
+          "endJu": 4,
+          "juCount": 3,
+          "symbol": "☰"
+        },
+        {
+          "name": "處暑",
+          "index": 5,
+          "month": 8,
+          "day": 23,
+          "endMonth": 9,
+          "endDay": 8,
+          "startJu": 6,
+          "endJu": 4,
+          "juCount": 3,
+          "symbol": "☴"
+        },
+        {
+          "name": "白露",
+          "index": 6,
+          "month": 9,
+          "day": 8,
+          "endMonth": 9,
+          "endDay": 23,
+          "startJu": 6,
+          "endJu": 4,
+          "juCount": 3,
+          "symbol": "☱"
+        },
+        {
+          "name": "秋分",
+          "index": 7,
+          "month": 9,
+          "day": 23,
+          "endMonth": 10,
+          "endDay": 8,
+          "startJu": 3,
+          "endJu": 1,
+          "juCount": 3,
+          "symbol": "☰"
+        },
+        {
+          "name": "寒露",
+          "index": 8,
+          "month": 10,
+          "day": 8,
+          "endMonth": 10,
+          "endDay": 23,
+          "startJu": 3,
+          "endJu": 1,
+          "juCount": 3,
+          "symbol": "☶"
+        },
+        {
+          "name": "霜降",
+          "index": 9,
+          "month": 10,
+          "day": 23,
+          "endMonth": 11,
+          "endDay": 7,
+          "startJu": 3,
+          "endJu": 1,
+          "juCount": 3,
+          "symbol": "☷"
+        },
+        {
+          "name": "立冬",
+          "index": 10,
+          "month": 11,
+          "day": 7,
+          "endMonth": 11,
+          "endDay": 22,
+          "startJu": 9,
+          "endJu": 7,
+          "juCount": 3,
+          "symbol": "☰"
+        },
+        {
+          "name": "小雪",
+          "index": 11,
+          "month": 11,
+          "day": 22,
+          "endMonth": 12,
+          "endDay": 7,
+          "startJu": 9,
+          "endJu": 7,
+          "juCount": 3,
+          "symbol": "☵"
+        },
+        {
+          "name": "大雪",
+          "index": 12,
+          "month": 12,
+          "day": 7,
+          "endMonth": 12,
+          "endDay": 21,
+          "startJu": 9,
+          "endJu": 7,
+          "juCount": 3,
+          "symbol": "☶"
+        }
+      ],
+      "totalTerms": 12
+    }
+  },
+  "descriptions": {
+    "陽遁": {
+      "name": "陽遁",
+      "meaning": "陽遁主進取、發展、積極",
+      "direction": "順行",
+      "period": "冬至後至夏至前",
+      "element": "陽氣上升",
+      "characteristics": [
+        "主動積極",
+        "利於進取發展",
+        "陽氣充沛",
+        "萬物生長"
+      ],
+      "usage": "冬至後陽氣漸長，用陽遁順布三奇六儀"
+    },
+    "陰遁": {
+      "name": "陰遁",
+      "meaning": "陰遁主保守、收斂、穩重",
+      "direction": "逆行",
+      "period": "夏至後至冬至前",
+      "element": "陰氣上升",
+      "characteristics": [
+        "主守斂藏",
+        "利於防守穩固",
+        "陰氣漸盛",
+        "萬物收藏"
+      ],
+      "usage": "夏至後陰氣漸長，用陰遁逆布三奇六儀"
+    }
+  },
+  "juMapping": {
+    "陽遁": {
+      "冬至": {
+        "上元": 1,
+        "中元": 7,
+        "下元": 4
+      },
+      "小寒": {
+        "上元": 2,
+        "中元": 8,
+        "下元": 5
+      },
+      "大寒": {
+        "上元": 3,
+        "中元": 9,
+        "下元": 6
+      },
+      "立春": {
+        "上元": 8,
+        "中元": 5,
+        "下元": 2
+      },
+      "雨水": {
+        "上元": 9,
+        "中元": 6,
+        "下元": 3
+      },
+      "驚蟄": {
+        "上元": 1,
+        "中元": 7,
+        "下元": 4
+      },
+      "春分": {
+        "上元": 3,
+        "中元": 9,
+        "下元": 6
+      },
+      "清明": {
+        "上元": 4,
+        "中元": 1,
+        "下元": 7
+      },
+      "穀雨": {
+        "上元": 5,
+        "中元": 2,
+        "下元": 8
+      },
+      "立夏": {
+        "上元": 4,
+        "中元": 1,
+        "下元": 7
+      },
+      "小滿": {
+        "上元": 5,
+        "中元": 2,
+        "下元": 8
+      },
+      "芒種": {
+        "上元": 6,
+        "中元": 3,
+        "下元": 9
+      }
+    },
+    "陰遁": {
+      "夏至": {
+        "上元": 9,
+        "中元": 3,
+        "下元": 6
+      },
+      "小暑": {
+        "上元": 8,
+        "中元": 2,
+        "下元": 5
+      },
+      "大暑": {
+        "上元": 7,
+        "中元": 1,
+        "下元": 4
+      },
+      "立秋": {
+        "上元": 2,
+        "中元": 5,
+        "下元": 8
+      },
+      "處暑": {
+        "上元": 1,
+        "中元": 4,
+        "下元": 7
+      },
+      "白露": {
+        "上元": 9,
+        "中元": 3,
+        "下元": 6
+      },
+      "秋分": {
+        "上元": 7,
+        "中元": 1,
+        "下元": 4
+      },
+      "寒露": {
+        "上元": 6,
+        "中元": 9,
+        "下元": 3
+      },
+      "霜降": {
+        "上元": 5,
+        "中元": 8,
+        "下元": 2
+      },
+      "立冬": {
+        "上元": 6,
+        "中元": 9,
+        "下元": 3
+      },
+      "小雪": {
+        "上元": 5,
+        "中元": 8,
+        "下元": 2
+      },
+      "大雪": {
+        "上元": 4,
+        "中元": 7,
+        "下元": 1
+      }
+    }
+  },
+  "threeYuan": {
+    "description": "每個節氣分為上中下三元，每元五日",
+    "daysPerYuan": 5,
+    "totalDaysPerTerm": 15,
+    "元": ["上元", "中元", "下元"]
+  },
+  "validation": {
+    "winterSolstice": {
+      "month": 12,
+      "day": 21,
+      "type": "陽遁起點"
+    },
+    "summerSolstice": {
+      "month": 6,
+      "day": 21,
+      "type": "陰遁起點"
+    }
+  }
+}

@@ -1,0 +1,1310 @@
+{
+  "keywords": {
+    "開創": {
+      "score": 8,
+      "advice": "適合開始新計劃，主動出擊，把握時機。",
+      "risk": "避免過於冒進，注意時機尚未成熟。"
+    },
+    "進取": {
+      "score": 8,
+      "advice": "積極向前發展，勇於開拓新局面。",
+      "risk": "不可操之過急，需循序漸進。"
+    },
+    "守成": {
+      "score": 6,
+      "advice": "維持現狀，穩固根基，不宜大動作。",
+      "risk": "過於保守可能錯失良機。"
+    },
+    "等待": {
+      "score": 5,
+      "advice": "耐心等待時機成熟，靜觀其變。",
+      "risk": "消極等待可能貽誤時機。"
+    },
+    "變革": {
+      "score": 7,
+      "advice": "順應變化，勇于革新，破舊立新。",
+      "risk": "變革需謹慎，避免過於激進。"
+    },
+    "和諧": {
+      "score": 8,
+      "advice": "以和為貴，團結合作，互利共贏。",
+      "risk": "避免無原則的妥協，失去立場。"
+    },
+    "謙遜": {
+      "score": 9,
+      "advice": "保持謙虛態度，虛心學習，廣結善緣。",
+      "risk": "過度謙遜可能顯得缺乏自信。"
+    },
+    "果斷": {
+      "score": 7,
+      "advice": "當機立斷，把握關鍵時刻。",
+      "risk": "果斷不等於武斷，需深思熟慮。"
+    },
+    "謹慎": {
+      "score": 7,
+      "advice": "小心謹慎，步步為營，避免失誤。",
+      "risk": "過度謹慎可能猶豫不決。"
+    },
+    "困難": {
+      "score": 3,
+      "advice": "正視困難，保持冷靜，尋求突破。",
+      "risk": "切勿灰心喪氣，堅持就是勝利。"
+    },
+    "順利": {
+      "score": 9,
+      "advice": "事事順遂，把握機會，乘勢而上。",
+      "risk": "順境中仍需保持警醒，不可驕傲。"
+    },
+    "危險": {
+      "score": 2,
+      "advice": "提高警覺，謹慎行事，避免冒險。",
+      "risk": "處境危險，需格外小心應對。"
+    },
+    "轉機": {
+      "score": 7,
+      "advice": "困境中暗藏轉機，保持信心。",
+      "risk": "轉機稍縱即逝，需及時把握。"
+    },
+    "收穫": {
+      "score": 8,
+      "advice": "辛勤付出終有回報，享受成果。",
+      "risk": "不可因小有成就而驕傲自滿。"
+    },
+    "合作": {
+      "score": 8,
+      "advice": "與他人合作共事，發揮團隊力量。",
+      "risk": "注意選擇合作對象，避免受騙。"
+    },
+    "衝突": {
+      "score": 3,
+      "advice": "化解矛盾，避免正面衝突，以退為進。",
+      "risk": "衝突升級將帶來更大損失。"
+    },
+    "創新": {
+      "score": 8,
+      "advice": "勇於創新，突破傳統思維束縛。",
+      "risk": "創新需有根基，不可脫離實際。"
+    },
+    "堅持": {
+      "score": 7,
+      "advice": "堅定信念，持之以恆，終能成功。",
+      "risk": "堅持需有方向，不可固執己見。"
+    },
+    "放下": {
+      "score": 6,
+      "advice": "適時放手，放下執念，順其自然。",
+      "risk": "放下不等於放棄，需區分清楚。"
+    },
+    "積累": {
+      "score": 7,
+      "advice": "腳踏實地，積少成多，厚積薄發。",
+      "risk": "積累過程需保持耐心，不可急躁。"
+    },
+    "溝通": {
+      "score": 7,
+      "advice": "加強溝通交流，消除誤解，增進理解。",
+      "risk": "注意溝通方式，避免言辭過激。"
+    },
+    "養生": {
+      "score": 7,
+      "advice": "注重身心健康，調養休息，蓄精養銳。",
+      "risk": "忽視健康將影響長遠發展。"
+    },
+    "學習": {
+      "score": 8,
+      "advice": "虛心學習，增長知識，提升能力。",
+      "risk": "學以致用，不可紙上談兵。"
+    },
+    "旅行": {
+      "score": 6,
+      "advice": "適合出行，開拓視野，增長見聞。",
+      "risk": "出行需注意安全，做好準備。"
+    },
+    "投資": {
+      "score": 5,
+      "advice": "謹慎投資，做好調研，分散風險。",
+      "risk": "投資有風險，入市需謹慎。"
+    },
+    "感情": {
+      "score": 7,
+      "advice": "真誠相待，用心經營感情關係。",
+      "risk": "避免猜疑嫉妒，給彼此空間。"
+    },
+    "事業": {
+      "score": 7,
+      "advice": "專注事業發展，腳踏實地，穩步前進。",
+      "risk": "不可好高騖遠，需量力而行。"
+    },
+    "財運": {
+      "score": 6,
+      "advice": "開源節流，合理理財，穩健為上。",
+      "risk": "不可貪圖暴利，謹防破財。"
+    },
+    "人際": {
+      "score": 7,
+      "advice": "廣結善緣，以誠待人，建立良好人脈。",
+      "risk": "交友需謹慎，遠離損友。"
+    },
+    "決策": {
+      "score": 6,
+      "advice": "深思熟慮後果斷決策，不可猶豫。",
+      "risk": "決策前需充分收集信息。"
+    },
+    "危機": {
+      "score": 2,
+      "advice": "危機中蘊含轉機，冷靜應對。",
+      "risk": "處境艱難，需格外謹慎小心。"
+    },
+    "重生": {
+      "score": 7,
+      "advice": "浴火重生，從頭開始，煥然一新。",
+      "risk": "重建過程需耐心，不可急於求成。"
+    },
+    "平衡": {
+      "score": 7,
+      "advice": "追求平衡，中庸之道，不偏不倚。",
+      "risk": "平衡不等於平庸，需有取捨。"
+    },
+    "突破": {
+      "score": 8,
+      "advice": "突破瓶頸，打破常規，實現飛躍。",
+      "risk": "突破需有準備，不可盲目冒險。"
+    },
+    "回歸": {
+      "score": 6,
+      "advice": "回歸本心，不忘初心，返璞歸真。",
+      "risk": "回歸不是退步，而是沉澱。"
+    },
+    "發展": {
+      "score": 8,
+      "advice": "順勢發展，把握機遇，擴大成果。",
+      "risk": "發展需穩健，不可盲目擴張。"
+    },
+    "結束": {
+      "score": 5,
+      "advice": "舊的結束是新的開始，坦然接受。",
+      "risk": "結束需善始善終，不可草率。"
+    },
+    "希望": {
+      "score": 8,
+      "advice": "保持希望，光明在前，堅持不懈。",
+      "risk": "希望需付諸行動，不可空想。"
+    },
+    "迷茫": {
+      "score": 4,
+      "advice": "靜心思考，明確方向，尋求指引。",
+      "risk": "迷茫時不宜做重大決定。"
+    },
+    "壓力": {
+      "score": 4,
+      "advice": "適當減壓，調整心態，勞逸結合。",
+      "risk": "壓力過大影響身心健康。"
+    },
+    "機遇": {
+      "score": 8,
+      "advice": "把握機遇，當機立斷，莫失良機。",
+      "risk": "機遇稍縱即逝，需快速反應。"
+    }
+  },
+  "hexagramTypes": {
+    "乾": {
+      "number": 1,
+      "symbol": "☰☰",
+      "element": "metal",
+      "nature": "剛健",
+      "trigram_above": "乾",
+      "trigram_below": "乾",
+      "advice": "自強不息，積極進取，順天應時。",
+      "description": "乾為天，象徵剛健中正，純陽之氣。萬物之始，創造之力。",
+      "fortune": "大吉",
+      "score": 9
+    },
+    "坤": {
+      "number": 2,
+      "symbol": "☷☷",
+      "element": "earth",
+      "nature": "柔順",
+      "trigram_above": "坤",
+      "trigram_below": "坤",
+      "advice": "厚德載物，包容接納，順勢而為。",
+      "description": "坤為地，象徵柔順承載，純陰之質。滋養萬物，厚德載物。",
+      "fortune": "吉",
+      "score": 8
+    },
+    "屯": {
+      "number": 3,
+      "symbol": "☵☳",
+      "element": "water",
+      "nature": "困難",
+      "trigram_above": "坎",
+      "trigram_below": "震",
+      "advice": "創業維艱，堅忍不拔，積蓄力量。",
+      "description": "水雷屯，象徵初生之難，萬物始生。艱難中蘊含希望。",
+      "fortune": "小凶",
+      "score": 4
+    },
+    "蒙": {
+      "number": 4,
+      "symbol": "☶☵",
+      "element": "earth",
+      "nature": "啟蒙",
+      "trigram_above": "艮",
+      "trigram_below": "坎",
+      "advice": "虛心求教，循序漸進，開啟智慧。",
+      "description": "山水蒙，象徵蒙昧初開，需要啟蒙教育。",
+      "fortune": "平",
+      "score": 5
+    },
+    "需": {
+      "number": 5,
+      "symbol": "☵☰",
+      "element": "water",
+      "nature": "等待",
+      "trigram_above": "坎",
+      "trigram_below": "乾",
+      "advice": "耐心等待，蓄勢待發，時機自來。",
+      "description": "水天需，象徵等待時機，不急不躁。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "訟": {
+      "number": 6,
+      "symbol": "☰☵",
+      "element": "metal",
+      "nature": "爭訟",
+      "trigram_above": "乾",
+      "trigram_below": "坎",
+      "advice": "以和為貴，避免爭訟，退讓為上。",
+      "description": "天水訟，象徵爭訟是非，宜化解不宜激化。",
+      "fortune": "凶",
+      "score": 3
+    },
+    "師": {
+      "number": 7,
+      "symbol": "☷☵",
+      "element": "earth",
+      "nature": "統帥",
+      "trigram_above": "坤",
+      "trigram_below": "坎",
+      "advice": "以德服人，統領眾人，正道而行。",
+      "description": "地水師，象徵軍旅之事，統帥之道。",
+      "fortune": "平",
+      "score": 6
+    },
+    "比": {
+      "number": 8,
+      "symbol": "☵☷",
+      "element": "water",
+      "nature": "親附",
+      "trigram_above": "坎",
+      "trigram_below": "坤",
+      "advice": "親近賢人，團結合作，和睦相處。",
+      "description": "水地比，象徵親附輔佐，團結互助。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "小畜": {
+      "number": 9,
+      "symbol": "☴☰",
+      "element": "wood",
+      "nature": "積蓄",
+      "trigram_above": "巽",
+      "trigram_below": "乾",
+      "advice": "小有積蓄，循序漸進，不可冒進。",
+      "description": "風天小畜，象徵小有積蓄，力量尚弱。",
+      "fortune": "平",
+      "score": 6
+    },
+    "履": {
+      "number": 10,
+      "symbol": "☰☱",
+      "element": "metal",
+      "nature": "踐行",
+      "trigram_above": "乾",
+      "trigram_below": "兌",
+      "advice": "小心謹慎，按禮行事，如履薄冰。",
+      "description": "天澤履，象徵踐行禮儀，小心謹慎。",
+      "fortune": "平",
+      "score": 6
+    },
+    "泰": {
+      "number": 11,
+      "symbol": "☷☰",
+      "element": "earth",
+      "nature": "通泰",
+      "trigram_above": "坤",
+      "trigram_below": "乾",
+      "advice": "天地交泰，萬事亨通，把握時機。",
+      "description": "地天泰，象徵天地交合，萬物通泰。",
+      "fortune": "大吉",
+      "score": 9
+    },
+    "否": {
+      "number": 12,
+      "symbol": "☰☷",
+      "element": "metal",
+      "nature": "閉塞",
+      "trigram_above": "乾",
+      "trigram_below": "坤",
+      "advice": "韜光養晦，靜待時機，不可強求。",
+      "description": "天地否，象徵天地不交，萬物閉塞。",
+      "fortune": "凶",
+      "score": 3
+    },
+    "同人": {
+      "number": 13,
+      "symbol": "☰☲",
+      "element": "metal",
+      "nature": "和同",
+      "trigram_above": "乾",
+      "trigram_below": "離",
+      "advice": "志同道合，團結一心，共謀大事。",
+      "description": "天火同人，象徵和同於人，志同道合。",
+      "fortune": "吉",
+      "score": 8
+    },
+    "大有": {
+      "number": 14,
+      "symbol": "☲☰",
+      "element": "fire",
+      "nature": "豐盛",
+      "trigram_above": "離",
+      "trigram_below": "乾",
+      "advice": "大有收穫，順勢發展，居安思危。",
+      "description": "火天大有，象徵大有收穫，豐盛繁榮。",
+      "fortune": "大吉",
+      "score": 9
+    },
+    "謙": {
+      "number": 15,
+      "symbol": "☷☶",
+      "element": "earth",
+      "nature": "謙遜",
+      "trigram_above": "坤",
+      "trigram_below": "艮",
+      "advice": "保持謙遜，虛懷若谷，必有好報。",
+      "description": "地山謙，象徵謙遜之德，六爻皆吉。",
+      "fortune": "大吉",
+      "score": 9
+    },
+    "豫": {
+      "number": 16,
+      "symbol": "☳☷",
+      "element": "wood",
+      "nature": "喜悅",
+      "trigram_above": "震",
+      "trigram_below": "坤",
+      "advice": "順勢而為，喜悅和樂，適度享受。",
+      "description": "雷地豫，象徵喜悅安樂，順勢而行。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "隨": {
+      "number": 17,
+      "symbol": "☱☳",
+      "element": "metal",
+      "nature": "隨從",
+      "trigram_above": "兌",
+      "trigram_below": "震",
+      "advice": "順應時勢，隨機應變，靈活處世。",
+      "description": "澤雷隨，象徵隨從順應，隨機應變。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "蠱": {
+      "number": 18,
+      "symbol": "☶☴",
+      "element": "earth",
+      "nature": "整治",
+      "trigram_above": "艮",
+      "trigram_below": "巽",
+      "advice": "革除弊端，整頓秩序，撥亂反正。",
+      "description": "山風蠱，象徵弊端叢生，需要整治。",
+      "fortune": "凶",
+      "score": 4
+    },
+    "臨": {
+      "number": 19,
+      "symbol": "☷☱",
+      "element": "earth",
+      "nature": "蒞臨",
+      "trigram_above": "坤",
+      "trigram_below": "兌",
+      "advice": "親臨指導，以德服人，恩威並施。",
+      "description": "地澤臨，象徵蒞臨監督，居高臨下。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "觀": {
+      "number": 20,
+      "symbol": "☴☷",
+      "element": "wood",
+      "nature": "觀察",
+      "trigram_above": "巽",
+      "trigram_below": "坤",
+      "advice": "仔細觀察，審時度勢，深思熟慮。",
+      "description": "風地觀，象徵觀察審視，洞察秋毫。",
+      "fortune": "平",
+      "score": 6
+    },
+    "噬嗑": {
+      "number": 21,
+      "symbol": "☲☳",
+      "element": "fire",
+      "nature": "刑罰",
+      "trigram_above": "離",
+      "trigram_below": "震",
+      "advice": "明斷是非，依法辦事，公正無私。",
+      "description": "火雷噬嗑，象徵刑罰決斷，去除障礙。",
+      "fortune": "平",
+      "score": 5
+    },
+    "賁": {
+      "number": 22,
+      "symbol": "☶☲",
+      "element": "earth",
+      "nature": "文飾",
+      "trigram_above": "艮",
+      "trigram_below": "離",
+      "advice": "注重修飾，文質彬彬，內外兼修。",
+      "description": "山火賁，象徵文飾裝飾，美化外表。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "剝": {
+      "number": 23,
+      "symbol": "☶☷",
+      "element": "earth",
+      "nature": "剝落",
+      "trigram_above": "艮",
+      "trigram_below": "坤",
+      "advice": "收縮防守，保存實力，靜待轉機。",
+      "description": "山地剝，象徵剝落衰敗，陽氣將盡。",
+      "fortune": "凶",
+      "score": 2
+    },
+    "復": {
+      "number": 24,
+      "symbol": "☷☳",
+      "element": "earth",
+      "nature": "回復",
+      "trigram_above": "坤",
+      "trigram_below": "震",
+      "advice": "一陽來復，重新開始，把握轉機。",
+      "description": "地雷復，象徵回復重生，一陽來復。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "無妄": {
+      "number": 25,
+      "symbol": "☰☳",
+      "element": "metal",
+      "nature": "無妄",
+      "trigram_above": "乾",
+      "trigram_below": "震",
+      "advice": "順其自然，不可妄為，真誠守正。",
+      "description": "天雷無妄，象徵真實無妄，順應天道。",
+      "fortune": "平",
+      "score": 6
+    },
+    "大畜": {
+      "number": 26,
+      "symbol": "☶☰",
+      "element": "earth",
+      "nature": "大蓄",
+      "trigram_above": "艮",
+      "trigram_below": "乾",
+      "advice": "大力積蓄，厚積薄發，等待時機。",
+      "description": "山天大畜，象徵大有積蓄，力量雄厚。",
+      "fortune": "大吉",
+      "score": 8
+    },
+    "頤": {
+      "number": 27,
+      "symbol": "☶☳",
+      "element": "earth",
+      "nature": "養育",
+      "trigram_above": "艮",
+      "trigram_below": "震",
+      "advice": "注重養生，調養身心，節制飲食。",
+      "description": "山雷頤，象徵頤養之道，養生修身。",
+      "fortune": "平",
+      "score": 6
+    },
+    "大過": {
+      "number": 28,
+      "symbol": "☱☴",
+      "element": "metal",
+      "nature": "過度",
+      "trigram_above": "兌",
+      "trigram_below": "巽",
+      "advice": "物極必反，適可而止，避免過度。",
+      "description": "澤風大過，象徵過度非常，需要調整。",
+      "fortune": "凶",
+      "score": 3
+    },
+    "坎": {
+      "number": 29,
+      "symbol": "☵☵",
+      "element": "water",
+      "nature": "險陷",
+      "trigram_above": "坎",
+      "trigram_below": "坎",
+      "advice": "處險不驚，以心行險，方可脫困。",
+      "description": "坎為水，象徵險陷重重，需要勇氣智慧。",
+      "fortune": "凶",
+      "score": 3
+    },
+    "離": {
+      "number": 30,
+      "symbol": "☲☲",
+      "element": "fire",
+      "nature": "光明",
+      "trigram_above": "離",
+      "trigram_below": "離",
+      "advice": "光明磊落，附麗正道，文明進步。",
+      "description": "離為火，象徵光明附麗，文明照耀。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "咸": {
+      "number": 31,
+      "symbol": "☱☶",
+      "element": "metal",
+      "nature": "感應",
+      "trigram_above": "兌",
+      "trigram_below": "艮",
+      "advice": "真心感應，以誠待人，情感交流。",
+      "description": "澤山咸，象徵感應交感，男女相悅。",
+      "fortune": "吉",
+      "score": 8
+    },
+    "恆": {
+      "number": 32,
+      "symbol": "☳☴",
+      "element": "wood",
+      "nature": "恆久",
+      "trigram_above": "震",
+      "trigram_below": "巽",
+      "advice": "持之以恆，堅守正道，不變應萬變。",
+      "description": "雷風恆，象徵恆久不變，持之以恆。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "遯": {
+      "number": 33,
+      "symbol": "☰☶",
+      "element": "metal",
+      "nature": "退避",
+      "trigram_above": "乾",
+      "trigram_below": "艮",
+      "advice": "適時退避，韜光養晦，保存實力。",
+      "description": "天山遯，象徵退避隱遁，明哲保身。",
+      "fortune": "平",
+      "score": 5
+    },
+    "大壯": {
+      "number": 34,
+      "symbol": "☳☰",
+      "element": "wood",
+      "nature": "強壯",
+      "trigram_above": "震",
+      "trigram_below": "乾",
+      "advice": "力量強大，但需守正，不可恃強。",
+      "description": "雷天大壯，象徵剛強壯大，需守正道。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "晉": {
+      "number": 35,
+      "symbol": "☲☷",
+      "element": "fire",
+      "nature": "進取",
+      "trigram_above": "離",
+      "trigram_below": "坤",
+      "advice": "光明進取，事業發展，步步高升。",
+      "description": "火地晉，象徵光明上進，日出地上。",
+      "fortune": "大吉",
+      "score": 8
+    },
+    "明夷": {
+      "number": 36,
+      "symbol": "☷☲",
+      "element": "earth",
+      "nature": "光明受損",
+      "trigram_above": "坤",
+      "trigram_below": "離",
+      "advice": "韜光養晦，隱藏鋒芒，等待黎明。",
+      "description": "地火明夷，象徵光明受損，賢人隱退。",
+      "fortune": "凶",
+      "score": 3
+    },
+    "家人": {
+      "number": 37,
+      "symbol": "☴☲",
+      "element": "wood",
+      "nature": "家庭",
+      "trigram_above": "巽",
+      "trigram_below": "離",
+      "advice": "家和萬事興，注重家庭倫理。",
+      "description": "風火家人，象徵家庭和睦，各安其位。",
+      "fortune": "吉",
+      "score": 8
+    },
+    "睽": {
+      "number": 38,
+      "symbol": "☲☱",
+      "element": "fire",
+      "nature": "乖離",
+      "trigram_above": "離",
+      "trigram_below": "兌",
+      "advice": "意見不同，求同存異，化解分歧。",
+      "description": "火澤睽，象徵意見分歧，需要溝通。",
+      "fortune": "凶",
+      "score": 4
+    },
+    "蹇": {
+      "number": 39,
+      "symbol": "☵☶",
+      "element": "water",
+      "nature": "艱難",
+      "trigram_above": "坎",
+      "trigram_below": "艮",
+      "advice": "前路艱難，迂迴前進，不可硬闖。",
+      "description": "水山蹇，象徵前路艱難，舉步維艱。",
+      "fortune": "凶",
+      "score": 3
+    },
+    "解": {
+      "number": 40,
+      "symbol": "☳☵",
+      "element": "wood",
+      "nature": "解除",
+      "trigram_above": "震",
+      "trigram_below": "坎",
+      "advice": "化解困難，解除危機，柳暗花明。",
+      "description": "雷水解，象徵困難解除，危機化解。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "損": {
+      "number": 41,
+      "symbol": "☶☱",
+      "element": "earth",
+      "nature": "減損",
+      "trigram_above": "艮",
+      "trigram_below": "兌",
+      "advice": "適度減損，舍小取大，先損後益。",
+      "description": "山澤損，象徵減損之道，先損後益。",
+      "fortune": "平",
+      "score": 5
+    },
+    "益": {
+      "number": 42,
+      "symbol": "☴☳",
+      "element": "wood",
+      "nature": "增益",
+      "trigram_above": "巽",
+      "trigram_below": "震",
+      "advice": "增益發展，利人利己，大有可為。",
+      "description": "風雷益，象徵增益之道，利人利己。",
+      "fortune": "大吉",
+      "score": 8
+    },
+    "夬": {
+      "number": 43,
+      "symbol": "☱☰",
+      "element": "metal",
+      "nature": "決斷",
+      "trigram_above": "兌",
+      "trigram_below": "乾",
+      "advice": "果斷決策，清除障礙，但不可魯莽。",
+      "description": "澤天夬，象徵決斷除惡，剛柔並濟。",
+      "fortune": "平",
+      "score": 6
+    },
+    "姤": {
+      "number": 44,
+      "symbol": "☰☴",
+      "element": "metal",
+      "nature": "相遇",
+      "trigram_above": "乾",
+      "trigram_below": "巽",
+      "advice": "偶然相遇，把握機緣，但需謹慎。",
+      "description": "天風姤，象徵不期而遇，需謹慎對待。",
+      "fortune": "平",
+      "score": 5
+    },
+    "萃": {
+      "number": 45,
+      "symbol": "☱☷",
+      "element": "metal",
+      "nature": "聚集",
+      "trigram_above": "兌",
+      "trigram_below": "坤",
+      "advice": "聚集人才，團結力量，共同進取。",
+      "description": "澤地萃，象徵聚集匯萃，人才薈萃。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "升": {
+      "number": 46,
+      "symbol": "☷☴",
+      "element": "earth",
+      "nature": "上升",
+      "trigram_above": "坤",
+      "trigram_below": "巽",
+      "advice": "穩步上升，積小成大，步步高升。",
+      "description": "地風升，象徵上升進步，積少成多。",
+      "fortune": "大吉",
+      "score": 8
+    },
+    "困": {
+      "number": 47,
+      "symbol": "☱☵",
+      "element": "metal",
+      "nature": "困頓",
+      "trigram_above": "兌",
+      "trigram_below": "坎",
+      "advice": "身處困境，保持信念，以待時變。",
+      "description": "澤水困，象徵困頓艱難，需要堅持。",
+      "fortune": "凶",
+      "score": 3
+    },
+    "井": {
+      "number": 48,
+      "symbol": "☵☴",
+      "element": "water",
+      "nature": "水井",
+      "trigram_above": "坎",
+      "trigram_below": "巽",
+      "advice": "養賢育才，取之不竭，用之不盡。",
+      "description": "水風井，象徵水井養人，取之不盡。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "革": {
+      "number": 49,
+      "symbol": "☱☲",
+      "element": "metal",
+      "nature": "變革",
+      "trigram_above": "兌",
+      "trigram_below": "離",
+      "advice": "順應天命，革故鼎新，除舊布新。",
+      "description": "澤火革，象徵變革革新，順天應人。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "鼎": {
+      "number": 50,
+      "symbol": "☲☴",
+      "element": "fire",
+      "nature": "鼎新",
+      "trigram_above": "離",
+      "trigram_below": "巽",
+      "advice": "革故鼎新，建立新制，烹飪養賢。",
+      "description": "火風鼎，象徵鼎新之象，破舊立新。",
+      "fortune": "大吉",
+      "score": 8
+    },
+    "震": {
+      "number": 51,
+      "symbol": "☳☳",
+      "element": "wood",
+      "nature": "震動",
+      "trigram_above": "震",
+      "trigram_below": "震",
+      "advice": "震驚警醒，處變不驚，鎮定自若。",
+      "description": "震為雷，象徵震動驚醒，奮發圖強。",
+      "fortune": "平",
+      "score": 6
+    },
+    "艮": {
+      "number": 52,
+      "symbol": "☶☶",
+      "element": "earth",
+      "nature": "止靜",
+      "trigram_above": "艮",
+      "trigram_below": "艮",
+      "advice": "適時停止，靜心修養，止於至善。",
+      "description": "艮為山，象徵止靜不動，沉穩如山。",
+      "fortune": "平",
+      "score": 6
+    },
+    "漸": {
+      "number": 53,
+      "symbol": "☴☶",
+      "element": "wood",
+      "nature": "漸進",
+      "trigram_above": "巽",
+      "trigram_below": "艮",
+      "advice": "循序漸進，穩步發展，不可急躁。",
+      "description": "風山漸，象徵漸進發展，循序漸進。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "歸妹": {
+      "number": 54,
+      "symbol": "☳☱",
+      "element": "wood",
+      "nature": "婚嫁",
+      "trigram_above": "震",
+      "trigram_below": "兌",
+      "advice": "婚嫁之事，順其自然，不可強求。",
+      "description": "雷澤歸妹，象徵婚嫁之事，歸宿之象。",
+      "fortune": "平",
+      "score": 5
+    },
+    "豐": {
+      "number": 55,
+      "symbol": "☳☲",
+      "element": "wood",
+      "nature": "豐盛",
+      "trigram_above": "震",
+      "trigram_below": "離",
+      "advice": "豐盛繁榮，居安思危，不可驕奢。",
+      "description": "雷火豐，象徵豐盛繁榮，光明磊落。",
+      "fortune": "大吉",
+      "score": 8
+    },
+    "旅": {
+      "number": 56,
+      "symbol": "☲☶",
+      "element": "fire",
+      "nature": "旅行",
+      "trigram_above": "離",
+      "trigram_below": "艮",
+      "advice": "旅行在外，謹言慎行，隨遇而安。",
+      "description": "火山旅，象徵旅行在外，漂泊不定。",
+      "fortune": "平",
+      "score": 5
+    },
+    "巽": {
+      "number": 57,
+      "symbol": "☴☴",
+      "element": "wood",
+      "nature": "順從",
+      "trigram_above": "巽",
+      "trigram_below": "巽",
+      "advice": "柔順謙遜，順勢而為，以柔克剛。",
+      "description": "巽為風，象徵順從柔和，無孔不入。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "兌": {
+      "number": 58,
+      "symbol": "☱☱",
+      "element": "metal",
+      "nature": "喜悅",
+      "trigram_above": "兌",
+      "trigram_below": "兌",
+      "advice": "喜悅和樂，與人為善，笑口常開。",
+      "description": "兌為澤，象徵喜悅和樂，潤澤萬物。",
+      "fortune": "吉",
+      "score": 8
+    },
+    "渙": {
+      "number": 59,
+      "symbol": "☴☵",
+      "element": "wood",
+      "nature": "渙散",
+      "trigram_above": "巽",
+      "trigram_below": "坎",
+      "advice": "化解渙散，團結人心，凝聚力量。",
+      "description": "風水渙，象徵渙散分離，需要凝聚。",
+      "fortune": "凶",
+      "score": 4
+    },
+    "節": {
+      "number": 60,
+      "symbol": "☵☱",
+      "element": "water",
+      "nature": "節制",
+      "trigram_above": "坎",
+      "trigram_below": "兌",
+      "advice": "適度節制，有節有度，過猶不及。",
+      "description": "水澤節，象徵節制有度，適可而止。",
+      "fortune": "平",
+      "score": 6
+    },
+    "中孚": {
+      "number": 61,
+      "symbol": "☴☱",
+      "element": "wood",
+      "nature": "誠信",
+      "trigram_above": "巽",
+      "trigram_below": "兌",
+      "advice": "以誠待人，言而有信，取信於人。",
+      "description": "風澤中孚，象徵誠信中正，取信於人。",
+      "fortune": "大吉",
+      "score": 8
+    },
+    "小過": {
+      "number": 62,
+      "symbol": "☳☶",
+      "element": "wood",
+      "nature": "小過",
+      "trigram_above": "震",
+      "trigram_below": "艮",
+      "advice": "小事可為，大事不宜，謹慎小心。",
+      "description": "雷山小過，象徵小有過越，需謹慎。",
+      "fortune": "平",
+      "score": 5
+    },
+    "既濟": {
+      "number": 63,
+      "symbol": "☵☲",
+      "element": "water",
+      "nature": "已成",
+      "trigram_above": "坎",
+      "trigram_below": "離",
+      "advice": "事已成就，居安思危，防微杜漸。",
+      "description": "水火既濟，象徵事已成就，功成名就。",
+      "fortune": "吉",
+      "score": 7
+    },
+    "未濟": {
+      "number": 64,
+      "symbol": "☲☵",
+      "element": "fire",
+      "nature": "未成",
+      "trigram_above": "離",
+      "trigram_below": "坎",
+      "advice": "尚未完成，繼續努力，前途光明。",
+      "description": "火水未濟，象徵尚未完成，仍需努力。",
+      "fortune": "平",
+      "score": 6
+    }
+  },
+  "linePositions": {
+    "初爻": {
+      "position": 1,
+      "name": "初",
+      "meaning": "事物萌芽階段，根基初立。",
+      "advice": "謹慎開始，打好基礎，不可冒進。",
+      "fortune": "平",
+      "aspect": "基礎、開始、潛藏"
+    },
+    "二爻": {
+      "position": 2,
+      "name": "二",
+      "meaning": "事物發展階段，嶄露頭角。",
+      "advice": "穩步發展，把握機遇，適度進取。",
+      "fortune": "吉",
+      "aspect": "發展、中正、顯現"
+    },
+    "三爻": {
+      "position": 3,
+      "name": "三",
+      "meaning": "事物轉折階段，關鍵時刻。",
+      "advice": "提高警惕，謹慎處事，防範風險。",
+      "fortune": "凶",
+      "aspect": "轉折、危險、變化"
+    },
+    "四爻": {
+      "position": 4,
+      "name": "四",
+      "meaning": "事物上升階段，接近成功。",
+      "advice": "把握時機，積極進取，乘勢而上。",
+      "fortune": "平",
+      "aspect": "上升、接近、努力"
+    },
+    "五爻": {
+      "position": 5,
+      "name": "五",
+      "meaning": "事物鼎盛階段，成就輝煌。",
+      "advice": "居安思危，保持謙遜，福澤四方。",
+      "fortune": "大吉",
+      "aspect": "鼎盛、尊貴、中正"
+    },
+    "上爻": {
+      "position": 6,
+      "name": "上",
+      "meaning": "事物終結階段，盛極而衰。",
+      "advice": "適可而止，功成身退，順應自然。",
+      "fortune": "凶",
+      "aspect": "終結、過度、轉化"
+    }
+  },
+  "changePatterns": {
+    "本卦不變": {
+      "pattern": "static",
+      "meaning": "事物維持現狀，穩定發展。",
+      "advice": "順其自然，按部就班，不宜妄動。",
+      "interpretation": "以本卦卦辭為主要依據，結合爻辭分析。"
+    },
+    "一爻變": {
+      "pattern": "single_change",
+      "meaning": "事物有小變化，需關注變爻。",
+      "advice": "重點參考變爻爻辭，兼顧本卦變卦。",
+      "interpretation": "以變爻爻辭為主要依據，參考變卦卦辭。"
+    },
+    "二爻變": {
+      "pattern": "double_change",
+      "meaning": "事物有較大變化，需綜合分析。",
+      "advice": "以上面的變爻為主，參考兩個變爻。",
+      "interpretation": "以位置較高的變爻為主，兼顧另一變爻和變卦。"
+    },
+    "三爻變": {
+      "pattern": "triple_change",
+      "meaning": "事物發生重大轉變，局面複雜。",
+      "advice": "以本卦和變卦的卦辭為主，參考變爻。",
+      "interpretation": "本卦為現在，變卦為未來，綜合判斷。"
+    },
+    "四爻變": {
+      "pattern": "quad_change",
+      "meaning": "事物劇烈變化，新舊交替。",
+      "advice": "以變卦為主，參考不變的爻辭。",
+      "interpretation": "以變卦卦辭為主，參考不變爻的爻辭。"
+    },
+    "五爻變": {
+      "pattern": "penta_change",
+      "meaning": "事物全面變化，面目全非。",
+      "advice": "以變卦為主，參考不變的爻辭。",
+      "interpretation": "以變卦卦辭為主，參考唯一不變爻的爻辭。"
+    },
+    "六爻全變": {
+      "pattern": "full_change",
+      "meaning": "事物徹底轉變，乾坤顛倒。",
+      "advice": "以變卦卦辭為主，完全進入新階段。",
+      "interpretation": "以變卦卦辭為主要依據，事物已徹底轉化。"
+    }
+  },
+  "trigrams": {
+    "乾": {
+      "symbol": "☰",
+      "element": "metal",
+      "nature": "天",
+      "quality": "剛健",
+      "direction": "西北",
+      "family": "父",
+      "body": "頭",
+      "animal": "馬"
+    },
+    "坤": {
+      "symbol": "☷",
+      "element": "earth",
+      "nature": "地",
+      "quality": "柔順",
+      "direction": "西南",
+      "family": "母",
+      "body": "腹",
+      "animal": "牛"
+    },
+    "震": {
+      "symbol": "☳",
+      "element": "wood",
+      "nature": "雷",
+      "quality": "動",
+      "direction": "東",
+      "family": "長男",
+      "body": "足",
+      "animal": "龍"
+    },
+    "巽": {
+      "symbol": "☴",
+      "element": "wood",
+      "nature": "風",
+      "quality": "入",
+      "direction": "東南",
+      "family": "長女",
+      "body": "股",
+      "animal": "雞"
+    },
+    "坎": {
+      "symbol": "☵",
+      "element": "water",
+      "nature": "水",
+      "quality": "陷",
+      "direction": "北",
+      "family": "中男",
+      "body": "耳",
+      "animal": "豬"
+    },
+    "離": {
+      "symbol": "☲",
+      "element": "fire",
+      "nature": "火",
+      "quality": "麗",
+      "direction": "南",
+      "family": "中女",
+      "body": "目",
+      "animal": "雉"
+    },
+    "艮": {
+      "symbol": "☶",
+      "element": "earth",
+      "nature": "山",
+      "quality": "止",
+      "direction": "東北",
+      "family": "少男",
+      "body": "手",
+      "animal": "狗"
+    },
+    "兌": {
+      "symbol": "☱",
+      "element": "metal",
+      "nature": "澤",
+      "quality": "悅",
+      "direction": "西",
+      "family": "少女",
+      "body": "口",
+      "animal": "羊"
+    }
+  },
+  "fiveElements": {
+    "metal": {
+      "name": "金",
+      "nature": "從革",
+      "direction": "西",
+      "season": "秋",
+      "color": "白",
+      "taste": "辛",
+      "organ": "肺",
+      "emotion": "悲",
+      "generates": "water",
+      "destroys": "wood",
+      "advice": "果斷剛毅，清淨收斂。"
+    },
+    "wood": {
+      "name": "木",
+      "nature": "曲直",
+      "direction": "東",
+      "season": "春",
+      "color": "青",
+      "taste": "酸",
+      "organ": "肝",
+      "emotion": "怒",
+      "generates": "fire",
+      "destroys": "earth",
+      "advice": "生長發展，積極進取。"
+    },
+    "water": {
+      "name": "水",
+      "nature": "潤下",
+      "direction": "北",
+      "season": "冬",
+      "color": "黑",
+      "taste": "鹹",
+      "organ": "腎",
+      "emotion": "恐",
+      "generates": "wood",
+      "destroys": "fire",
+      "advice": "靈活變通，深藏不露。"
+    },
+    "fire": {
+      "name": "火",
+      "nature": "炎上",
+      "direction": "南",
+      "season": "夏",
+      "color": "紅",
+      "taste": "苦",
+      "organ": "心",
+      "emotion": "喜",
+      "generates": "earth",
+      "destroys": "metal",
+      "advice": "光明熱情，文明進步。"
+    },
+    "earth": {
+      "name": "土",
+      "nature": "稼穡",
+      "direction": "中",
+      "season": "四季",
+      "color": "黃",
+      "taste": "甘",
+      "organ": "脾",
+      "emotion": "思",
+      "generates": "metal",
+      "destroys": "water",
+      "advice": "包容承載，厚重穩定。"
+    }
+  },
+  "timeAnalysis": {
+    "seasons": {
+      "spring": {
+        "name": "春",
+        "element": "wood",
+        "advice": "萬物復甦，適合開始新計劃。",
+        "fortune": "生機勃勃，充滿希望。"
+      },
+      "summer": {
+        "name": "夏",
+        "element": "fire",
+        "advice": "萬物繁盛，積極發展擴張。",
+        "fortune": "熱情洋溢，事業興旺。"
+      },
+      "autumn": {
+        "name": "秋",
+        "element": "metal",
+        "advice": "收穫季節，總結成果，收縮防守。",
+        "fortune": "碩果累累，但需防衰。"
+      },
+      "winter": {
+        "name": "冬",
+        "element": "water",
+        "advice": "收藏休養，積蓄力量，等待時機。",
+        "fortune": "韜光養晦，蓄勢待發。"
+      }
+    },
+    "dayPhases": {
+      "morning": {
+        "name": "早晨",
+        "advice": "朝氣蓬勃，適合開始新事務。",
+        "fortune": "精力充沛，思維敏捷。"
+      },
+      "noon": {
+        "name": "中午",
+        "advice": "陽氣最盛，適合處理事務。",
+        "fortune": "事業順利，效率最高。"
+      },
+      "afternoon": {
+        "name": "下午",
+        "advice": "陽氣漸衰，適合收尾整理。",
+        "fortune": "穩定發展，不宜冒進。"
+      },
+      "evening": {
+        "name": "傍晚",
+        "advice": "日落西山，適合休息反思。",
+        "fortune": "安靜沉澱，養精蓄銳。"
+      }
+    }
+  },
+  "aspectTemplates": {
+    "career": {
+      "name": "事業",
+      "keywords": ["開創", "進取", "發展", "突破", "合作", "堅持"],
+      "advice": "專注目標，腳踏實地，穩步前進。",
+      "risk": "不可好高騖遠，需量力而行。"
+    },
+    "love": {
+      "name": "感情",
+      "keywords": ["感情", "和諧", "溝通", "合作", "堅持", "放下"],
+      "advice": "真誠相待，用心經營，互相理解。",
+      "risk": "避免猜疑嫉妒，給彼此空間。"
+    },
+    "wealth": {
+      "name": "財運",
+      "keywords": ["財運", "投資", "積累", "收穫", "謹慎", "發展"],
+      "advice": "開源節流，合理理財，穩健為上。",
+      "risk": "不可貪圖暴利，謹防破財。"
+    },
+    "health": {
+      "name": "健康",
+      "keywords": ["養生", "平衡", "壓力", "希望", "堅持", "放下"],
+      "advice": "注重養生，勞逸結合，保持樂觀。",
+      "risk": "忽視健康將影響長遠發展。"
+    },
+    "study": {
+      "name": "學業",
+      "keywords": ["學習", "積累", "堅持", "突破", "創新", "謙遜"],
+      "advice": "勤奮學習，持之以恆，循序漸進。",
+      "risk": "不可急於求成，需打好基礎。"
+    },
+    "travel": {
+      "name": "出行",
+      "keywords": ["旅行", "謹慎", "希望", "機遇", "溝通", "順利"],
+      "advice": "做好準備，注意安全，順利出行。",
+      "risk": "出行需謹慎，避免意外。"
+    }
+  }
+}

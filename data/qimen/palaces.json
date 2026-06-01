@@ -1,0 +1,67 @@
+{
+  "palaces": [
+    {
+      "number": 1,
+      "name": "坎一宮",
+      "element": "水",
+      "direction": "北",
+      "trigram": "坎"
+    },
+    {
+      "number": 2,
+      "name": "坤二宮",
+      "element": "土",
+      "direction": "西南",
+      "trigram": "坤"
+    },
+    {
+      "number": 3,
+      "name": "震三宮",
+      "element": "木",
+      "direction": "東",
+      "trigram": "震"
+    },
+    {
+      "number": 4,
+      "name": "巽四宮",
+      "element": "木",
+      "direction": "東南",
+      "trigram": "巽"
+    },
+    {
+      "number": 5,
+      "name": "中五宮",
+      "element": "土",
+      "direction": "中",
+      "trigram": null
+    },
+    {
+      "number": 6,
+      "name": "乾六宮",
+      "element": "金",
+      "direction": "西北",
+      "trigram": "乾"
+    },
+    {
+      "number": 7,
+      "name": "兌七宮",
+      "element": "金",
+      "direction": "西",
+      "trigram": "兌"
+    },
+    {
+      "number": 8,
+      "name": "艮八宮",
+      "element": "土",
+      "direction": "東北",
+      "trigram": "艮"
+    },
+    {
+      "number": 9,
+      "name": "離九宮",
+      "element": "火",
+      "direction": "南",
+      "trigram": "離"
+    }
+  ]
+}

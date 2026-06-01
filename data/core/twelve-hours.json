@@ -1,0 +1,86 @@
+[
+  {
+    "branch": "子",
+    "name": "子時",
+    "start": "23:00",
+    "end": "00:59",
+    "crossDay": true
+  },
+  {
+    "branch": "丑",
+    "name": "丑時",
+    "start": "01:00",
+    "end": "02:59",
+    "crossDay": false
+  },
+  {
+    "branch": "寅",
+    "name": "寅時",
+    "start": "03:00",
+    "end": "04:59",
+    "crossDay": false
+  },
+  {
+    "branch": "卯",
+    "name": "卯時",
+    "start": "05:00",
+    "end": "06:59",
+    "crossDay": false
+  },
+  {
+    "branch": "辰",
+    "name": "辰時",
+    "start": "07:00",
+    "end": "08:59",
+    "crossDay": false
+  },
+  {
+    "branch": "巳",
+    "name": "巳時",
+    "start": "09:00",
+    "end": "10:59",
+    "crossDay": false
+  },
+  {
+    "branch": "午",
+    "name": "午時",
+    "start": "11:00",
+    "end": "12:59",
+    "crossDay": false
+  },
+  {
+    "branch": "未",
+    "name": "未時",
+    "start": "13:00",
+    "end": "14:59",
+    "crossDay": false
+  },
+  {
+    "branch": "申",
+    "name": "申時",
+    "start": "15:00",
+    "end": "16:59",
+    "crossDay": false
+  },
+  {
+    "branch": "酉",
+    "name": "酉時",
+    "start": "17:00",
+    "end": "18:59",
+    "crossDay": false
+  },
+  {
+    "branch": "戌",
+    "name": "戌時",
+    "start": "19:00",
+    "end": "20:59",
+    "crossDay": false
+  },
+  {
+    "branch": "亥",
+    "name": "亥時",
+    "start": "21:00",
+    "end": "22:59",
+    "crossDay": false
+  }
+]

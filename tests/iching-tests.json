@@ -1,0 +1,1450 @@
+{
+  "metadata": {
+    "name": "易經測試數據集",
+    "version": "1.0.0",
+    "description": "完整的易經測試案例，涵蓋數據完整性、功能測試、邊界情況和錯誤處理",
+    "created": "2026-01-01",
+    "author": "FASTFATE"
+  },
+  "testCases": [
+    {
+      "id": 1,
+      "description": "64卦數量測試",
+      "type": "data_integrity",
+      "category": "hexagram_count",
+      "expected": {
+        "hexagramCount": 64
+      }
+    },
+    {
+      "id": 2,
+      "description": "384爻數量測試",
+      "type": "data_integrity",
+      "category": "line_count",
+      "expected": {
+        "lineCount": 384
+      }
+    },
+    {
+      "id": 3,
+      "description": "每卦6爻測試",
+      "type": "data_integrity",
+      "category": "line_per_hexagram",
+      "expected": {
+        "linesPerHexagram": 6
+      }
+    },
+    {
+      "id": 4,
+      "description": "互卦關係完整性測試",
+      "type": "data_integrity",
+      "category": "nuclear_relation",
+      "expected": {
+        "hasNuclear": true,
+        "nuclearCount": 64
+      }
+    },
+    {
+      "id": 5,
+      "description": "錯卦關係完整性測試",
+      "type": "data_integrity",
+      "category": "opposite_relation",
+      "expected": {
+        "hasOpposite": true,
+        "oppositeCount": 64
+      }
+    },
+    {
+      "id": 6,
+      "description": "綜卦關係完整性測試",
+      "type": "data_integrity",
+      "category": "reverse_relation",
+      "expected": {
+        "hasReverse": true,
+        "reverseCount": 64
+      }
+    },
+    {
+      "id": 7,
+      "description": "卦象獲取測試 - 乾為天",
+      "type": "function",
+      "category": "get_hexagram",
+      "input": {
+        "binary": "111111"
+      },
+      "expected": {
+        "hexagramId": 1,
+        "name": "乾為天",
+        "chineseName": "乾",
+        "upperTrigram": "乾",
+        "lowerTrigram": "乾"
+      }
+    },
+    {
+      "id": 8,
+      "description": "卦象獲取測試 - 坤為地",
+      "type": "function",
+      "category": "get_hexagram",
+      "input": {
+        "binary": "000000"
+      },
+      "expected": {
+        "hexagramId": 2,
+        "name": "坤為地",
+        "chineseName": "坤",
+        "upperTrigram": "坤",
+        "lowerTrigram": "坤"
+      }
+    },
+    {
+      "id": 9,
+      "description": "卦象獲取測試 - 水雷屯",
+      "type": "function",
+      "category": "get_hexagram",
+      "input": {
+        "binary": "010001"
+      },
+      "expected": {
+        "hexagramId": 3,
+        "name": "水雷屯",
+        "chineseName": "屯",
+        "upperTrigram": "坎",
+        "lowerTrigram": "震"
+      }
+    },
+    {
+      "id": 10,
+      "description": "卦象獲取測試 - 山水蒙",
+      "type": "function",
+      "category": "get_hexagram",
+      "input": {
+        "binary": "100010"
+      },
+      "expected": {
+        "hexagramId": 4,
+        "name": "山水蒙",
+        "chineseName": "蒙",
+        "upperTrigram": "艮",
+        "lowerTrigram": "坎"
+      }
+    },
+    {
+      "id": 11,
+      "description": "卦象獲取測試 - 水天需",
+      "type": "function",
+      "category": "get_hexagram",
+      "input": {
+        "binary": "010111"
+      },
+      "expected": {
+        "hexagramId": 5,
+        "name": "水天需",
+        "chineseName": "需",
+        "upperTrigram": "坎",
+        "lowerTrigram": "乾"
+      }
+    },
+    {
+      "id": 12,
+      "description": "卦象獲取測試 - 天水訟",
+      "type": "function",
+      "category": "get_hexagram",
+      "input": {
+        "binary": "111010"
+      },
+      "expected": {
+        "hexagramId": 6,
+        "name": "天水訟",
+        "chineseName": "訟",
+        "upperTrigram": "乾",
+        "lowerTrigram": "坎"
+      }
+    },
+    {
+      "id": 13,
+      "description": "卦象獲取測試 - 地水師",
+      "type": "function",
+      "category": "get_hexagram",
+      "input": {
+        "binary": "000010"
+      },
+      "expected": {
+        "hexagramId": 7,
+        "name": "地水師",
+        "chineseName": "師",
+        "upperTrigram": "坤",
+        "lowerTrigram": "坎"
+      }
+    },
+    {
+      "id": 14,
+      "description": "卦象獲取測試 - 水地比",
+      "type": "function",
+      "category": "get_hexagram",
+      "input": {
+        "binary": "010000"
+      },
+      "expected": {
+        "hexagramId": 8,
+        "name": "水地比",
+        "chineseName": "比",
+        "upperTrigram": "坎",
+        "lowerTrigram": "坤"
+      }
+    },
+    {
+      "id": 15,
+      "description": "卦象獲取測試 - 風天小畜",
+      "type": "function",
+      "category": "get_hexagram",
+      "input": {
+        "binary": "110111"
+      },
+      "expected": {
+        "hexagramId": 9,
+        "name": "風天小畜",
+        "chineseName": "小畜",
+        "upperTrigram": "巽",
+        "lowerTrigram": "乾"
+      }
+    },
+    {
+      "id": 16,
+      "description": "卦象獲取測試 - 天澤履",
+      "type": "function",
+      "category": "get_hexagram",
+      "input": {
+        "binary": "111011"
+      },
+      "expected": {
+        "hexagramId": 10,
+        "name": "天澤履",
+        "chineseName": "履",
+        "upperTrigram": "乾",
+        "lowerTrigram": "兌"
+      }
+    },
+    {
+      "id": 17,
+      "description": "卦象獲取測試 - 地天泰",
+      "type": "function",
+      "category": "get_hexagram",
+      "input": {
+        "binary": "000111"
+      },
+      "expected": {
+        "hexagramId": 11,
+        "name": "地天泰",
+        "chineseName": "泰",
+        "upperTrigram": "坤",
+        "lowerTrigram": "乾"
+      }
+    },
+    {
+      "id": 18,
+      "description": "卦象獲取測試 - 天地否",
+      "type": "function",
+      "category": "get_hexagram",
+      "input": {
+        "binary": "111000"
+      },
+      "expected": {
+        "hexagramId": 12,
+        "name": "天地否",
+        "chineseName": "否",
+        "upperTrigram": "乾",
+        "lowerTrigram": "坤"
+      }
+    },
+    {
+      "id": 19,
+      "description": "互卦計算測試 - 乾為天",
+      "type": "function",
+      "category": "nuclear_hexagram",
+      "input": {
+        "hexagramId": 1
+      },
+      "expected": {
+        "nuclearHexagramId": 1,
+        "nuclearName": "乾為天"
+      }
+    },
+    {
+      "id": 20,
+      "description": "互卦計算測試 - 坤為地",
+      "type": "function",
+      "category": "nuclear_hexagram",
+      "input": {
+        "hexagramId": 2
+      },
+      "expected": {
+        "nuclearHexagramId": 2,
+        "nuclearName": "坤為地"
+      }
+    },
+    {
+      "id": 21,
+      "description": "互卦計算測試 - 水雷屯",
+      "type": "function",
+      "category": "nuclear_hexagram",
+      "input": {
+        "hexagramId": 3
+      },
+      "expected": {
+        "nuclearHexagramId": 23,
+        "nuclearName": "山地剝"
+      }
+    },
+    {
+      "id": 22,
+      "description": "互卦計算測試 - 火水未濟",
+      "type": "function",
+      "category": "nuclear_hexagram",
+      "input": {
+        "hexagramId": 64
+      },
+      "expected": {
+        "nuclearHexagramId": 63,
+        "nuclearName": "水火既濟"
+      }
+    },
+    {
+      "id": 23,
+      "description": "錯卦測試 - 乾為天",
+      "type": "function",
+      "category": "opposite_hexagram",
+      "input": {
+        "hexagramId": 1
+      },
+      "expected": {
+        "oppositeHexagramId": 2,
+        "oppositeName": "坤為地"
+      }
+    },
+    {
+      "id": 24,
+      "description": "錯卦測試 - 坤為地",
+      "type": "function",
+      "category": "opposite_hexagram",
+      "input": {
+        "hexagramId": 2
+      },
+      "expected": {
+        "oppositeHexagramId": 1,
+        "oppositeName": "乾為天"
+      }
+    },
+    {
+      "id": 25,
+      "description": "錯卦測試 - 水雷屯",
+      "type": "function",
+      "category": "opposite_hexagram",
+      "input": {
+        "hexagramId": 3
+      },
+      "expected": {
+        "oppositeHexagramId": 4,
+        "oppositeName": "山水蒙"
+      }
+    },
+    {
+      "id": 26,
+      "description": "錯卦測試 - 水火既濟",
+      "type": "function",
+      "category": "opposite_hexagram",
+      "input": {
+        "hexagramId": 63
+      },
+      "expected": {
+        "oppositeHexagramId": 64,
+        "oppositeName": "火水未濟"
+      }
+    },
+    {
+      "id": 27,
+      "description": "綜卦測試 - 水雷屯",
+      "type": "function",
+      "category": "reverse_hexagram",
+      "input": {
+        "hexagramId": 3
+      },
+      "expected": {
+        "reverseHexagramId": 4,
+        "reverseName": "山水蒙"
+      }
+    },
+    {
+      "id": 28,
+      "description": "綜卦測試 - 地天泰",
+      "type": "function",
+      "category": "reverse_hexagram",
+      "input": {
+        "hexagramId": 11
+      },
+      "expected": {
+        "reverseHexagramId": 12,
+        "reverseName": "天地否"
+      }
+    },
+    {
+      "id": 29,
+      "description": "爻辭獲取測試 - 初九",
+      "type": "function",
+      "category": "get_line_text",
+      "input": {
+        "hexagramId": 1,
+        "linePosition": 1
+      },
+      "expected": {
+        "lineType": "九",
+        "position": "初",
+        "hasText": true
+      }
+    },
+    {
+      "id": 30,
+      "description": "爻辭獲取測試 - 九五",
+      "type": "function",
+      "category": "get_line_text",
+      "input": {
+        "hexagramId": 1,
+        "linePosition": 5
+      },
+      "expected": {
+        "lineType": "九",
+        "position": "五",
+        "hasText": true
+      }
+    },
+    {
+      "id": 31,
+      "description": "爻辭獲取測試 - 上六",
+      "type": "function",
+      "category": "get_line_text",
+      "input": {
+        "hexagramId": 2,
+        "linePosition": 6
+      },
+      "expected": {
+        "lineType": "六",
+        "position": "上",
+        "hasText": true
+      }
+    },
+    {
+      "id": 32,
+      "description": "卦辭獲取測試",
+      "type": "function",
+      "category": "get_hexagram_text",
+      "input": {
+        "hexagramId": 1
+      },
+      "expected": {
+        "hasJudgement": true,
+        "hasImage": true,
+        "hasText": true
+      }
+    },
+    {
+      "id": 33,
+      "description": "六十四卦ID範圍測試",
+      "type": "boundary",
+      "category": "id_range",
+      "input": {
+        "hexagramId": 64
+      },
+      "expected": {
+        "isValid": true
+      }
+    },
+    {
+      "id": 34,
+      "description": "無效卦ID測試 - 0",
+      "type": "error",
+      "category": "invalid_id",
+      "input": {
+        "hexagramId": 0
+      },
+      "expected": {
+        "error": true,
+        "errorCode": "INVALID_HEXAGRAM_ID"
+      }
+    },
+    {
+      "id": 35,
+      "description": "無效卦ID測試 - 65",
+      "type": "error",
+      "category": "invalid_id",
+      "input": {
+        "hexagramId": 65
+      },
+      "expected": {
+        "error": true,
+        "errorCode": "INVALID_HEXAGRAM_ID"
+      }
+    },
+    {
+      "id": 36,
+      "description": "無效卦ID測試 - 負數",
+      "type": "error",
+      "category": "invalid_id",
+      "input": {
+        "hexagramId": -1
+      },
+      "expected": {
+        "error": true,
+        "errorCode": "INVALID_HEXAGRAM_ID"
+      }
+    },
+    {
+      "id": 37,
+      "description": "無效二進制字符串測試 - 長度不足",
+      "type": "error",
+      "category": "invalid_binary",
+      "input": {
+        "binary": "111"
+      },
+      "expected": {
+        "error": true,
+        "errorCode": "INVALID_BINARY_LENGTH"
+      }
+    },
+    {
+      "id": 38,
+      "description": "無效二進制字符串測試 - 長度過長",
+      "type": "error",
+      "category": "invalid_binary",
+      "input": {
+        "binary": "1111111"
+      },
+      "expected": {
+        "error": true,
+        "errorCode": "INVALID_BINARY_LENGTH"
+      }
+    },
+    {
+      "id": 39,
+      "description": "無效二進制字符串測試 - 非法字符",
+      "type": "error",
+      "category": "invalid_binary",
+      "input": {
+        "binary": "11111x"
+      },
+      "expected": {
+        "error": true,
+        "errorCode": "INVALID_BINARY_CHAR"
+      }
+    },
+    {
+      "id": 40,
+      "description": "空二進制字符串測試",
+      "type": "error",
+      "category": "invalid_binary",
+      "input": {
+        "binary": ""
+      },
+      "expected": {
+        "error": true,
+        "errorCode": "INVALID_BINARY_LENGTH"
+      }
+    },
+    {
+      "id": 41,
+      "description": "爻位範圍測試 - 下界",
+      "type": "boundary",
+      "category": "line_position",
+      "input": {
+        "hexagramId": 1,
+        "linePosition": 0
+      },
+      "expected": {
+        "error": true,
+        "errorCode": "INVALID_LINE_POSITION"
+      }
+    },
+    {
+      "id": 42,
+      "description": "爻位範圍測試 - 上界",
+      "type": "boundary",
+      "category": "line_position",
+      "input": {
+        "hexagramId": 1,
+        "linePosition": 7
+      },
+      "expected": {
+        "error": true,
+        "errorCode": "INVALID_LINE_POSITION"
+      }
+    },
+    {
+      "id": 43,
+      "description": "八卦 - 乾",
+      "type": "function",
+      "category": "trigram",
+      "input": {
+        "trigramBinary": "111"
+      },
+      "expected": {
+        "trigramId": 1,
+        "name": "乾",
+        "element": "天",
+        "direction": "西北"
+      }
+    },
+    {
+      "id": 44,
+      "description": "八卦 - 兌",
+      "type": "function",
+      "category": "trigram",
+      "input": {
+        "trigramBinary": "110"
+      },
+      "expected": {
+        "trigramId": 2,
+        "name": "兌",
+        "element": "澤",
+        "direction": "西"
+      }
+    },
+    {
+      "id": 45,
+      "description": "八卦 - 離",
+      "type": "function",
+      "category": "trigram",
+      "input": {
+        "trigramBinary": "101"
+      },
+      "expected": {
+        "trigramId": 3,
+        "name": "離",
+        "element": "火",
+        "direction": "南"
+      }
+    },
+    {
+      "id": 46,
+      "description": "八卦 - 震",
+      "type": "function",
+      "category": "trigram",
+      "input": {
+        "trigramBinary": "100"
+      },
+      "expected": {
+        "trigramId": 4,
+        "name": "震",
+        "element": "雷",
+        "direction": "東"
+      }
+    },
+    {
+      "id": 47,
+      "description": "八卦 - 巽",
+      "type": "function",
+      "category": "trigram",
+      "input": {
+        "trigramBinary": "011"
+      },
+      "expected": {
+        "trigramId": 5,
+        "name": "巽",
+        "element": "風",
+        "direction": "東南"
+      }
+    },
+    {
+      "id": 48,
+      "description": "八卦 - 坎",
+      "type": "function",
+      "category": "trigram",
+      "input": {
+        "trigramBinary": "010"
+      },
+      "expected": {
+        "trigramId": 6,
+        "name": "坎",
+        "element": "水",
+        "direction": "北"
+      }
+    },
+    {
+      "id": 49,
+      "description": "八卦 - 艮",
+      "type": "function",
+      "category": "trigram",
+      "input": {
+        "trigramBinary": "001"
+      },
+      "expected": {
+        "trigramId": 7,
+        "name": "艮",
+        "element": "山",
+        "direction": "東北"
+      }
+    },
+    {
+      "id": 50,
+      "description": "八卦 - 坤",
+      "type": "function",
+      "category": "trigram",
+      "input": {
+        "trigramBinary": "000"
+      },
+      "expected": {
+        "trigramId": 8,
+        "name": "坤",
+        "element": "地",
+        "direction": "西南"
+      }
+    },
+    {
+      "id": 51,
+      "description": "隨機卦象生成測試",
+      "type": "function",
+      "category": "random_hexagram",
+      "input": {
+        "method": "coin"
+      },
+      "expected": {
+        "hexagramIdRange": [1, 64],
+        "binaryLength": 6,
+        "isValid": true
+      }
+    },
+    {
+      "id": 52,
+      "description": "梅花易數測試",
+      "type": "function",
+      "category": "plum_blossom",
+      "input": {
+        "numbers": [5, 8]
+      },
+      "expected": {
+        "hasUpperTrigram": true,
+        "hasLowerTrigram": true,
+        "hasChangingLine": true
+      }
+    },
+    {
+      "id": 53,
+      "description": "變爻計算測試 - 單爻變",
+      "type": "function",
+      "category": "changing_lines",
+      "input": {
+        "hexagramId": 1,
+        "changingLines": [1]
+      },
+      "expected": {
+        "hasChangedHexagram": true,
+        "changedHexagramId": 44
+      }
+    },
+    {
+      "id": 54,
+      "description": "變爻計算測試 - 多爻變",
+      "type": "function",
+      "category": "changing_lines",
+      "input": {
+        "hexagramId": 1,
+        "changingLines": [1, 4]
+      },
+      "expected": {
+        "hasChangedHexagram": true,
+        "changedHexagramId": 20
+      }
+    },
+    {
+      "id": 55,
+      "description": "變爻計算測試 - 六爻全變",
+      "type": "function",
+      "category": "changing_lines",
+      "input": {
+        "hexagramId": 1,
+        "changingLines": [1, 2, 3, 4, 5, 6]
+      },
+      "expected": {
+        "hasChangedHexagram": true,
+        "changedHexagramId": 2
+      }
+    },
+    {
+      "id": 56,
+      "description": "卦序測試 - 先天八卦序",
+      "type": "function",
+      "category": "sequence",
+      "input": {
+        "sequenceType": "先天"
+      },
+      "expected": {
+        "firstTrigram": "乾",
+        "lastTrigram": "坤",
+        "count": 8
+      }
+    },
+    {
+      "id": 57,
+      "description": "卦序測試 - 後天八卦序",
+      "type": "function",
+      "category": "sequence",
+      "input": {
+        "sequenceType": "後天"
+      },
+      "expected": {
+        "firstTrigram": "離",
+        "lastTrigram": "坎",
+        "count": 8
+      }
+    },
+    {
+      "id": 58,
+      "description": "五行屬性測試 - 乾",
+      "type": "function",
+      "category": "element",
+      "input": {
+        "trigramName": "乾"
+      },
+      "expected": {
+        "element": "金",
+        "polarity": "陽"
+      }
+    },
+    {
+      "id": 59,
+      "description": "五行屬性測試 - 坎",
+      "type": "function",
+      "category": "element",
+      "input": {
+        "trigramName": "坎"
+      },
+      "expected": {
+        "element": "水",
+        "polarity": "陽"
+      }
+    },
+    {
+      "id": 60,
+      "description": "六親測試 - 乾宮",
+      "type": "function",
+      "category": "six_relations",
+      "input": {
+        "palaceHexagramId": 1,
+        "testHexagramId": 1
+      },
+      "expected": {
+        "relation": "兄弟",
+        "hasRelation": true
+      }
+    },
+    {
+      "id": 61,
+      "description": "納甲測試 - 乾卦",
+      "type": "function",
+      "category": "najia",
+      "input": {
+        "hexagramId": 1
+      },
+      "expected": {
+        "hasEarthlyBranch": true,
+        "branchCount": 6,
+        "firstBranch": "子"
+      }
+    },
+    {
+      "id": 62,
+      "description": "世爻測試 - 乾卦",
+      "type": "function",
+      "category": "shi_yao",
+      "input": {
+        "hexagramId": 1
+      },
+      "expected": {
+        "shiYaoPosition": 6,
+        "yingYaoPosition": 3
+      }
+    },
+    {
+      "id": 63,
+      "description": "空值輸入測試",
+      "type": "error",
+      "category": "null_input",
+      "input": null,
+      "expected": {
+        "error": true,
+        "errorCode": "NULL_INPUT"
+      }
+    },
+    {
+      "id": 64,
+      "description": "未定義輸入測試",
+      "type": "error",
+      "category": "undefined_input",
+      "input": {},
+      "expected": {
+        "error": true,
+        "errorCode": "MISSING_REQUIRED_FIELD"
+      }
+    },
+    {
+      "id": 65,
+      "description": "數據類型錯誤測試",
+      "type": "error",
+      "category": "type_error",
+      "input": {
+        "hexagramId": "abc"
+      },
+      "expected": {
+        "error": true,
+        "errorCode": "INVALID_TYPE"
+      }
+    },
+    {
+      "id": 66,
+      "description": "浮點數ID測試",
+      "type": "error",
+      "category": "type_error",
+      "input": {
+        "hexagramId": 1.5
+      },
+      "expected": {
+        "error": true,
+        "errorCode": "INVALID_TYPE"
+      }
+    },
+    {
+      "id": 67,
+      "description": "ASCII藝術卦象渲染測試",
+      "type": "function",
+      "category": "ascii_art",
+      "input": {
+        "hexagramId": 1
+      },
+      "expected": {
+        "hasAsciiArt": true,
+        "lineCount": 6
+      }
+    },
+    {
+      "id": 68,
+      "description": "Unicode卦象渲染測試",
+      "type": "function",
+      "category": "unicode",
+      "input": {
+        "hexagramId": 1
+      },
+      "expected": {
+        "hasUnicode": true,
+        "unicodeLength": 1
+      }
+    },
+    {
+      "id": 69,
+      "description": "卦名查詢測試 - 中文",
+      "type": "function",
+      "category": "search",
+      "input": {
+        "query": "乾",
+        "language": "zh"
+      },
+      "expected": {
+        "resultCount": 1,
+        "firstResultId": 1
+      }
+    },
+    {
+      "id": 70,
+      "description": "卦名查詢測試 - 英文",
+      "type": "function",
+      "category": "search",
+      "input": {
+        "query": "Heaven",
+        "language": "en"
+      },
+      "expected": {
+        "resultCount": 1,
+        "firstResultId": 1
+      }
+    },
+    {
+      "id": 71,
+      "description": "卦象對稱性測試 - 乾",
+      "type": "data_integrity",
+      "category": "symmetry",
+      "input": {
+        "hexagramId": 1
+      },
+      "expected": {
+        "isSymmetric": true
+      }
+    },
+    {
+      "id": 72,
+      "description": "卦象對稱性測試 - 屯",
+      "type": "data_integrity",
+      "category": "symmetry",
+      "input": {
+        "hexagramId": 3
+      },
+      "expected": {
+        "isSymmetric": false
+      }
+    },
+    {
+      "id": 73,
+      "description": "八宮分類測試 - 乾宮",
+      "type": "data_integrity",
+      "category": "palace",
+      "input": {
+        "palaceName": "乾"
+      },
+      "expected": {
+        "hexagramCount": 8,
+        "firstHexagramId": 1,
+        "lastHexagramId": 44
+      }
+    },
+    {
+      "id": 74,
+      "description": "八宮分類測試 - 坤宮",
+      "type": "data_integrity",
+      "category": "palace",
+      "input": {
+        "palaceName": "坤"
+      },
+      "expected": {
+        "hexagramCount": 8,
+        "firstHexagramId": 2,
+        "lastHexagramId": 23
+      }
+    },
+    {
+      "id": 75,
+      "description": "八宮總數測試",
+      "type": "data_integrity",
+      "category": "palace_count",
+      "expected": {
+        "palaceCount": 8,
+        "totalHexagrams": 64
+      }
+    },
+    {
+      "id": 76,
+      "description": "節氣對應測試",
+      "type": "function",
+      "category": "solar_term",
+      "input": {
+        "hexagramId": 11
+      },
+      "expected": {
+        "hasSolarTerm": true,
+        "solarTerm": "大寒"
+      }
+    },
+    {
+      "id": 77,
+      "description": "月份對應測試",
+      "type": "function",
+      "category": "month",
+      "input": {
+        "hexagramId": 11
+      },
+      "expected": {
+        "hasMonth": true,
+        "month": "正月"
+      }
+    },
+    {
+      "id": 78,
+      "description": "並發讀取測試",
+      "type": "performance",
+      "category": "concurrent",
+      "input": {
+        "concurrentRequests": 100,
+        "hexagramId": 1
+      },
+      "expected": {
+        "allSuccessful": true,
+        "consistentResult": true
+      }
+    },
+    {
+      "id": 79,
+      "description": "記憶體洩漏測試",
+      "type": "performance",
+      "category": "memory",
+      "input": {
+        "iterations": 10000,
+        "operation": "getHexagram"
+      },
+      "expected": {
+        "noMemoryLeak": true,
+        "stableMemoryUsage": true
+      }
+    },
+    {
+      "id": 80,
+      "description": "大數據量測試",
+      "type": "performance",
+      "category": "large_data",
+      "input": {
+        "operation": "getAllHexagrams"
+      },
+      "expected": {
+        "resultCount": 64,
+        "responseTimeUnder100ms": true
+      }
+    },
+    {
+      "id": 81,
+      "description": "JSON序列化測試",
+      "type": "function",
+      "category": "serialization",
+      "input": {
+        "hexagramId": 1,
+        "format": "json"
+      },
+      "expected": {
+        "isSerializable": true,
+        "isDeserializable": true,
+        "roundTripConsistent": true
+      }
+    },
+    {
+      "id": 82,
+      "description": "UTF-8編碼測試",
+      "type": "data_integrity",
+      "category": "encoding",
+      "input": {
+        "hexagramId": 1
+      },
+      "expected": {
+        "isValidUTF8": true,
+        "noGarbledChars": true
+      }
+    },
+    {
+      "id": 83,
+      "description": "天干測試 - 甲",
+      "type": "function",
+      "category": "heavenly_stem",
+      "input": {
+        "stem": "甲"
+      },
+      "expected": {
+        "stemId": 1,
+        "element": "木",
+        "polarity": "陽"
+      }
+    },
+    {
+      "id": 84,
+      "description": "地支測試 - 子",
+      "type": "function",
+      "category": "earthly_branch",
+      "input": {
+        "branch": "子"
+      },
+      "expected": {
+        "branchId": 1,
+        "element": "水",
+        "zodiac": "鼠"
+      }
+    },
+    {
+      "id": 85,
+      "description": "六十四卦完整遍歷測試",
+      "type": "data_integrity",
+      "category": "full_traversal",
+      "expected": {
+        "allHaveId": true,
+        "allHaveName": true,
+        "allHaveBinary": true,
+        "allHaveUpperTrigram": true,
+        "allHaveLowerTrigram": true,
+        "allHaveNuclear": true,
+        "allHaveOpposite": true,
+        "allHaveReverse": true,
+        "noDuplicateIds": true,
+        "noDuplicateNames": true,
+        "noDuplicateBinary": true
+      }
+    },
+    {
+      "id": 86,
+      "description": "互卦自反性測試",
+      "type": "data_integrity",
+      "category": "nuclear_reflexive",
+      "expected": {
+        "nuclearOfNuclearIsOriginal": true,
+        "description": "互卦的互卦應為原卦或特定規律"
+      }
+    },
+    {
+      "id": 87,
+      "description": "錯卦對稱性測試",
+      "type": "data_integrity",
+      "category": "opposite_symmetric",
+      "expected": {
+        "oppositeOfOppositeIsOriginal": true,
+        "description": "錯卦的錯卦應為原卦"
+      }
+    },
+    {
+      "id": 88,
+      "description": "綜卦對稱性測試",
+      "type": "data_integrity",
+      "category": "reverse_symmetric",
+      "expected": {
+        "reverseOfReverseIsOriginal": true,
+        "description": "綜卦的綜卦應為原卦"
+      }
+    },
+    {
+      "id": 89,
+      "description": "爻變陰陽測試",
+      "type": "function",
+      "category": "yao_change",
+      "input": {
+        "hexagramId": 1,
+        "linePosition": 1,
+        "fromType": "陽",
+        "toType": "陰"
+      },
+      "expected": {
+        "changedHexagramId": 44,
+        "lineChanged": true
+      }
+    },
+    {
+      "id": 90,
+      "description": "卦象二進制轉換測試",
+      "type": "function",
+      "category": "binary_conversion",
+      "input": {
+        "hexagramId": 11
+      },
+      "expected": {
+        "binary": "000111",
+        "decimal": 7
+      }
+    },
+    {
+      "id": 91,
+      "description": "二進制轉卦象測試",
+      "type": "function",
+      "category": "binary_to_hexagram",
+      "input": {
+        "binary": "000111"
+      },
+      "expected": {
+        "hexagramId": 11,
+        "name": "地天泰"
+      }
+    },
+    {
+      "id": 92,
+      "description": "卦象屬性完整性測試",
+      "type": "data_integrity",
+      "category": "attribute_completeness",
+      "expected": {
+        "requiredAttributes": [
+          "id",
+          "name",
+          "chineseName",
+          "binary",
+          "upperTrigram",
+          "lowerTrigram",
+          "nuclearHexagramId",
+          "oppositeHexagramId",
+          "reverseHexagramId",
+          "judgement",
+          "image",
+          "lines"
+        ]
+      }
+    },
+    {
+      "id": 93,
+      "description": "爻屬性完整性測試",
+      "type": "data_integrity",
+      "category": "line_attribute_completeness",
+      "expected": {
+        "requiredAttributes": [
+          "position",
+          "type",
+          "text",
+          "yinYang"
+        ]
+      }
+    },
+    {
+      "id": 94,
+      "description": "卦宮歸屬測試",
+      "type": "data_integrity",
+      "category": "palace_assignment",
+      "expected": {
+        "eachHexagramInOnePalace": true,
+        "palaceCount": 8,
+        "hexagramsPerPalace": 8
+      }
+    },
+    {
+      "id": 95,
+      "description": "卦象唯一性測試",
+      "type": "data_integrity",
+      "category": "uniqueness",
+      "expected": {
+        "noDuplicateId": true,
+        "noDuplicateName": true,
+        "noDuplicateBinary": true,
+        "noDuplicateTrigramCombination": true
+      }
+    },
+    {
+      "id": 96,
+      "description": "上下卦組合完整性測試",
+      "type": "data_integrity",
+      "category": "trigram_combination",
+      "expected": {
+        "totalCombinations": 64,
+        "allCombinationsCovered": true
+      }
+    },
+    {
+      "id": 97,
+      "description": "卦象數據一致性測試",
+      "type": "data_integrity",
+      "category": "consistency",
+      "expected": {
+        "binaryMatchesTrigrams": true,
+        "trigramMatchesBinary": true,
+        "idMatchesName": true,
+        "nameMatchesId": true
+      }
+    },
+    {
+      "id": 98,
+      "description": "錯誤恢復測試",
+      "type": "error",
+      "category": "error_recovery",
+      "input": {
+        "invalidInputs": [
+          {"hexagramId": null},
+          {"hexagramId": undefined},
+          {"hexagramId": NaN},
+          {"hexagramId": Infinity},
+          {"hexagramId": -Infinity}
+        ]
+      },
+      "expected": {
+        "allReturnError": true,
+        "noCrash": true
+      }
+    },
+    {
+      "id": 99,
+      "description": "邊界值測試 - 最小有效ID",
+      "type": "boundary",
+      "category": "boundary_value",
+      "input": {
+        "hexagramId": 1
+      },
+      "expected": {
+        "isValid": true,
+        "name": "乾為天"
+      }
+    },
+    {
+      "id": 100,
+      "description": "邊界值測試 - 最大有效ID",
+      "type": "boundary",
+      "category": "boundary_value",
+      "input": {
+        "hexagramId": 64
+      },
+      "expected": {
+        "isValid": true,
+        "name": "火水未濟"
+      }
+    }
+  ],
+  "dataIntegrityTests": {
+    "hexagramCount": "64卦數量必須為64",
+    "lineCount": "384爻數量必須為384（64卦 × 6爻）",
+    "linesPerHexagram": "每卦必須有且僅有6爻",
+    "nuclearRelation": "每卦必須有且僅有一個互卦",
+    "oppositeRelation": "每卦必須有且僅有一個錯卦",
+    "reverseRelation": "每卦必須有且僅有一個綜卦",
+    "uniqueId": "每個卦的ID必須唯一",
+    "uniqueName": "每個卦的名稱必須唯一",
+    "uniqueBinary": "每個卦的二進制表示必須唯一",
+    "validBinary": "每個卦的二進制必須為6位",
+    "binaryValues": "二進制只能包含0和1",
+    "trigramCount": "八卦數量必須為8",
+    "palaceCount": "八宮數量必須為8",
+    "hexagramsPerPalace": "每宮必須有8卦",
+    "palaceCoverage": "所有64卦必須歸屬於某一宮",
+    "trigramCombination": "8×8=64種上下卦組合必須全部存在",
+    "nuclearReflexive": "互卦的互卦應呈現特定規律",
+    "oppositeSymmetric": "錯卦的錯卦應為原卦",
+    "reverseSymmetric": "綜卦的綜卦應為原卦",
+    "encodingUTF8": "所有文本必須為UTF-8編碼",
+    "noNullFields": "必填字段不能為null或undefined",
+    "noEmptyStrings": "必填字符串字段不能為空",
+    "validIdRange": "卦ID必須在1-64範圍內",
+    "validLinePosition": "爻位必須在1-6範圍內",
+    "validTrigramId": "八卦ID必須在1-8範圍內"
+  },
+  "functionTests": {
+    "getHexagramById": "根據ID獲取卦象",
+    "getHexagramByBinary": "根據二進制獲取卦象",
+    "getHexagramByName": "根據名稱獲取卦象",
+    "getNuclearHexagram": "獲取互卦",
+    "getOppositeHexagram": "獲取錯卦",
+    "getReverseHexagram": "獲取綜卦",
+    "getChangingHexagram": "獲取變卦",
+    "getTrigram": "獲取八卦",
+    "getUpperTrigram": "獲取上卦",
+    "getLowerTrigram": "獲取下卦",
+    "getLineText": "獲取爻辭",
+    "getHexagramText": "獲取卦辭",
+    "getJudgement": "獲取卦辭判斷",
+    "getImage": "獲取象辭",
+    "generateRandomHexagram": "隨機生成卦象",
+    "convertBinaryToHexagram": "二進制轉卦象",
+    "convertHexagramToBinary": "卦象轉二進制",
+    "renderAsciiArt": "ASCII藝術渲染",
+    "renderUnicode": "Unicode渲染",
+    "searchByName": "按名稱搜索",
+    "getPalace": "獲取所屬宮",
+    "getElement": "獲取五行屬性",
+    "getSixRelations": "獲取六親",
+    "getNajia": "獲取納甲",
+    "getShiYao": "獲取世爻",
+    "getYingYao": "獲取應爻",
+    "getSolarTerm": "獲取節氣",
+    "getMonth": "獲取月份",
+    "serialize": "序列化",
+    "deserialize": "反序列化",
+    "validateHexagram": "驗證卦象數據",
+    "getAllHexagrams": "獲取所有卦象",
+    "getAllTrigrams": "獲取所有八卦"
+  },
+  "testCategories": {
+    "data_integrity": "數據完整性測試",
+    "function": "功能測試",
+    "boundary": "邊界情況測試",
+    "error": "錯誤處理測試",
+    "performance": "性能測試"
+  },
+  "errorCodes": {
+    "INVALID_HEXAGRAM_ID": "無效的卦象ID",
+    "INVALID_BINARY_LENGTH": "二進制字符串長度不正確",
+    "INVALID_BINARY_CHAR": "二進制字符串包含無效字符",
+    "INVALID_LINE_POSITION": "無效的爻位",
+    "NULL_INPUT": "輸入為空",
+    "MISSING_REQUIRED_FIELD": "缺少必要字段",
+    "INVALID_TYPE": "數據類型錯誤",
+    "HEXAGRAM_NOT_FOUND": "找不到指定卦象",
+    "TRIGRAM_NOT_FOUND": "找不到指定八卦",
+    "PALACE_NOT_FOUND": "找不到指定宮"
+  }
+}
