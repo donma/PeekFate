@@ -510,15 +510,20 @@ class App {
     let ichingScore = 0;
     const ichingTrace = [];
     try {
-      ichingResult = this.ichingEngine.deriveHourHexagram(date, hourBranch.branch, baziResult);
-      const personalized = this.ichingEngine.personalizeHexagramByElement(ichingResult.hexagram, dayMasterElement);
-      ichingScore = this._calculateIchingScore(personalized, ichingResult);
-      ichingTrace.push({
-        system: 'iching', rule: 'hexagram', value: ichingResult.hexagram.name,
-        score: ichingScore, reason: `卦象${ichingResult.hexagram.name}，五行${personalized.strengthLevel}`
-      });
+      if (this.ichingEngine && this.ichingEngine.loaded) {
+        ichingResult = this.ichingEngine.deriveHourHexagram(date, hourBranch.branch, baziResult);
+        if (ichingResult && ichingResult.hexagram) {
+          const personalized = this.ichingEngine.personalizeHexagramByElement(ichingResult.hexagram, dayMasterElement);
+          ichingScore = this._calculateIchingScore(personalized, ichingResult);
+          ichingTrace.push({
+            system: 'iching', rule: 'hexagram', value: ichingResult.hexagram.name,
+            score: ichingScore, reason: `卦象${ichingResult.hexagram.name}，五行${personalized.strengthLevel}`
+          });
+        }
+      }
     } catch (error) {
       console.warn('易經計算錯誤:', error);
+      ichingScore = 0;
     }
     ichingScore = Math.max(-20, Math.min(20, ichingScore));
 
