@@ -1156,6 +1156,34 @@ small {
   margin-left: var(--spacing-sm);
 }
 
+.bazi-yongshen {
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: rgba(201, 164, 92, 0.08);
+  border-radius: var(--radius-sm);
+}
+.yongshen-label { font-weight: 600; color: #2F7D32; }
+.yongshen-val { font-weight: 700; color: #2F7D32; font-size: 1rem; }
+.jishen-label { font-weight: 600; color: #A32828; }
+.jishen-val { font-weight: 700; color: #A32828; font-size: 1rem; }
+
+.bazi-shensha {
+  font-size: 0.85rem;
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+}
+.shensha-item { display: inline-block; padding: 0 4px; }
+.shensha-item.good { color: #2F7D32; }
+.shensha-item.bad { color: #B85C3A; }
+
+.bazi-branch-score {
+  font-size: 0.85rem;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary);
+}
+
 .bazi-note {
   font-size: 0.85rem;
   color: var(--text-secondary);

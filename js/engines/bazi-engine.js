@@ -192,6 +192,16 @@ class BaziEngine {
     // 旬空（空亡）
     const kongWang = this._getKongWang(dayPillar);
 
+    // 用神喜忌
+    const elementCount = this._countElements({ year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar });
+    const yongShen = this._calculateYongShen(dayMaster.element, dayMasterStrength, elementCount);
+
+    // 神煞
+    const shenSha = this._calculateShenSha({ year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar });
+
+    // 地支關係深度分數
+    const branchRelationScore = this._calculateBranchRelationScore(branchRels);
+
     return {
       year: yearPillar,
       month: monthPillar,
@@ -201,6 +211,9 @@ class BaziEngine {
       dayMasterStrength,
       kongWang,
       monthElement,
+      yongShen,
+      shenSha,
+      branchRelationScore,
       tenGods,
       branchRelations: branchRels,
       hiddenStems: hiddenStemsList,
@@ -1504,6 +1517,192 @@ class BaziEngine {
     if (harmonyRatio > 0.5) return true;
     if (conflictRatio > 0.5) return false;
     return null;
+  }
+
+  _elementToChinese(el) {
+    const map = { wood: '木', fire: '火', earth: '土', metal: '金', water: '水' };
+    return map[el] || el;
+  }
+
+  _countElements(pillars) {
+    const elementMap = {
+      '甲': 'wood', '乙': 'wood', '丙': 'fire', '丁': 'fire',
+      '戊': 'earth', '己': 'earth', '庚': 'metal', '辛': 'metal',
+      '壬': 'water', '癸': 'water',
+      '子': 'water', '丑': 'earth', '寅': 'wood', '卯': 'wood',
+      '辰': 'earth', '巳': 'fire', '午': 'fire', '未': 'earth',
+      '申': 'metal', '酉': 'metal', '戌': 'earth', '亥': 'water'
+    };
+    const counts = { wood: 0, fire: 0, earth: 0, metal: 0, water: 0 };
+    for (const [pos, p] of Object.entries(pillars)) {
+      if (!p) continue;
+      if (p.stem && elementMap[p.stem]) counts[elementMap[p.stem]]++;
+      if (p.branch && elementMap[p.branch]) counts[elementMap[p.branch]]++;
+    }
+    return counts;
+  }
+
+  /**
+   * 計算用神喜忌
+   * 依日主旺衰 + 八字五行分布，推最需/最忌之五行
+   * @private
+   * @param {string} dayMasterElement - 日主五行
+   * @param {string} dayMasterStrength - 旺/相/休/囚/死
+   * @param {Object} elementCount - 八字五行統計
+   * @returns {Object} { yongShen, jiShen, yongShenLabel, jiShenLabel, favorableElements, unfavorableElements }
+   */
+  _calculateYongShen(dayMasterElement, dayMasterStrength, elementCount) {
+    const elements = ['wood', 'fire', 'earth', 'metal', 'water'];
+    const generateMap = { wood: 'fire', fire: 'earth', earth: 'metal', metal: 'water', water: 'wood' };
+    const controlMap = { wood: 'earth', earth: 'water', water: 'fire', fire: 'metal', metal: 'wood' };
+
+    // 生我
+    let mother = '';
+    for (const [k, v] of Object.entries(generateMap)) {
+      if (v === dayMasterElement) { mother = k; break; }
+    }
+    const child = generateMap[dayMasterElement]; // 我生
+    const controlled = controlMap[dayMasterElement]; // 我剋
+    let controller = '';
+    for (const [k, v] of Object.entries(controlMap)) {
+      if (v === dayMasterElement) { controller = k; break; }
+    }
+
+    let favorable = [];
+    let unfavorable = [];
+
+    if (dayMasterStrength === '旺' || dayMasterStrength === '相') {
+      favorable = [child, controlled, controller];
+      unfavorable = [mother, dayMasterElement];
+    } else if (dayMasterStrength === '囚' || dayMasterStrength === '死') {
+      favorable = [mother, dayMasterElement];
+      unfavorable = [child, controller, controlled];
+    } else {
+      favorable = [];
+      unfavorable = [];
+    }
+
+    let yongShen = null;
+    let minCount = Infinity;
+    for (const el of favorable) {
+      const c = elementCount[el] || 0;
+      if (c < minCount) { minCount = c; yongShen = el; }
+    }
+
+    let jiShen = null;
+    let maxCount = -1;
+    for (const el of unfavorable) {
+      const c = elementCount[el] || 0;
+      if (c > maxCount) { maxCount = c; jiShen = el; }
+    }
+
+    // 身弱但八字已有印比 → 選最缺者；身旺已見官殺財食傷 → 選最缺者
+    if (!yongShen && !jiShen) {
+      let min = Infinity; let max = -1;
+      for (const el of elements) {
+        const c = elementCount[el] || 0;
+        if (c < min) { min = c; yongShen = el; }
+        if (c > max) { max = c; jiShen = el; }
+      }
+      if (yongShen === jiShen) { yongShen = null; jiShen = null; }
+    }
+
+    return {
+      yongShen,
+      jiShen,
+      yongShenLabel: yongShen ? this._elementToChinese(yongShen) : null,
+      jiShenLabel: jiShen ? this._elementToChinese(jiShen) : null,
+      favorableElements: favorable.filter(Boolean),
+      unfavorableElements: unfavorable.filter(Boolean)
+    };
+  }
+
+  /**
+   * 計算神煞（以日干 + 年支為主）
+   * @private
+   * @param {Object} bazi - 四柱結果
+   * @returns {Array} 神煞列表 [{ name, type, isGood }]
+   */
+  _calculateShenSha(bazi) {
+    const stems = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+    const branches = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+
+    const dayStem = bazi.day?.stem || '';
+    const yearBranch = bazi.year?.branch || '';
+    const dayBranch = bazi.day?.branch || '';
+    if (!dayStem || !yearBranch) return [];
+
+    const si = stems.indexOf(dayStem);
+    const ybi = branches.indexOf(yearBranch);
+    const dbi = branches.indexOf(dayBranch);
+    const shenSha = [];
+
+    // 天乙貴人（日干定）
+    const tianyiMap = {
+      '甲': ['丑', '未'], '乙': ['子', '申'], '丙': ['亥', '酉'], '丁': ['亥', '酉'],
+      '戊': ['丑', '未'], '己': ['子', '申'], '庚': ['丑', '未'], '辛': ['午', '寅'],
+      '壬': ['巳', '卯'], '癸': ['巳', '卯']
+    };
+    const tianyiBranches = tianyiMap[dayStem] || [];
+    if (tianyiBranches.includes(yearBranch) || tianyiBranches.includes(dayBranch)) {
+      shenSha.push({ name: '天乙貴人', type: '貴人', isGood: true });
+    }
+
+    // 文昌貴人（日干定）
+    const wenchangMap = { '甲': '巳', '乙': '午', '丙': '申', '丁': '酉', '戊': '申', '己': '酉', '庚': '亥', '辛': '子', '壬': '寅', '癸': '卯' };
+    if (wenchangMap[dayStem] === yearBranch || wenchangMap[dayStem] === dayBranch) {
+      shenSha.push({ name: '文昌貴人', type: '學業', isGood: true });
+    }
+
+    // 桃花（年支定：寅午戌見卯，巳酉丑見午，申子辰見酉，亥卯未見子）
+    const taoHuaSeasons = { '寅': '卯', '午': '卯', '戌': '卯', '巳': '午', '酉': '午', '丑': '午', '申': '酉', '子': '酉', '辰': '酉', '亥': '子', '卯': '子', '未': '子' };
+    if (taoHuaSeasons[yearBranch] === dayBranch || taoHuaSeasons[dayBranch] === dayBranch) {
+      shenSha.push({ name: '桃花', type: '感情', isGood: false });
+    }
+
+    // 驛馬（年支定：寅午戌見申，巳酉丑見亥，申子辰見寅，亥卯未見巳）
+    const yiMaMap = { '寅': '申', '午': '申', '戌': '申', '巳': '亥', '酉': '亥', '丑': '亥', '申': '寅', '子': '寅', '辰': '寅', '亥': '巳', '卯': '巳', '未': '巳' };
+    if (yiMaMap[yearBranch] === dayBranch) {
+      shenSha.push({ name: '驛馬', type: '變動', isGood: true });
+    }
+
+    // 華蓋（年支定：寅午戌見戌，巳酉丑見丑，申子辰見辰，亥卯未見未）
+    const huaGaiMap = { '寅': '戌', '午': '戌', '戌': '戌', '巳': '丑', '酉': '丑', '丑': '丑', '申': '辰', '子': '辰', '辰': '辰', '亥': '未', '卯': '未', '未': '未' };
+    if (huaGaiMap[yearBranch] === dayBranch) {
+      shenSha.push({ name: '華蓋', type: '孤獨', isGood: false });
+    }
+
+    // 劫煞（年支定：寅午戌見亥，巳酉丑見寅，申子辰見巳，亥卯未見申）
+    const jieShaMap = { '寅': '亥', '午': '亥', '戌': '亥', '巳': '寅', '酉': '寅', '丑': '寅', '申': '巳', '子': '巳', '辰': '巳', '亥': '申', '卯': '申', '未': '申' };
+    if (jieShaMap[yearBranch] === dayBranch) {
+      shenSha.push({ name: '劫煞', type: '災厄', isGood: false });
+    }
+
+    // 亡神（年支定：寅午戌見巳，巳酉丑見申，申子辰見亥，亥卯未見寅）
+    const wangShenMap = { '寅': '巳', '午': '巳', '戌': '巳', '巳': '申', '酉': '申', '丑': '申', '申': '亥', '子': '亥', '辰': '亥', '亥': '寅', '卯': '寅', '未': '寅' };
+    if (wangShenMap[yearBranch] === dayBranch) {
+      shenSha.push({ name: '亡神', type: '消極', isGood: false });
+    }
+
+    return shenSha;
+  }
+
+  /**
+   * 計算地支關係深度分數（刑沖合會加權）
+   * @private
+   * @param {Object} branchRelations - getBranchRelations 的結果
+   * @returns {number} 合計分
+   */
+  _calculateBranchRelationScore(branchRelations) {
+    if (!branchRelations) return 0;
+    let score = 0;
+    score += branchRelations.liuHe?.length * 3 || 0;
+    score += branchRelations.sanHe?.length * 4 || 0;
+    score += branchRelations.sanHui?.length * 3 || 0;
+    score -= branchRelations.liuChong?.length * 4 || 0;
+    score -= branchRelations.sanXing?.length * 3 || 0;
+    score -= branchRelations.liuHai?.length * 3 || 0;
+    return Math.max(-10, Math.min(10, score));
   }
 
   /**

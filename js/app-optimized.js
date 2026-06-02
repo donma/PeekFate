@@ -576,6 +576,54 @@ class App {
       }
     }
 
+    // 用神喜忌加分：時干/時支五行為用神則加，為忌神則扣
+    if (baziResult.yongShen) {
+      const yong = baziResult.yongShen.yongShen;
+      const ji = baziResult.yongShen.jiShen;
+      if (yong || ji) {
+        const hourStemElement = this.baziEngine._stemToElement ? this.baziEngine._stemToElement(hourGanzhi.stem) : null;
+        const hourBranchElement2 = this._getBranchElement(hourBranch.branch);
+        let yongScore = 0;
+        if (yong && hourStemElement === yong) { yongScore += 3; }
+        if (yong && hourBranchElement2 === yong) { yongScore += 1; }
+        if (ji && hourStemElement === ji) { yongScore -= 3; }
+        if (ji && hourBranchElement2 === ji) { yongScore -= 1; }
+        if (yongScore !== 0) {
+          baziScore += yongScore;
+          baziTrace.push({
+            system: 'bazi', rule: 'yongShen', value: baziResult.yongShen.yongShenLabel || '',
+            score: yongScore,
+            reason: yongScore > 0 ? `時柱五行合用神${baziResult.yongShen.yongShenLabel}，吉`
+              : `時柱五行犯忌神${baziResult.yongShen.jiShenLabel}，凶`
+          });
+        }
+      }
+    }
+
+    // 神煞計分（日支/年支的神煞影響全局）
+    if (baziResult.shenSha && baziResult.shenSha.length > 0) {
+      for (const ss of baziResult.shenSha) {
+        const shaScore = ss.isGood ? 2 : -2;
+        baziScore += shaScore;
+        baziTrace.push({
+          system: 'bazi', rule: 'shenSha', value: ss.name,
+          score: shaScore, reason: `${ss.name}（${ss.isGood ? '吉神' : '凶煞'}）`
+        });
+      }
+    }
+
+    // 地支關係深度扣分（刑沖害 vs 合會）
+    if (baziResult.branchRelationScore) {
+      const relScore = baziResult.branchRelationScore;
+      if (relScore !== 0) {
+        baziScore += relScore;
+        baziTrace.push({
+          system: 'bazi', rule: 'branchRelation', value: `${relScore > 0 ? '合會' : '刑沖'}`,
+          score: relScore, reason: relScore > 0 ? '地支合會多，氣場和諧' : '地支刑沖害多，氣場動盪'
+        });
+      }
+    }
+
     baziScore = Math.max(-25, Math.min(25, baziScore));
 
     let ichingResult = null;
@@ -957,6 +1005,27 @@ class App {
         if (baziResult.kongWang && baziResult.kongWang.includes(hourBranches[h])) {
           hourScore -= 3;
         }
+        // 用神喜忌
+        if (baziResult.yongShen) {
+          const yong = baziResult.yongShen.yongShen;
+          const ji = baziResult.yongShen.jiShen;
+          const stemEl = this.baziEngine._stemToElement ? this.baziEngine._stemToElement(hourGanzhi.stem) : null;
+          const brEl = this._getBranchElement(hourBranches[h]);
+          if (yong && stemEl === yong) hourScore += 3;
+          else if (yong && brEl === yong) hourScore += 1;
+          else if (ji && stemEl === ji) hourScore -= 3;
+          else if (ji && brEl === ji) hourScore -= 1;
+        }
+        // 神煞
+        if (baziResult.shenSha && baziResult.shenSha.length > 0) {
+          for (const ss of baziResult.shenSha) {
+            hourScore += ss.isGood ? 2 : -2;
+          }
+        }
+        // 地支關係深度
+        if (baziResult.branchRelationScore) {
+          hourScore += baziResult.branchRelationScore;
+        }
 
         if (hourScore >= 60) bestHours.push(hourNames[h]);
         if (hourScore < 40) riskHours.push(hourNames[h]);
@@ -987,6 +1056,25 @@ class App {
     const dayBranchElement = this._getBranchElement(dayGanzhi.branch);
     const relScore = this._calculateElementRelationScore(dayMasterElement, dayBranchElement);
     totalScore += relScore;
+
+    // 用神喜忌（日干）
+    if (baziResult.yongShen) {
+      const yong = baziResult.yongShen.yongShen;
+      const ji = baziResult.yongShen.jiShen;
+      const dayStemElement = this.baziEngine._stemToElement ? this.baziEngine._stemToElement(dayGanzhi.stem) : null;
+      if (yong && dayStemElement === yong) totalScore += 3;
+      else if (ji && dayStemElement === ji) totalScore -= 3;
+    }
+    // 神煞（全局）
+    if (baziResult.shenSha && baziResult.shenSha.length > 0) {
+      for (const ss of baziResult.shenSha) {
+        totalScore += ss.isGood ? 2 : -2;
+      }
+    }
+    // 地支關係深度
+    if (baziResult.branchRelationScore) {
+      totalScore += baziResult.branchRelationScore;
+    }
 
     totalScore = Math.max(0, Math.min(100, totalScore));
     const levelInfo = this.scoringEngine.getScoreLevel(totalScore);
@@ -1271,6 +1359,18 @@ class App {
       ? `<p class="bazi-kongwang">旬空：${bazi.kongWang.join('、')}</p>`
       : '';
 
+    const yongShenInfo = bazi.yongShen?.yongShen
+      ? `<p class="bazi-yongshen"><span class="yongshen-label">用神：</span><span class="yongshen-val">${bazi.yongShen.yongShenLabel}</span>　<span class="jishen-label">忌神：</span><span class="jishen-val">${bazi.yongShen.jiShenLabel || '無'}</span></p>`
+      : '';
+
+    const shenShaInfo = bazi.shenSha?.length > 0
+      ? `<p class="bazi-shensha">神煞：${bazi.shenSha.map(s => `<span class="shensha-item ${s.isGood ? 'good' : 'bad'}">${s.name}</span>`).join('、')}</p>`
+      : '';
+
+    const branchScoreInfo = bazi.branchRelationScore
+      ? `<p class="bazi-branch-score">地支氣場：${bazi.branchRelationScore >= 0 ? '和諧' : '動盪'}（${bazi.branchRelationScore >= 0 ? '+' : ''}${bazi.branchRelationScore}）</p>`
+      : '';
+
     return `
       <div class="result-card bazi-summary">
         <h3 class="card-title">個人基本盤</h3>
@@ -1278,6 +1378,9 @@ class App {
         <div class="bazi-master">日主：${bazi.dayMaster.stem}（${bazi.dayMaster.label}）</div>
         ${strengthInfo}
         ${kongWangInfo}
+        ${yongShenInfo}
+        ${shenShaInfo}
+        ${branchScoreInfo}
         ${tenGodInfo ? `<p class="bazi-tengod">${tenGodInfo}</p>` : ''}
         ${branchSummary}
         ${bazi.birthInfo?.note ? `<p class="bazi-note">${bazi.birthInfo.note}</p>` : ''}
