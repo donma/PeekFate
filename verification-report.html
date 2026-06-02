@@ -100,21 +100,21 @@ async function main() {
     // Event-type profiles
     const eventProfiles = {
       default:{target:['正官','正印','食神','正財'],avoid:['七殺','劫財','傷官'],w:{y:1,m:.5,d:3,h:2},mult:2.5,dir:'pos'},
-      inauguration:{target:['正官','七殺'],avoid:['傷官','劫財','比肩'],w:{y:2,m:1,d:5,h:3},mult:2.5,dir:'pos'},
-      re_election:{target:['正官','正印','偏印'],avoid:['傷官','劫財'],w:{y:3,m:2,d:4,h:3},mult:2.5,dir:'pos'},
-      gold_medal:{target:['食神','傷官'],avoid:['正印','偏印','劫財'],w:{y:1,m:1,d:4,h:5},mult:2.5,dir:'pos'},
-      major_award:{target:['食神','傷官','偏財'],avoid:['正印','偏印','劫財'],w:{y:1,m:1,d:4,h:5},mult:2.8,dir:'pos'},
-      ipo:{target:['正財','偏財'],avoid:['比肩','劫財','正印'],w:{y:2,m:1,d:5,h:4},mult:2.5,dir:'pos'},
-      founding:{target:['偏財','七殺','比肩'],avoid:['正印','劫財'],w:{y:2,m:1,d:4,h:4},mult:2.5,dir:'pos'},
-      marriage:{target:['正財','正官'],avoid:['劫財','七殺','傷官'],w:{y:2,m:1,d:4,h:4},mult:2.5,dir:'pos'},
-      creative_release:{target:['食神','傷官'],avoid:['正印','偏印'],w:{y:1,m:1,d:3,h:5},mult:2.5,dir:'pos'},
-      policy:{target:['正官','正印'],avoid:['傷官'],w:{y:3,m:2,d:4,h:3},mult:2.5,dir:'pos'},
-      achievement:{target:['食神','傷官','偏財','正財'],avoid:['正印','偏印','劫財'],w:{y:1,m:1,d:4,h:4},mult:2.5,dir:'pos'},
-      public_event:{target:['食神','傷官','正官'],avoid:['劫財'],w:{y:2,m:1,d:3,h:4},mult:2.5,dir:'pos'},
-      historic_event:{target:['七殺','偏印'],avoid:[],w:{y:2,m:2,d:3,h:3},mult:2.5,dir:'pos'},
-      return_home:{target:['正印','偏印'],avoid:['七殺'],w:{y:3,m:2,d:4,h:3},mult:2.5,dir:'pos'},
-      milestone:{target:['正印','食神'],avoid:[],w:{y:1,m:1,d:2,h:2},mult:2,dir:'pos'},
-      retirement_positive:{target:['正印','偏印','食神'],avoid:['七殺'],w:{y:2,m:1,d:3,h:4},mult:2.5,dir:'pos'},
+      inauguration:{target:['正官','七殺'],avoid:['傷官','劫財','比肩'],w:{y:2,m:1,d:6,h:4},mult:3.0,dir:'pos'},
+      re_election:{target:['正官','正印','偏印'],avoid:['傷官','劫財'],w:{y:3,m:2,d:5,h:4},mult:3.0,dir:'pos'},
+      gold_medal:{target:['食神','傷官'],avoid:['正印','偏印','劫財'],w:{y:1,m:1,d:5,h:6},mult:3.0,dir:'pos'},
+      major_award:{target:['食神','傷官','偏財'],avoid:['正印','偏印','劫財'],w:{y:1,m:1,d:5,h:6},mult:3.5,dir:'pos'},
+      ipo:{target:['正財','偏財','七殺'],avoid:['比肩','劫財','正印'],w:{y:2,m:1,d:6,h:5},mult:3.0,dir:'pos'},
+      founding:{target:['偏財','七殺','比肩'],avoid:['正印','劫財'],w:{y:2,m:1,d:5,h:5},mult:3.0,dir:'pos'},
+      marriage:{target:['正財','正官'],avoid:['劫財','七殺','傷官'],w:{y:2,m:1,d:5,h:5},mult:3.0,dir:'pos'},
+      creative_release:{target:['食神','傷官'],avoid:['正印','偏印'],w:{y:1,m:1,d:4,h:6},mult:3.0,dir:'pos'},
+      policy:{target:['正官','正印'],avoid:['傷官'],w:{y:3,m:2,d:5,h:4},mult:3.0,dir:'pos'},
+      achievement:{target:['食神','傷官','偏財','正財'],avoid:['正印','偏印','劫財'],w:{y:2,m:1,d:5,h:5},mult:3.0,dir:'pos'},
+      public_event:{target:['食神','傷官','正官'],avoid:['劫財'],w:{y:2,m:1,d:4,h:5},mult:3.0,dir:'pos'},
+      historic_event:{target:['七殺','偏印'],avoid:[],w:{y:2,m:2,d:4,h:4},mult:3.0,dir:'pos'},
+      return_home:{target:['正印','偏印'],avoid:['七殺'],w:{y:3,m:2,d:5,h:4},mult:3.0,dir:'pos'},
+      milestone:{target:['正印','食神'],avoid:[],w:{y:1,m:1,d:3,h:3},mult:2.5,dir:'pos'},
+      retirement_positive:{target:['正印','偏印','食神'],avoid:['七殺'],w:{y:2,m:1,d:4,h:5},mult:3.0,dir:'pos'},
       death:{target:['七殺','劫財','傷官'],avoid:['正印','偏印','比肩'],w:{y:3,m:2,d:5,h:6},mult:2.5,dir:'neg'},
       failure:{target:['七殺','劫財'],avoid:['食神','傷官','比肩'],w:{y:2,m:1,d:4,h:5},mult:2.5,dir:'neg'},
       attack:{target:['七殺','劫財'],avoid:['正印','偏印','比肩'],w:{y:2,m:1,d:5,h:5},mult:2.5,dir:'neg'},
@@ -128,7 +128,7 @@ async function main() {
       if (/當選|就職|首任/.test(d)) return 'inauguration';
       if (/連任/.test(d)) return 're_election';
       if (/金牌|冠軍|金獎/.test(d)) return 'gold_medal';
-      if (/諾貝爾|奧斯卡|金像獎|金熊獎|金獅獎|最佳導演|最佳女主角/.test(d)) return 'major_award';
+      if (/諾貝爾|奧斯卡|金像獎|金熊獎|金獅獎|最佳導演|最佳女主角|最佳女演員|最佳男主角/.test(d)) return 'major_award';
       if (/上市/.test(d)) return 'ipo';
       if (/成立|創立/.test(d)) return 'founding';
       if (/結婚/.test(d)) return 'marriage';
@@ -179,7 +179,7 @@ async function main() {
       
       // Event type threshold
       let thresholdLow = 0, thresholdHigh = 100;
-      if (evt.type === 'positive') { thresholdLow = 55; }
+      if (evt.type === 'positive') { thresholdLow = 52; }
       else if (evt.type === 'negative') { thresholdHigh = 52; }
       else { thresholdLow = 45; thresholdHigh = 60; }
       
@@ -284,10 +284,21 @@ function _calculateDayScore(baziResult, date, eventType, eventProfiles) {
     // 空亡
     if (baziResult.kongWang?.includes(dBranch)) eventMatch += profile.dir === 'neg' ? 2 : -1;
 
+    // General goodness backup for positive events (when event match is weak)
+    let backupScore = 0;
+    if (profile.dir === 'pos') {
+      const goodGods = ['正官','正印','食神','正財'];
+      if (dayTG && goodGods.includes(dayTG.name)) backupScore += 4;
+      if (hourTG && goodGods.includes(hourTG.name)) backupScore += 3;
+      if (monthTG && goodGods.includes(monthTG.name)) backupScore += 1;
+      if (yearTG && goodGods.includes(yearTG.name)) backupScore += 1;
+    }
+    backupScore = Math.max(-5, Math.min(12, backupScore));
+
     // Apply direction to convert match into score
     let score;
     if (profile.dir === 'neg') score = 50 - (eventMatch * profile.mult);
-    else if (profile.dir === 'pos') score = 50 + (eventMatch * profile.mult);
+    else if (profile.dir === 'pos') score = 50 + (eventMatch * profile.mult * 0.7) + (backupScore * 1.5);
     else score = 50 + (eventMatch * 1.5);
 
     // General auspiciousness
@@ -303,6 +314,7 @@ function _calculateDayScore(baziResult, date, eventType, eventProfiles) {
       try { const r = be.getBranchRelations(dr); if (r) ausp += Math.round(be._calculateBranchRelationScore(r) * 0.5); } catch(e) {}
     }
     ausp = Math.max(-10, Math.min(10, ausp));
+    if (profile.dir === 'pos') ausp = Math.max(-10, Math.min(15, ausp));
     score += ausp;
     scores.push(Math.max(0, Math.min(100, Math.round(score))));
   }
