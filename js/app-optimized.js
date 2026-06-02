@@ -664,6 +664,22 @@ class App {
       }
     }
 
+    // 納音五行深度
+    if (baziResult.nayinDepth?.details) {
+      for (const nd of baziResult.nayinDepth.details) {
+        if (nd.score !== 0) {
+          baziScore += nd.score;
+          baziTrace.push({ system: 'bazi', rule: 'nayinDepth', value: nd.nayin, score: nd.score, reason: `${nd.position}柱納音${nd.nayin}${nd.relation}日主` });
+        }
+      }
+    }
+
+    // 暗合暗沖
+    if (baziResult.anHeScore && baziResult.anHeScore !== 0) {
+      baziScore += baziResult.anHeScore;
+      baziTrace.push({ system: 'bazi', rule: 'anHe', score: baziResult.anHeScore, reason: '地支暗合，氣場暗通' });
+    }
+
     // 十二長生（日主在時支狀態）
     if (baziResult.shiErChangSheng?.hour) {
       const ces = baziResult.shiErChangSheng.hour;
@@ -1196,6 +1212,8 @@ class App {
         if (baziResult.rootInfo) {
           hourScore += baziResult.rootInfo.modifier;
         }
+        if (baziResult.nayinDepth?.totalScore) hourScore += baziResult.nayinDepth.totalScore;
+        if (baziResult.anHeScore) hourScore += baziResult.anHeScore;
         if (baziResult.shiErChangSheng?.hour) hourScore += baziResult.shiErChangSheng.hour.score;
         if (baziResult.stemClashScore) hourScore += baziResult.stemClashScore;
         if (baziResult.dayun?.pillars?.length > 0) {
@@ -1307,6 +1325,8 @@ class App {
       }
       totalScore += hs;
     }
+    if (baziResult.nayinDepth?.totalScore) totalScore += baziResult.nayinDepth.totalScore;
+    if (baziResult.anHeScore) totalScore += baziResult.anHeScore;
     if (baziResult.shiErChangSheng?.hour) totalScore += baziResult.shiErChangSheng.hour.score;
     if (baziResult.stemClashScore) totalScore += baziResult.stemClashScore;
     if (baziResult.dayun?.pillars?.length > 0) {
@@ -1647,6 +1667,7 @@ class App {
     const miscInfo = [
       bazi.taiYuan ? `胎元：${bazi.taiYuan.name}` : '',
       bazi.mingGong?.branch ? `命宮：${bazi.mingGong.branch}` : '',
+      bazi.renYuanSiLing?.stem ? `司令：${bazi.renYuanSiLing.stem}` : '',
       bazi.stemCombinations?.yearMonth?.combined ? `年干合化：${bazi.stemCombinations.yearMonth.element}` : '',
       bazi.stemCombinations?.monthDay?.combined ? `月干合化：${bazi.stemCombinations.monthDay.element}` : ''
     ].filter(Boolean);

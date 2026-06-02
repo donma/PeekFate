@@ -233,6 +233,16 @@ class BaziEngine {
     // 天干沖剋
     const stemClashScore = this._calculateStemClashScore(yearPillar.stem, monthPillar.stem, dayPillar.stem, hourPillar.stem);
 
+    // 人元司令分野
+    const dayInMonth = date.getDate();
+    const renYuanSiLing = this._calculateRenYuanSiLing(monthPillar, dayInMonth);
+
+    // 納音五行深度
+    const nayinDepth = this._calculateNayinDepthScores(dayMaster.element, { year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar });
+
+    // 暗合暗沖
+    const anHeScore = this._calculateAnHeAnChong({ year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar });
+
     // 大運細化（若有大運）
     let enhancedDayun = null;
     if (dayun) {
@@ -260,6 +270,9 @@ class BaziEngine {
       branchRelationScore,
       shiErChangSheng,
       stemClashScore,
+      nayinDepth,
+      renYuanSiLing,
+      anHeScore,
       dayun: enhancedDayun || dayun,
       tenGods,
       branchRelations: branchRels,
@@ -1800,6 +1813,84 @@ class BaziEngine {
       return { ...p, tenGod: tenGod.name, tenGodType: tenGod.type, isYongMatch };
     });
     return { ...dayun, pillars };
+  }
+
+  /**
+   * 納音五行深度：四柱納音與日主生剋關係
+   * @private
+   */
+  _calculateNayinDepthScores(dayMasterElement, pillars) {
+    const nayinElement = { '金': 'metal', '木': 'wood', '水': 'water', '火': 'fire', '土': 'earth' };
+    const generateMap = { wood: 'fire', fire: 'earth', earth: 'metal', metal: 'water', water: 'wood' };
+    const controlMap = { wood: 'earth', earth: 'water', water: 'fire', fire: 'metal', metal: 'wood' };
+    const results = [];
+    let totalScore = 0;
+
+    for (const [pos, p] of Object.entries(pillars)) {
+      if (!p || !p.nayin) continue;
+      const lastChar = p.nayin.slice(-1);
+      const el = nayinElement[lastChar];
+      if (!el) continue;
+      let score = 0;
+      let rel = '';
+      if (el === dayMasterElement) { score = 1; rel = '比和'; }
+      else if (generateMap[el] === dayMasterElement) { score = 2; rel = '生主'; }
+      else if (generateMap[dayMasterElement] === el) { score = -1; rel = '主生'; }
+      else if (controlMap[el] === dayMasterElement) { score = -2; rel = '剋主'; }
+      else if (controlMap[dayMasterElement] === el) { score = 0; rel = '主剋'; }
+      results.push({ position: pos, nayin: p.nayin, element: el, relation: rel, score });
+      totalScore += score;
+    }
+    return { details: results, totalScore };
+  }
+
+  /**
+   * 人元司令分野：月令內主事藏干隨節氣日變化
+   * @private
+   */
+  _calculateRenYuanSiLing(monthPillar, dayInMonth) {
+    if (!monthPillar || !monthPillar.branch) return null;
+    // 各月司令藏干及主事天數（標準分野）
+    const siLingMap = {
+      '寅': [{ stem: '戊', days: 7 }, { stem: '丙', days: 7 }, { stem: '甲', days: 16 }],
+      '卯': [{ stem: '甲', days: 10 }, { stem: '乙', days: 20 }],
+      '辰': [{ stem: '乙', days: 9 }, { stem: '癸', days: 3 }, { stem: '戊', days: 18 }],
+      '巳': [{ stem: '戊', days: 5 }, { stem: '庚', days: 9 }, { stem: '丙', days: 16 }],
+      '午': [{ stem: '丙', days: 10 }, { stem: '己', days: 9 }, { stem: '丁', days: 11 }],
+      '未': [{ stem: '丁', days: 9 }, { stem: '乙', days: 3 }, { stem: '己', days: 18 }],
+      '申': [{ stem: '己', days: 7 }, { stem: '戊', days: 3 }, { stem: '壬', days: 3 }, { stem: '庚', days: 17 }],
+      '酉': [{ stem: '庚', days: 10 }, { stem: '辛', days: 20 }],
+      '戌': [{ stem: '辛', days: 9 }, { stem: '丁', days: 3 }, { stem: '戊', days: 18 }],
+      '亥': [{ stem: '戊', days: 7 }, { stem: '甲', days: 7 }, { stem: '壬', days: 16 }],
+      '子': [{ stem: '壬', days: 10 }, { stem: '癸', days: 20 }],
+      '丑': [{ stem: '癸', days: 9 }, { stem: '辛', days: 3 }, { stem: '己', days: 18 }]
+    };
+    const rulers = siLingMap[monthPillar.branch];
+    if (!rulers) return null;
+    const d = typeof dayInMonth === 'number' ? dayInMonth : 1;
+    let acc = 0;
+    for (const r of rulers) {
+      acc += r.days;
+      if (d <= acc) return { stem: r.stem, daysRemaining: acc - d + 1, totalDays: r.days };
+    }
+    return { stem: rulers[0].stem, daysRemaining: 1, totalDays: rulers[0].days };
+  }
+
+  /**
+   * 暗合暗沖
+   * 寅丑暗合、卯申暗合、午亥暗合；子巳暗合
+   * @private
+   */
+  _calculateAnHeAnChong(pillars) {
+    const anHePairs = [
+      ['寅', '丑'], ['卯', '申'], ['午', '亥'], ['子', '巳']
+    ];
+    const branches = Object.values(pillars).filter(p => p && p.branch).map(p => p.branch);
+    let anHeScore = 0;
+    for (const [a, b] of anHePairs) {
+      if (branches.includes(a) && branches.includes(b)) anHeScore += 2;
+    }
+    return anHeScore;
   }
 
   _elementToChinese(el) {
