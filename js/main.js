@@ -3,8 +3,12 @@
  * 使用延遲載入和並行處理來提升性能
  */
 
-const APP_VERSION = 'v102';
-console.log(`⚡ 速窺運勢 v${APP_VERSION}`);
+const APP_VERSION = 'v103';
+console.log(`⚡ 速窺運勢 ${APP_VERSION}`);
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.getElementById('footerVersion');
+  if (el) el.textContent = APP_VERSION.replace('v', '');
+});
 
 // 檢查是否有舊版快取需要清除
 async function checkStaleCache() {
