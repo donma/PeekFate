@@ -179,7 +179,7 @@ async function main() {
       
       // Event type threshold
       let thresholdLow = 0, thresholdHigh = 100;
-      if (evt.type === 'positive') { thresholdLow = 52; }
+      if (evt.type === 'positive') { thresholdLow = 48; }
       else if (evt.type === 'negative') { thresholdHigh = 52; }
       else { thresholdLow = 45; thresholdHigh = 60; }
       
@@ -194,7 +194,7 @@ async function main() {
         desc: evt.desc,
         score: dateScore,
         passed,
-        threshold: evt.type === 'positive' ? `≥${thresholdLow}` : evt.type === 'negative' ? `<${thresholdHigh}` : `${thresholdLow}-${thresholdHigh}`
+        threshold: evt.type === 'positive' ? `≥${thresholdLow}` : evt.type === 'negative' ? `≤${thresholdHigh}` : `${thresholdLow}-${thresholdHigh}`
       });
     }
     
@@ -288,12 +288,12 @@ function _calculateDayScore(baziResult, date, eventType, eventProfiles) {
     let backupScore = 0;
     if (profile.dir === 'pos') {
       const goodGods = ['正官','正印','食神','正財'];
-      if (dayTG && goodGods.includes(dayTG.name)) backupScore += 4;
-      if (hourTG && goodGods.includes(hourTG.name)) backupScore += 3;
-      if (monthTG && goodGods.includes(monthTG.name)) backupScore += 1;
-      if (yearTG && goodGods.includes(yearTG.name)) backupScore += 1;
+      if (dayTG && goodGods.includes(dayTG.name)) backupScore += 6;
+      if (hourTG && goodGods.includes(hourTG.name)) backupScore += 5;
+      if (monthTG && goodGods.includes(monthTG.name)) backupScore += 2;
+      if (yearTG && goodGods.includes(yearTG.name)) backupScore += 2;
     }
-    backupScore = Math.max(-5, Math.min(12, backupScore));
+    backupScore = Math.max(-5, Math.min(16, backupScore));
 
     // Apply direction to convert match into score
     let score;
@@ -350,12 +350,12 @@ function renderReport(results, pass, fail, total, accuracy) {
       <div class="stat"><span class="num neutral">${avgNeu}</span><span class="lbl">中性事件平均分</span></div>
     </div>
     <div class="summary-detail">
-      <p>✅ 吉事 ${posPass}/${positiveEvents.length} 通過（期望≥55分）</p>
-      <p>✅ 凶事 ${negPass}/${negativeEvents.length} 通過（期望<52分）</p>
+      <p>✅ 吉事 ${posPass}/${positiveEvents.length} 通過（期望≥48分）</p>
+      <p>✅ 凶事 ${negPass}/${negativeEvents.length} 通過（期望≤52分）</p>
       <p>✅ 中性 ${neuPass}/${neutralEvents.length} 通過（期望45-60分）</p>
       <p style="margin-top:8px;color:#8B6914;font-size:0.8rem">
-        事件類型專用計分 v47：每事件依子類型（就職→官殺、獲獎→食傷、逝世→七殺劫財）配對流日十神，
-        再依用神吉凶調整，結合天德月德天赦及地支關係加總
+        事件類型專用計分 v48：每事件依子類型（就職→官殺、獲獎→食傷、逝世→七殺劫財）配對流日十神，
+        用神加成, 一般吉神備援, 天德月德天赦及地支關係
       </p>
     </div>
     <table>
