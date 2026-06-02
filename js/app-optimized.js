@@ -1721,6 +1721,7 @@ class App {
   }
 
   _renderBaziSummary(bazi) {
+    const tenGodInfo = bazi.tenGods?.hour ? `時柱十神：${bazi.tenGods.hour.name}` : '';
     const branchSummary = bazi.branchRelations?.summary?.length > 0
       ? `<p class="bazi-relations">地支關係：${bazi.branchRelations.summary.join('、')}</p>`
       : '';
