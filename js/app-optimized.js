@@ -1611,10 +1611,17 @@ class App {
       btnToggle.textContent = '▼ 展開輸入區';
     }
     
-    // 滾動到頁面頂部（hero 區）
+    // 滾動到今日總覽
     setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 150);
+      const todaySummary = document.querySelector('.day-summary');
+      if (todaySummary) {
+        const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
+        const top = todaySummary.getBoundingClientRect().top + window.pageYOffset - headerHeight - 12;
+        window.scrollTo({ top, behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 200);
   }
 
   _renderResult(result) {
