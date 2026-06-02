@@ -2225,6 +2225,86 @@ class BaziEngine {
       shenSha.push({ name: '亡神', type: '消極', isGood: false });
     }
 
+    // ===== 神煞擴充 +15 組 =====
+
+    // 天德貴人（月支定：正丁二申宮，三壬四辛同...）
+    const tianDeMap = { '寅': '丁', '卯': '申', '辰': '壬', '巳': '辛', '午': '亥', '未': '甲', '申': '癸', '酉': '寅', '戌': '丙', '亥': '乙', '子': '巳', '丑': '庚' };
+    if (tianDeMap[bazi.month?.branch] && tianDeMap[bazi.month?.branch] === dayStem) {
+      shenSha.push({ name: '天德貴人', type: '福德', isGood: true });
+    }
+
+    // 月德貴人（月支定：寅午戌月丙，巳酉丑月庚，申子辰月壬，亥卯未月甲）
+    const yueDeSeason = { '寅': '丙', '午': '丙', '戌': '丙', '巳': '庚', '酉': '庚', '丑': '庚', '申': '壬', '子': '壬', '辰': '壬', '亥': '甲', '卯': '甲', '未': '甲' };
+    if (yueDeSeason[bazi.month?.branch] === dayStem) {
+      shenSha.push({ name: '月德貴人', type: '福德', isGood: true });
+    }
+
+    // 天赦（日柱定：春戊寅，夏甲午，秋戊申，冬甲子）
+    const tianSheSeason = { '寅': '戊寅', '卯': '戊寅', '辰': '戊寅', '巳': '甲午', '午': '甲午', '未': '甲午', '申': '戊申', '酉': '戊申', '戌': '戊申', '亥': '甲子', '子': '甲子', '丑': '甲子' };
+    if (tianSheSeason[bazi.month?.branch] === (dayStem + dayBranch)) {
+      shenSha.push({ name: '天赦', type: '赦免', isGood: true });
+    }
+
+    // 福星貴人（日干定：甲丙見寅子，乙丁見亥酉，戊庚見申午，己辛見未巳，壬癸見丑卯）
+    const fuXingMap = { '甲': ['寅','子'], '乙': ['亥','酉'], '丙': ['寅','子'], '丁': ['亥','酉'], '戊': ['申','午'], '己': ['未','巳'], '庚': ['申','午'], '辛': ['未','巳'], '壬': ['丑','卯'], '癸': ['丑','卯'] };
+    if (fuXingMap[dayStem]?.includes(yearBranch) || fuXingMap[dayStem]?.includes(dayBranch)) {
+      shenSha.push({ name: '福星貴人', type: '福氣', isGood: true });
+    }
+
+    // 天廚（日干定：甲丙見巳，乙丁見午，戊庚見申，己辛見酉，壬癸見子亥）
+    const tianChuMap = { '甲': '巳', '丙': '巳', '乙': '午', '丁': '午', '戊': '申', '庚': '申', '己': '酉', '辛': '酉', '壬': '亥', '癸': '子' };
+    if (tianChuMap[dayStem] && (tianChuMap[dayStem] === yearBranch || tianChuMap[dayStem] === dayBranch)) {
+      shenSha.push({ name: '天廚', type: '福祿', isGood: true });
+    }
+
+    // 天喜（年支定：子年見酉，丑年見申，寅年見未，卯年見午，辰年見巳，巳年見辰，午年見卯，未年見寅，申年見丑，酉年見子，戌年見亥，亥年見戌）
+    const tianXiMap = { '子':'酉','丑':'申','寅':'未','卯':'午','辰':'巳','巳':'辰','午':'卯','未':'寅','申':'丑','酉':'子','戌':'亥','亥':'戌' };
+    if (tianXiMap[yearBranch] === dayBranch) shenSha.push({ name: '天喜', type: '喜慶', isGood: true });
+
+    // 紅鸞（年支定：子年見卯，丑年見寅，寅年見丑，卯年見子，辰年見亥，巳年見戌，午年見酉，未年見申，申年見未，酉年見午，戌年見巳，亥年見辰）
+    const hongLuanMap = { '子':'卯','丑':'寅','寅':'丑','卯':'子','辰':'亥','巳':'戌','午':'酉','未':'申','申':'未','酉':'午','戌':'巳','亥':'辰' };
+    if (hongLuanMap[yearBranch] === dayBranch) shenSha.push({ name: '紅鸞', type: '姻緣', isGood: true });
+
+    // 將星（年支定：寅午戌見午，巳酉丑見酉，申子辰見子，亥卯未見卯）
+    const jiangXingMap = { '寅':'午','午':'午','戌':'午','巳':'酉','酉':'酉','丑':'酉','申':'子','子':'子','辰':'子','亥':'卯','卯':'卯','未':'卯' };
+    if (jiangXingMap[yearBranch] === dayBranch) shenSha.push({ name: '將星', type: '權威', isGood: true });
+
+    // 金輿（日干定：甲龍乙蛇丙戊羊，丁己猴庚犬辛雞，壬癸兔蛇輪流轉）
+    const jinYuMap = { '甲':'辰','乙':'巳','丙':'未','丁':'申','戊':'未','己':'申','庚':'戌','辛':'酉','壬':'卯','癸':'巳' };
+    if (jinYuMap[dayStem] && (jinYuMap[dayStem] === yearBranch || jinYuMap[dayStem] === dayBranch)) {
+      shenSha.push({ name: '金輿', type: '貴氣', isGood: true });
+    }
+
+    // 學堂（日干定：甲乙見巳亥，丙丁見申寅，戊己見申寅，庚辛見寅午，壬癸見巳午）
+    const xueTangMap = { '甲':'巳','乙':'亥','丙':'申','丁':'寅','戊':'申','己':'寅','庚':'巳','辛':'午','壬':'巳','癸':'午' };
+    if (xueTangMap[dayStem] && (xueTangMap[dayStem] === yearBranch || xueTangMap[dayStem] === dayBranch)) {
+      shenSha.push({ name: '學堂', type: '學業', isGood: true });
+    }
+
+    // 天醫（月支定：正月見丑，二月見寅，三月見卯，四月見辰...）
+    const tianYiMap = { '寅':'丑','卯':'寅','辰':'卯','巳':'辰','午':'巳','未':'午','申':'未','酉':'申','戌':'酉','亥':'戌','子':'亥','丑':'子' };
+    if (tianYiMap[bazi.month?.branch] && tianYiMap[bazi.month?.branch] === dayBranch) {
+      shenSha.push({ name: '天醫', type: '健康', isGood: true });
+    }
+
+    // 孤辰寡宿（年支定：寅卯辰見巳丑，巳午未見申辰，申酉戌見亥未，亥子丑見寅戌）
+    const guChenPairs = { '寅':'巳','卯':'巳','辰':'巳','巳':'申','午':'申','未':'申','申':'亥','酉':'亥','戌':'亥','亥':'寅','子':'寅','丑':'寅' };
+    const guaSuPairs = { '寅':'丑','卯':'丑','辰':'丑','巳':'辰','午':'辰','未':'辰','申':'未','酉':'未','戌':'未','亥':'戌','子':'戌','丑':'戌' };
+    if (guChenPairs[yearBranch] === dayBranch) shenSha.push({ name: '孤辰', type: '孤獨', isGood: false });
+    if (guaSuPairs[yearBranch] === dayBranch) shenSha.push({ name: '寡宿', type: '孤獨', isGood: false });
+
+    // 陰差陽錯（日支定：子午卯酉四日）
+    const yinChaYangCuo = ['子','午','卯','酉'];
+    if (yinChaYangCuo.includes(dayBranch)) {
+      shenSha.push({ name: '陰差陽錯', type: '人際', isGood: false });
+    }
+
+    // 十惡大敗（日干定：甲己見辰戌，乙庚見丑未，丙辛見寅申，丁壬見卯酉，戊癸見子午巳亥）
+    const shiEBaiMap = { '甲':['辰','戌'],'己':['辰','戌'],'乙':['丑','未'],'庚':['丑','未'],'丙':['寅','申'],'辛':['寅','申'],'丁':['卯','酉'],'壬':['卯','酉'],'戊':['子','午'],'癸':['巳','亥'] };
+    if (shiEBaiMap[dayStem]?.includes(dayBranch)) {
+      shenSha.push({ name: '十惡大敗', type: '敗運', isGood: false });
+    }
+
     return shenSha;
   }
 

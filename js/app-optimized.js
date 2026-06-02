@@ -751,19 +751,41 @@ class App {
     }
 
     // 流年/流月影響
+    let isSuiYunBingLin = false;
     const flowYear = this.baziEngine.calculateYearPillar(date);
     const flowMonth = this.baziEngine.calculateMonthPillar(date);
     if (flowYear) {
       const flowYearTenGod = this.baziEngine.getTenGod(baziResult.day.stem, flowYear.stem);
       if (flowYearTenGod) {
         const fyScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[flowYearTenGod.name] || 0;
-        const fyAdjusted = Math.round(fyScore * 0.3);
+        let fyAdjusted = Math.round(fyScore * 0.3);
+        // 歲運並臨：流年與大運重複，吉凶加倍
+        const matchDayun = baziResult.dayun?.pillars?.find(p => p.name === flowYear.name);
+        if (matchDayun) {
+          fyAdjusted = Math.round(fyAdjusted * 2);
+          isSuiYunBingLin = true;
+        }
         if (fyAdjusted !== 0) {
           baziScore += fyAdjusted;
           baziTrace.push({
             system: 'bazi', rule: 'flowYear', value: `${flowYear.name} ${flowYearTenGod.name}`,
-            score: fyAdjusted, reason: `流年${flowYear.name}對日主形成${flowYearTenGod.name}（${fyScore >= 0 ? '吉' : '凶'}）`
+            score: fyAdjusted, reason: `流年${flowYear.name}對日主形成${flowYearTenGod.name}（${fyScore >= 0 ? '吉' : '凶'}）${matchDayun ? '，歲運並臨加倍' : ''}`
           });
+        }
+        if (matchDayun) {
+          baziTrace.push({ system: 'bazi', rule: 'suiYunBingLin', score: Math.round(fyScore * 0.3), reason: `歲運並臨：流年${flowYear.name}=大運，效應加倍` });
+        }
+      }
+        }
+        if (fyAdjusted !== 0) {
+          baziScore += fyAdjusted;
+          baziTrace.push({
+            system: 'bazi', rule: 'flowYear', value: `${flowYear.name} ${flowYearTenGod.name}`,
+            score: fyAdjusted, reason: `流年${flowYear.name}對日主形成${flowYearTenGod.name}（${fyScore >= 0 ? '吉' : '凶'}）${matchDayun ? '，歲運並臨加倍' : ''}`
+          });
+          if (matchDayun) {
+            baziTrace.push({ system: 'bazi', rule: 'suiYunBingLin', score: Math.round(fyScore * 0.3), reason: `歲運並臨：流年${flowYear.name}=大運，效應加倍` });
+          }
         }
       }
       // 流年支與四柱刑沖合會
@@ -1382,7 +1404,9 @@ class App {
           const fyTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fy.stem);
           if (fyTenGod) {
             const fyScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fyTenGod.name] || 0;
-            hourScore += Math.round(fyScore * 0.3);
+            let fyAdjusted = Math.round(fyScore * 0.3);
+            if (baziResult.dayun?.pillars?.find(p => p.name === fy.name)) fyAdjusted *= 2;
+            hourScore += fyAdjusted;
           }
           // 流年支與時支
           const fyr = this.baziEngine.getBranchRelations([fy.branch, hourBranches[h]].filter(Boolean));
@@ -1510,7 +1534,10 @@ class App {
     if (fy) {
       const fyTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fy.stem);
       if (fyTenGod) {
-        totalScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fyTenGod.name] || 0) * 0.3);
+        const fyScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fyTenGod.name] || 0;
+        let fyAdjusted = Math.round(fyScore * 0.3);
+        if (baziResult.dayun?.pillars?.find(p => p.name === fy.name)) fyAdjusted *= 2;
+        totalScore += fyAdjusted;
       }
       const fyr = this.baziEngine.getBranchRelations([fy.branch, dayGanzhi.branch].filter(Boolean));
       if (fyr) {
