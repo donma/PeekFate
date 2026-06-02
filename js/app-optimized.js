@@ -525,10 +525,30 @@ class App {
 
     if (hourGanzhi.tenGod) {
       const tenGodScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[hourGanzhi.tenGod.name] || 0;
-      baziScore += tenGodScore;
+      // 日主旺衰動態調整：旺/相時喜官殺財食傷，忌印比；囚/死時反轉
+      const strength = baziResult.dayMasterStrength || '休';
+      const tenGodType = hourGanzhi.tenGod.type;
+      const dynamicModifiers = {
+        '旺': { favor: ['officer', 'wealth', 'output'], unfavor: ['resource', 'peer'] },
+        '相': { favor: ['officer', 'wealth', 'output'], unfavor: ['resource', 'peer'] },
+        '休': { favor: [], unfavor: [] },
+        '囚': { favor: ['resource', 'peer'], unfavor: ['officer', 'wealth', 'output'] },
+        '死': { favor: ['resource', 'peer'], unfavor: ['officer', 'wealth', 'output'] }
+      };
+      const mod = dynamicModifiers[strength] || dynamicModifiers['休'];
+      let adjustedScore = tenGodScore;
+      if (mod.favor.includes(tenGodType)) {
+        adjustedScore = Math.round(tenGodScore * 1.5);
+      } else if (mod.unfavor.includes(tenGodType)) {
+        adjustedScore = Math.round(tenGodScore * 0.5);
+      }
+      baziScore += adjustedScore;
+      const reason = mod.favor.includes(tenGodType) ? `${hourGanzhi.tenGod.name}（日主${strength}，喜用）`
+        : mod.unfavor.includes(tenGodType) ? `${hourGanzhi.tenGod.name}（日主${strength}，忌神）`
+        : `時干對日主形成${hourGanzhi.tenGod.name}`;
       baziTrace.push({
         system: 'bazi', rule: 'hourTenGod', value: hourGanzhi.tenGod.name,
-        score: tenGodScore, reason: `時干對日主形成${hourGanzhi.tenGod.name}`
+        score: adjustedScore, reason
       });
     }
 
@@ -539,6 +559,18 @@ class App {
       system: 'bazi', rule: 'elementRelation', value: `${dayMasterElement}-${hourBranchElement}`,
       score: elementRelationScore, reason: `時支五行${hourBranchElement}與日主${dayMasterElement}的關係`
     });
+
+    // 旬空扣分：時支若為空亡，能量減半
+    if (baziResult.kongWang && baziResult.kongWang.length > 0) {
+      if (baziResult.kongWang.includes(hourBranch.branch)) {
+        const kongWangPenalty = -3;
+        baziScore += kongWangPenalty;
+        baziTrace.push({
+          system: 'bazi', rule: 'kongWang', value: hourBranch.branch,
+          score: kongWangPenalty, reason: `時支${hourBranch.branch}為空亡，能量受阻`
+        });
+      }
+    }
 
     baziScore = Math.max(-25, Math.min(25, baziScore));
 
@@ -897,10 +929,30 @@ class App {
     for (let h = 0; h < 12; h++) {
       try {
         const hourGanzhi = this._calculateHourGanzhi(baziResult.day.stem, hourBranches[h]);
-        const tenGodScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[hourGanzhi.tenGod?.name] || 0;
+        let tenGodScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[hourGanzhi.tenGod?.name] || 0;
+        // 日主旺衰動態調整
+        const strength = baziResult.dayMasterStrength || '休';
+        const tenGodType = hourGanzhi.tenGod?.type;
+        const dynamicModifiers = {
+          '旺': { favor: ['officer', 'wealth', 'output'], unfavor: ['resource', 'peer'] },
+          '相': { favor: ['officer', 'wealth', 'output'], unfavor: ['resource', 'peer'] },
+          '休': { favor: [], unfavor: [] },
+          '囚': { favor: ['resource', 'peer'], unfavor: ['officer', 'wealth', 'output'] },
+          '死': { favor: ['resource', 'peer'], unfavor: ['officer', 'wealth', 'output'] }
+        };
+        const mod = dynamicModifiers[strength] || dynamicModifiers['休'];
+        if (tenGodType && mod.favor.includes(tenGodType)) {
+          tenGodScore = Math.round(tenGodScore * 1.5);
+        } else if (tenGodType && mod.unfavor.includes(tenGodType)) {
+          tenGodScore = Math.round(tenGodScore * 0.5);
+        }
         const branchElement = this._getBranchElement(hourBranches[h]);
         const relScore = this._calculateElementRelationScore(dayMasterElement, branchElement);
-        const hourScore = 50 + tenGodScore + relScore;
+        let hourScore = 50 + tenGodScore + relScore;
+        // 旬空扣分
+        if (baziResult.kongWang && baziResult.kongWang.includes(hourBranches[h])) {
+          hourScore -= 3;
+        }
 
         if (hourScore >= 60) bestHours.push(hourNames[h]);
         if (hourScore < 40) riskHours.push(hourNames[h]);
@@ -910,7 +962,22 @@ class App {
     }
 
     const tenGod = this.baziEngine.getTenGod(baziResult.day.stem, dayGanzhi.stem);
-    const tenGodScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[tenGod.name] || 0;
+    let tenGodScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[tenGod.name] || 0;
+    const strength = baziResult.dayMasterStrength || '休';
+    const tenGodType = tenGod.type;
+    const dynamicModifiers = {
+      '旺': { favor: ['officer', 'wealth', 'output'], unfavor: ['resource', 'peer'] },
+      '相': { favor: ['officer', 'wealth', 'output'], unfavor: ['resource', 'peer'] },
+      '休': { favor: [], unfavor: [] },
+      '囚': { favor: ['resource', 'peer'], unfavor: ['officer', 'wealth', 'output'] },
+      '死': { favor: ['resource', 'peer'], unfavor: ['officer', 'wealth', 'output'] }
+    };
+    const mod = dynamicModifiers[strength] || dynamicModifiers['休'];
+    if (tenGodType && mod.favor.includes(tenGodType)) {
+      tenGodScore = Math.round(tenGodScore * 1.5);
+    } else if (tenGodType && mod.unfavor.includes(tenGodType)) {
+      tenGodScore = Math.round(tenGodScore * 0.5);
+    }
     totalScore += tenGodScore;
 
     const dayBranchElement = this._getBranchElement(dayGanzhi.branch);
@@ -1191,11 +1258,22 @@ class App {
       ? `<p class="bazi-relations">地支關係：${bazi.branchRelations.summary.join('、')}</p>`
       : '';
 
+    const strengthLabels = { '旺': '旺（得令）', '相': '相（得生）', '休': '休（退休）', '囚': '囚（受制）', '死': '死（受剋）' };
+    const strengthInfo = bazi.dayMasterStrength
+      ? `<p class="bazi-strength">日主旺衰：<span class="strength-${bazi.dayMasterStrength}">${strengthLabels[bazi.dayMasterStrength] || bazi.dayMasterStrength}</span></p>`
+      : '';
+
+    const kongWangInfo = bazi.kongWang?.length > 0
+      ? `<p class="bazi-kongwang">旬空：${bazi.kongWang.join('、')}</p>`
+      : '';
+
     return `
       <div class="result-card bazi-summary">
         <h3 class="card-title">個人基本盤</h3>
         <div class="bazi-pillars">${pillars.map(p => `<span class="pillar">${p}</span>`).join('')}</div>
         <div class="bazi-master">日主：${bazi.dayMaster.stem}（${bazi.dayMaster.label}）</div>
+        ${strengthInfo}
+        ${kongWangInfo}
         ${tenGodInfo ? `<p class="bazi-tengod">${tenGodInfo}</p>` : ''}
         ${branchSummary}
         ${bazi.birthInfo?.note ? `<p class="bazi-note">${bazi.birthInfo.note}</p>` : ''}

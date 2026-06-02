@@ -3,7 +3,7 @@
  * 使用延遲載入和並行處理來提升性能
  */
 
-const APP_VERSION = 'v27';
+const APP_VERSION = 'v28';
 
 // 檢查是否有舊版快取需要清除
 async function checkStaleCache() {

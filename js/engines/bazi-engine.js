@@ -185,12 +185,22 @@ class BaziEngine {
     // 大運計算
     const dayun = gender ? this.calculateDayun(adjustedDate, gender, yearPillar, monthPillar) : null;
 
+    // 日主旺衰（月令）
+    const monthElement = this._getMonthElement(monthPillar.branch);
+    const dayMasterStrength = this._getDayMasterStrength(dayMaster.element, monthPillar.branch);
+
+    // 旬空（空亡）
+    const kongWang = this._getKongWang(dayPillar);
+
     return {
       year: yearPillar,
       month: monthPillar,
       day: dayPillar,
       hour: hourPillar,
       dayMaster,
+      dayMasterStrength,
+      kongWang,
+      monthElement,
       tenGods,
       branchRelations: branchRels,
       hiddenStems: hiddenStemsList,
@@ -347,6 +357,7 @@ class BaziEngine {
       branch,
       name,
       nayin,
+      ganzhiIndex,
       label: '日柱'
     };
   }
@@ -1493,6 +1504,63 @@ class BaziEngine {
     if (harmonyRatio > 0.5) return true;
     if (conflictRatio > 0.5) return false;
     return null;
+  }
+
+  /**
+   * 獲取地支對應的五行（月令季節）
+   * @private
+   * @param {string} branch - 地支
+   * @returns {string} 五行名稱
+   */
+  _getMonthElement(branch) {
+    const map = {
+      '寅': 'wood', '卯': 'wood', '辰': 'earth',
+      '巳': 'fire', '午': 'fire', '未': 'earth',
+      '申': 'metal', '酉': 'metal', '戌': 'earth',
+      '亥': 'water', '子': 'water', '丑': 'earth'
+    };
+    return map[branch] || 'earth';
+  }
+
+  /**
+   * 計算日主旺衰（月令旺相休囚死）
+   * @private
+   * @param {string} dayMasterElement - 日主五行
+   * @param {string} monthBranch - 月支
+   * @returns {string} 旺/相/休/囚/死
+   */
+  _getDayMasterStrength(dayMasterElement, monthBranch) {
+    const monthEl = this._getMonthElement(monthBranch);
+    // 月令為季節主氣，決定五行旺衰
+    const strengthMap = {
+      wood: { wood: '旺', fire: '相', water: '休', metal: '囚', earth: '死' },
+      fire: { fire: '旺', earth: '相', wood: '休', water: '囚', metal: '死' },
+      earth: { earth: '旺', metal: '相', fire: '休', wood: '囚', water: '死' },
+      metal: { metal: '旺', water: '相', earth: '休', fire: '囚', wood: '死' },
+      water: { water: '旺', wood: '相', metal: '休', earth: '囚', fire: '死' }
+    };
+    return strengthMap[monthEl]?.[dayMasterElement] || '休';
+  }
+
+  /**
+   * 計算旬空（空亡）
+   * 根據日柱干支在六十甲子中的位置，找出所屬旬的空亡地支
+   * @private
+   * @param {Object} dayPillar - 日柱 { stem, branch, ganzhiIndex }
+   * @returns {string[]} 空亡地支陣列
+   */
+  _getKongWang(dayPillar) {
+    if (!dayPillar || !dayPillar.ganzhiIndex) return [];
+    const xun = Math.floor((dayPillar.ganzhiIndex - 1) / 10);
+    const kongMap = [
+      ['戌', '亥'], // 甲子旬
+      ['申', '酉'], // 甲戌旬
+      ['午', '未'], // 甲申旬
+      ['辰', '巳'], // 甲午旬
+      ['寅', '卯'], // 甲辰旬
+      ['子', '丑']  // 甲寅旬
+    ];
+    return kongMap[xun] || [];
   }
 
   /**

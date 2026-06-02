@@ -1135,6 +1135,27 @@ small {
   margin-right: var(--spacing-sm);
 }
 
+.bazi-strength,
+.bazi-kongwang {
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: rgba(201, 164, 92, 0.06);
+  border-radius: var(--radius-sm);
+  display: inline-block;
+}
+
+.strength-旺 { color: #2F7D32; font-weight: 600; }
+.strength-相 { color: #4CAF50; font-weight: 600; }
+.strength-休 { color: #9A6A1F; font-weight: 600; }
+.strength-囚 { color: #C97D2D; font-weight: 600; }
+.strength-死 { color: #A32828; font-weight: 600; }
+
+.bazi-kongwang {
+  color: var(--text-secondary);
+  margin-left: var(--spacing-sm);
+}
+
 .bazi-note {
   font-size: 0.85rem;
   color: var(--text-secondary);
