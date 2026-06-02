@@ -4,6 +4,7 @@
  */
 
 const APP_VERSION = 'v31';
+console.log(`⚡ 速窺運勢 v${APP_VERSION}`);
 
 // 檢查是否有舊版快取需要清除
 async function checkStaleCache() {
