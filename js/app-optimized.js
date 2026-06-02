@@ -510,30 +510,26 @@ class App {
       { branch: '亥', name: '亥時', start: '21:00', end: '22:59', crossDay: false }
     ];
 
-    // 判斷是否是今天，過濾已過去的時辰
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const isToday = date.getTime() === today.getTime();
     const currentHour = now.getHours();
 
-    let filteredBranches = hourBranches;
-    if (isToday) {
-      filteredBranches = hourBranches.filter(hb => {
-        const startHour = parseInt(hb.start.split(':')[0]);
-        // 子時特殊處理（23:00 開始）
-        if (hb.branch === '子') {
-          return currentHour >= 23 || currentHour < 1;
-        }
-        return startHour >= currentHour;
-      });
-    }
+    // 標記已過時辰（用於顯示時過濾）
+    const isPast = (hb) => {
+      if (!isToday) return false;
+      const startHour = parseInt(hb.start.split(':')[0]);
+      if (hb.branch === '子') return currentHour >= 1 && currentHour < 23;
+      return currentHour > startHour + 2;
+    };
 
     const results = [];
     const dayMasterElement = baziResult.dayMaster.element;
 
-    for (const hb of filteredBranches) {
+    for (const hb of hourBranches) {
       try {
         const hourResult = this._calculateSingleHour(baziResult, date, hb, dayMasterElement);
+        hourResult._past = isPast(hb);
         results.push(hourResult);
       } catch (error) {
         console.warn(`計算 ${hb.name} 時發生錯誤:`, error);
@@ -1650,7 +1646,7 @@ class App {
     html += `</div></div>`;
     html += this._renderScoreLegend();
     html += this._renderDaySummary(today.summary, '今日總覽', luckyNum);
-    html += this._renderHourCards(today.hours, '今日時辰');
+    html += this._renderHourCards(today.hours.filter(h => !h._past), '今日時辰');
     html += this._renderDaySummary(tomorrow.summary, '明日總覽');
     html += this._renderHourCards(tomorrow.hours, '明日時辰');
     html += this._render14Days(fourteenDays);
