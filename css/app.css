@@ -2495,6 +2495,44 @@ small {
   box-shadow: var(--shadow-md);
 }
 
+/* ========== 分數圖例 ========== */
+.score-legend {
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.legend-bar {
+  display: flex;
+  height: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.legend-seg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-width: 0;
+}
+
+.legend-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  white-space: nowrap;
+}
+
+.legend-scale {
+  display: flex;
+  margin-top: 2px;
+}
+
+/* ========== 時辰卡片 ========== */
 .hour-card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }

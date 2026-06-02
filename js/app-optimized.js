@@ -1139,6 +1139,7 @@ class App {
     let html = '';
 
     html += this._renderBaziSummary(bazi);
+    html += this._renderScoreLegend();
     html += this._renderDaySummary(today.summary, '今日總覽');
     html += this._renderHourCards(today.hours, '今日時辰');
     html += this._renderDaySummary(tomorrow.summary, '明日總覽');
@@ -1148,6 +1149,30 @@ class App {
 
     container.innerHTML = html;
     this._bindCardToggle();
+  }
+
+  _renderScoreLegend() {
+    const levels = [
+      { label: '大吉', min: 85, max: 100, color: '#2F7D32' },
+      { label: '吉', min: 70, max: 84, color: '#4CAF50' },
+      { label: '小吉', min: 55, max: 69, color: '#8BC34A' },
+      { label: '平', min: 45, max: 54, color: '#9A6A1F' },
+      { label: '小凶', min: 30, max: 44, color: '#A32828' },
+      { label: '凶', min: 0, max: 29, color: '#6B1A1A' }
+    ];
+    const bar = levels.map(l =>
+      `<span class="legend-seg" style="background:${l.color};flex:${l.max - l.min + 1}">
+        <span class="legend-label">${l.label}</span>
+      </span>`
+    ).join('');
+    const labels = levels.map(l =>
+      `<span style="flex:${l.max - l.min + 1};text-align:center;font-size:0.65rem;color:var(--text-secondary)">${l.min}</span>`
+    ).join('');
+    return `
+      <div class="score-legend">
+        <div class="legend-bar">${bar}</div>
+        <div class="legend-scale">${labels}</div>
+      </div>`;
   }
 
   _renderBaziSummary(bazi) {
