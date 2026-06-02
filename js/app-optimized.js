@@ -766,8 +766,7 @@ class App {
       const flowYearTenGod = this.baziEngine.getTenGod(baziResult.day.stem, flowYear.stem);
       if (flowYearTenGod) {
         const fyScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[flowYearTenGod.name] || 0;
-        let fyAdjusted = Math.round(fyScore * 0.3);
-        // 歲運並臨：流年與大運重複，吉凶加倍
+        let fyAdjusted = Math.round(fyScore * 1.0);
         const matchDayun = baziResult.dayun?.pillars?.find(p => p.name === flowYear.name);
         if (matchDayun) {
           fyAdjusted = Math.round(fyAdjusted * 2);
@@ -781,14 +780,14 @@ class App {
           });
         }
         if (matchDayun) {
-          baziTrace.push({ system: 'bazi', rule: 'suiYunBingLin', score: Math.round(fyScore * 0.3), reason: `歲運並臨：流年${flowYear.name}=大運，效應加倍` });
+          baziTrace.push({ system: 'bazi', rule: 'suiYunBingLin', score: Math.round(fyScore * 1.0), reason: `歲運並臨：流年${flowYear.name}=大運，效應加倍` });
         }
       }
       // 流年支與四柱刑沖合會
       const flowYearBranches = [flowYear.branch, baziResult.year?.branch, baziResult.month?.branch, baziResult.day?.branch, hourBranch?.branch].filter(Boolean);
       if (flowYearBranches.length >= 2) {
         const flowYearRels = this.baziEngine.getBranchRelations(flowYearBranches);
-        const flowScore = this.baziEngine._calculateBranchRelationScore(flowYearRels) * 0.5;
+        const flowScore = this.baziEngine._calculateBranchRelationScore(flowYearRels) * 0.8;
         if (Math.abs(flowScore) > 0) {
           baziScore += Math.round(flowScore);
           baziTrace.push({
@@ -803,7 +802,7 @@ class App {
       const flowMonthTenGod = this.baziEngine.getTenGod(baziResult.day.stem, flowMonth.stem);
       if (flowMonthTenGod) {
         const fmScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[flowMonthTenGod.name] || 0;
-        const fmAdjusted = Math.round(fmScore * 0.2);
+        const fmAdjusted = Math.round(fmScore * 0.6);
         if (fmAdjusted !== 0) {
           baziScore += fmAdjusted;
           baziTrace.push({
@@ -820,7 +819,7 @@ class App {
       const flowDayTenGod = this.baziEngine.getTenGod(baziResult.day.stem, flowDayPillar.stem);
       if (flowDayTenGod) {
         const fdScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[flowDayTenGod.name] || 0;
-        const fdAdjusted = Math.round(fdScore * 0.4);
+        const fdAdjusted = Math.round(fdScore * 1.2);
         if (fdAdjusted !== 0) {
           baziScore += fdAdjusted;
           baziTrace.push({
@@ -833,7 +832,7 @@ class App {
       const flowDayBranches = [flowDayPillar.branch, hourBranch.branch].filter(Boolean);
       if (flowDayBranches.length >= 2) {
         const flowDayRels = this.baziEngine.getBranchRelations(flowDayBranches);
-        const fdRelScore = this.baziEngine._calculateBranchRelationScore(flowDayRels) * 0.5;
+        const fdRelScore = this.baziEngine._calculateBranchRelationScore(flowDayRels) * 0.8;
         if (Math.abs(fdRelScore) > 0) {
           baziScore += Math.round(fdRelScore);
           baziTrace.push({
@@ -853,7 +852,23 @@ class App {
       }
     }
 
-    baziScore = Math.max(-25, Math.min(25, baziScore));
+    // 流日神煞（天德/月德/天赦 — 以流月支+流日干判斷）
+    if (flowDayPillar && flowMonth) {
+      const tianDeMap = { '寅':'丁','卯':'申','辰':'壬','巳':'辛','午':'亥','未':'甲','申':'癸','酉':'寅','戌':'丙','亥':'乙','子':'巳','丑':'庚' };
+      const yueDeSeason = { '寅':'丙','午':'丙','戌':'丙','巳':'庚','酉':'庚','丑':'庚','申':'壬','子':'壬','辰':'壬','亥':'甲','卯':'甲','未':'甲' };
+      const tianSheSeason = { '寅':'戊寅','卯':'戊寅','辰':'戊寅','巳':'甲午','午':'甲午','未':'甲午','申':'戊申','酉':'戊申','戌':'戊申','亥':'甲子','子':'甲子','丑':'甲子' };
+      const flowMonthBranch = flowMonth.branch;
+      let flowDeityScore = 0;
+      if (tianDeMap[flowMonthBranch] === flowDayPillar.stem) { flowDeityScore += 3; }
+      if (yueDeSeason[flowMonthBranch] === flowDayPillar.stem) { flowDeityScore += 3; }
+      if (tianSheSeason[flowMonthBranch] === (flowDayPillar.stem + flowDayPillar.branch)) { flowDeityScore += 3; }
+      if (flowDeityScore !== 0) {
+        baziScore += flowDeityScore;
+        baziTrace.push({ system: 'bazi', rule: 'flowDeity', score: flowDeityScore, reason: `流日逢天德/月德/天赦，日辰吉利` });
+      }
+    }
+
+    baziScore = Math.max(-35, Math.min(35, baziScore));
 
     let ichingResult = null;
     let ichingScore = 0;
@@ -1064,7 +1079,7 @@ class App {
       if (rels) {
         const relScore = this.baziEngine._calculateBranchRelationScore(rels);
         if (relScore !== 0) {
-          const s = Math.round(relScore * 0.7);
+          const s = Math.round(relScore * 1.0);
           totalScore += s;
           branchInt.push({ branch: fBranch, target: key, type: rels.summary?.[0] || '刑', score: s });
           traces.push({ rule: 'flowBranchRelation', key, score: s, reason: `流日${fBranch}與${key}柱${pBranch}${rels.summary?.[0] || '刑沖'}` });
@@ -1400,32 +1415,32 @@ class App {
           const fyTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fy.stem);
           if (fyTenGod) {
             const fyScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fyTenGod.name] || 0;
-            let fyAdjusted = Math.round(fyScore * 0.3);
+            let fyAdjusted = Math.round(fyScore * 1.0);
             if (baziResult.dayun?.pillars?.find(p => p.name === fy.name)) fyAdjusted *= 2;
             hourScore += fyAdjusted;
           }
           // 流年支與時支
           const fyr = this.baziEngine.getBranchRelations([fy.branch, hourBranches[h]].filter(Boolean));
           if (fyr) {
-            const fyrScore = this.baziEngine._calculateBranchRelationScore(fyr) * 0.5;
+            const fyrScore = this.baziEngine._calculateBranchRelationScore(fyr) * 0.8;
             hourScore += Math.round(fyrScore);
           }
         }
         if (fm) {
           const fmTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fm.stem);
           if (fmTenGod) {
-            hourScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fmTenGod.name] || 0) * 0.2);
+            hourScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fmTenGod.name] || 0) * 0.6);
           }
         }
         // 流日完整互動
         if (fdPillar) {
           const fdTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fdPillar.stem);
           if (fdTenGod) {
-            hourScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fdTenGod.name] || 0) * 0.4);
+            hourScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fdTenGod.name] || 0) * 1.2);
           }
           const fdr = this.baziEngine.getBranchRelations([fdPillar.branch, hourBranches[h]].filter(Boolean));
           if (fdr) {
-            hourScore += Math.round(this.baziEngine._calculateBranchRelationScore(fdr) * 0.5);
+            hourScore += Math.round(this.baziEngine._calculateBranchRelationScore(fdr) * 0.8);
           }
           const fdi = this._calculateFlowDayInteractions(fdPillar, baziResult);
           if (fdi.totalScore !== 0) {
@@ -1531,19 +1546,19 @@ class App {
       const fyTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fy.stem);
       if (fyTenGod) {
         const fyScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fyTenGod.name] || 0;
-        let fyAdjusted = Math.round(fyScore * 0.3);
+        let fyAdjusted = Math.round(fyScore * 1.0);
         if (baziResult.dayun?.pillars?.find(p => p.name === fy.name)) fyAdjusted *= 2;
         totalScore += fyAdjusted;
       }
       const fyr = this.baziEngine.getBranchRelations([fy.branch, dayGanzhi.branch].filter(Boolean));
       if (fyr) {
-        totalScore += Math.round(this.baziEngine._calculateBranchRelationScore(fyr) * 0.5);
+        totalScore += Math.round(this.baziEngine._calculateBranchRelationScore(fyr) * 0.8);
       }
     }
     if (fm) {
       const fmTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fm.stem);
       if (fmTenGod) {
-        totalScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fmTenGod.name] || 0) * 0.2);
+        totalScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fmTenGod.name] || 0) * 0.6);
       }
     }
     // 流日
@@ -1551,18 +1566,18 @@ class App {
     if (fdPillar2) {
       const fdTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fdPillar2.stem);
       if (fdTenGod) {
-        totalScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fdTenGod.name] || 0) * 0.4);
+        totalScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fdTenGod.name] || 0) * 1.2);
       }
       const fdr2 = this.baziEngine.getBranchRelations([fdPillar2.branch, dayGanzhi.branch].filter(Boolean));
       if (fdr2) {
-        totalScore += Math.round(this.baziEngine._calculateBranchRelationScore(fdr2) * 0.5);
+        totalScore += Math.round(this.baziEngine._calculateBranchRelationScore(fdr2) * 0.8);
       }
       // 奇門遁甲日盤（以午時為代表）
       try {
         const qmBoard = this.qimenEngine.calculateHourBoard(date, '午', fdPillar2.stem);
         if (qmBoard) {
           const qmDay = this.qimenEngine.deriveHourScore(qmBoard);
-          if (qmDay) totalScore += Math.round(qmDay.score * 0.5);
+          if (qmDay) totalScore += Math.round(qmDay.score * 1.0);
         }
       } catch (e) { /* skip */ }
     }

@@ -71,11 +71,13 @@ async function main() {
     // Initialize
     const bazi = new BaziEngine();
     const qimen = new QimenEngine();
+    const iching = new IChingEngine();
     
     // Load data
-    const [solarTerms, qimenCfg, celebrities, events] = await Promise.all([
+    const [solarTerms, qimenCfg, scoreRules, celebrities, events] = await Promise.all([
       fetchJSON('data/core/solar-terms.json'),
       fetchJSON('data/interpretation/qimen-config.json'),
+      fetchJSON('data/interpretation/score-rules.json'),
       fetchJSON('data/celebrities/celebrities.json'),
       fetchJSON('data/celebrities/verification-events.json')
     ]);
@@ -85,6 +87,13 @@ async function main() {
     qimen.config = qimenCfg;
     qimen.setSolarTerms(solarTerms);
     qimen.loaded = true;
+    iching.solarTerms = solarTerms;
+    iching.loaded = true;
+
+    // Store engines globally for _calculateDayScore
+    window.__baziEngine = bazi;
+    window.__qimenEngine = qimen;
+    window.__ichingEngine = iching;
 
     // Build celeb lookup
     const celebMap = {};
@@ -113,8 +122,8 @@ async function main() {
       const diff = Math.round((eventDate.getTime() - base.getTime()) / 86400000);
       const dayStem = stems[((diff % 10) + 10) % 10];
       
-      // Date-level score (average of all hours)
-      const dateScore = _calculateDayScore(baziResult, eventDate, bazi);
+      // Date-level score (average of all hours, uses window.__xxxEngine)
+      const dateScore = _calculateDayScore(baziResult, eventDate);
       
       // Event type threshold
       // positive: ≥58, negative: <50, neutral: 45-60
@@ -149,155 +158,168 @@ async function main() {
   }
 }
 
-function _calculateDayScore(baziResult, date, baziEngine) {
+function _calculateDayScore(baziResult, date) {
+  const baziEngine = window.__baziEngine;
   const hourBranches = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-  const hourNames = ['子時','丑時','寅時','卯時','辰時','巳時','午時','未時','申時','酉時','戌時','亥時'];
   const stems = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
   const branches = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-  const tenGodScores = { '正官':3,'七殺':-2,'正財':3,'偏財':2,'正印':2,'偏印':1,'食神':3,'傷官':-1,'比肩':0,'劫財':-2 };
-  const stemEl = s => ({ '甲':'wood','乙':'wood','丙':'fire','丁':'fire','戊':'earth','己':'earth','庚':'metal','辛':'metal','壬':'water','癸':'water' }[s]||'');
+  const tgScores = { '正官':3,'七殺':-2,'正財':3,'偏財':2,'正印':2,'偏印':1,'食神':3,'傷官':-1,'比肩':0,'劫財':-2 };
   const branchEl = b => ({ '子':'water','丑':'earth','寅':'wood','卯':'wood','辰':'earth','巳':'fire','午':'fire','未':'earth','申':'metal','酉':'metal','戌':'earth','亥':'water' }[b]||'');
   const genMap = { wood:'fire',fire:'earth',earth:'metal',metal:'water',water:'wood' };
   const conMap = { wood:'earth',earth:'water',water:'fire',fire:'metal',metal:'wood' };
-  const branchPalaceMap = { '子':1,'丑':2,'寅':3,'卯':4,'辰':5,'巳':6,'午':7,'未':8,'申':9,'酉':10,'戌':11,'亥':12 };
-
-  // Day stem for 五鼠遁
-  const base = new Date(2024,0,1);
-  const diff = Math.round((date.getTime() - base.getTime()) / 86400000);
-  const dayStem = stems[((diff % 10) + 10) % 10];
-  const dayBranch = branches[diff % 12];
+  const baseDate = new Date(2024,0,1);
+  const diffDays = Math.round((date.getTime() - baseDate.getTime()) / 86400000);
+  const dayStem = stems[((diffDays % 10) + 10) % 10];
+  const dayBranch = branches[diffDays % 12];
   const dayGanzhi = { stem: dayStem, branch: dayBranch, name: dayStem + dayBranch };
+  const flowMonth = baziEngine.calculateMonthPillar(date);
+  const flowYear = baziEngine.calculateYearPillar(date);
 
   const scores = [];
 
   for (let hi = 0; hi < 12; hi++) {
     const hb = hourBranches[hi];
-    let score = 50;
+    let baziScore = 0;
 
-    // 時干 (五鼠遁)
-    const hourStemIdx = ([0,2,4,6,8][stems.indexOf(dayStem) % 5] + hi) % 10;
-    const hourStem = stems[hourStemIdx];
-    const hourGanzhi = { stem: hourStem, branch: hb, name: hourStem + hb };
-
-    // 十神
+    // 時干 (五鼠遁) + 十神
+    const hourStem = stems[(([0,2,4,6,8][stems.indexOf(dayStem) % 5] + hi) % 10 + 10) % 10];
     const tenGod = baziEngine.getTenGod(baziResult.day.stem, hourStem);
     if (tenGod) {
-      const tgScore = tenGodScores[tenGod.name] || 0;
-      const strength = baziResult.dayMasterStrength || '休';
-      const favor = ['旺','相'].includes(strength) ? ['officer','wealth','output'] : ['囚','死'].includes(strength) ? ['resource','peer'] : [];
-      const unfavor = ['旺','相'].includes(strength) ? ['resource','peer'] : ['囚','死'].includes(strength) ? ['officer','wealth','output'] : [];
-      let adj = tgScore;
-      if (favor.includes(tenGod.type)) adj = Math.round(tgScore * 1.5);
-      else if (unfavor.includes(tenGod.type)) adj = Math.round(tgScore * 0.5);
-      score += adj;
+      const str = baziResult.dayMasterStrength || '休';
+      const favor = ['旺','相'].includes(str) ? ['officer','wealth','output'] : ['囚','死'].includes(str) ? ['resource','peer'] : [];
+      const unfavor = ['旺','相'].includes(str) ? ['resource','peer'] : ['囚','死'].includes(str) ? ['officer','wealth','output'] : [];
+      let adj = tgScores[tenGod.name] || 0;
+      if (favor.includes(tenGod.type)) adj = Math.round(adj * 1.5);
+      else if (unfavor.includes(tenGod.type)) adj = Math.round(adj * 0.5);
+      baziScore += adj;
     }
 
-    // 五行生剋（時支 vs 日主）
+    // 五行生剋
     const hbEl = branchEl(hb);
     const dmEl = baziResult.dayMaster.element;
-    if (hbEl === dmEl) score += 2;
-    else if (genMap[hbEl] === dmEl) score += 4;
-    else if (conMap[hbEl] === dmEl) score -= 3;
+    if (hbEl === dmEl) baziScore += 2;
+    else if (genMap[hbEl] === dmEl) baziScore += 4;
+    else if (conMap[hbEl] === dmEl) baziScore -= 3;
 
     // 旬空
-    if (baziResult.kongWang && baziResult.kongWang.includes(hb)) score -= 3;
+    if (baziResult.kongWang && baziResult.kongWang.includes(hb)) baziScore -= 3;
 
-    // 用神喜忌
+    // 用神
     if (baziResult.yongShen?.yongShen) {
-      const stemEl2 = stemEl(hourStem);
-      if (stemEl2 === baziResult.yongShen.yongShen) score += 3;
-      else if (hbEl === baziResult.yongShen.yongShen) score += 1;
-      if (stemEl2 === baziResult.yongShen.jiShen) score -= 3;
-      else if (hbEl === baziResult.yongShen.jiShen) score -= 1;
+      const stemEl2 = {'甲':'wood','乙':'wood','丙':'fire','丁':'fire','戊':'earth','己':'earth','庚':'metal','辛':'metal','壬':'water','癸':'water'}[hourStem]||'';
+      if (stemEl2 === baziResult.yongShen.yongShen) baziScore += 3;
+      else if (hbEl === baziResult.yongShen.yongShen) baziScore += 1;
+      if (stemEl2 === baziResult.yongShen.jiShen) baziScore -= 3;
+      else if (hbEl === baziResult.yongShen.jiShen) baziScore -= 1;
     }
 
-    // 神煞
-    if (baziResult.shenSha) {
-      for (const ss of baziResult.shenSha) score += ss.isGood ? 2 : -2;
-    }
-
-    // 地支關係
-    if (baziResult.branchRelationScore) score += baziResult.branchRelationScore;
-
-    // 身強身弱
-    if (baziResult.bodyStrength) score += Math.round(baziResult.bodyStrength.total * 1.5);
-
-    // 格局加分
-    if (baziResult.pattern) {
-      const pS = { '從格': 5, '專旺格': 5, '八格': 2 }[baziResult.pattern.type] || 0;
-      score += pS;
-    }
-
-    // 納音
-    if (baziResult.nayinDepth?.totalScore) score += baziResult.nayinDepth.totalScore;
-    if (baziResult.anHeScore) score += baziResult.anHeScore;
-    if (baziResult.stemClashScore) score += baziResult.stemClashScore;
-    if (baziResult.shiErChangSheng?.hour) score += baziResult.shiErChangSheng.hour.score;
-
-    // 大運
+    // 神煞 / 地支 / 身強 / 格局 / 納音 / 暗合 / 長生 / 沖剋 / 大運 / 合化
+    if (baziResult.shenSha) { for (const ss of baziResult.shenSha) baziScore += ss.isGood ? 2 : -2; }
+    if (baziResult.branchRelationScore) baziScore += baziResult.branchRelationScore;
+    if (baziResult.bodyStrength) baziScore += Math.round(baziResult.bodyStrength.total * 1.5);
+    if (baziResult.pattern) baziScore += ({ '從格':5,'專旺格':5,'八格':2 }[baziResult.pattern.type]||0);
+    if (baziResult.nayinDepth?.totalScore) baziScore += baziResult.nayinDepth.totalScore;
+    if (baziResult.anHeScore) baziScore += baziResult.anHeScore;
+    if (baziResult.stemClashScore) baziScore += baziResult.stemClashScore;
+    if (baziResult.shiErChangSheng?.hour) baziScore += baziResult.shiErChangSheng.hour.score;
     if (baziResult.dayun?.pillars?.length > 0) {
       const dy = baziResult.dayun.pillars[0];
-      score += (dy.isYongMatch ? 2 : 0) + (dy.isFavorable ? 0 : -2);
+      baziScore += (dy.isYongMatch ? 2 : 0) + (dy.isFavorable ? 0 : -2);
     }
-
-    // 天干合化
     if (baziResult.stemCombinations) {
-      if (baziResult.stemCombinations.yearMonth?.combined) score += 2;
-      if (baziResult.stemCombinations.monthDay?.combined) score += 2;
+      if (baziResult.stemCombinations.yearMonth?.combined) baziScore += 2;
+      if (baziResult.stemCombinations.monthDay?.combined) baziScore += 2;
     }
 
-    // 流年
-    const fy = baziEngine.calculateYearPillar(date);
-    if (fy) {
-      const fyTenGod = baziEngine.getTenGod(baziResult.day.stem, fy.stem);
+    // 流年 (×1.0)
+    if (flowYear) {
+      const fyTenGod = baziEngine.getTenGod(baziResult.day.stem, flowYear.stem);
       if (fyTenGod) {
-        const fyScore = tenGodScores[fyTenGod.name] || 0;
-        let fyAdj = Math.round(fyScore * 0.3);
-        if (baziResult.dayun?.pillars?.find(p => p.name === fy.name)) fyAdj *= 2;
-        score += fyAdj;
+        let fyAdj = Math.round((tgScores[fyTenGod.name]||0) * 1.0);
+        if (baziResult.dayun?.pillars?.find(p => p.name === flowYear.name)) fyAdj *= 2;
+        baziScore += fyAdj;
       }
+      // 流年支
+      const fyr = baziEngine.getBranchRelations([flowYear.branch, hb].filter(Boolean));
+      if (fyr) baziScore += Math.round(baziEngine._calculateBranchRelationScore(fyr) * 0.8);
     }
 
-    // 流月
-    const fm = baziEngine.calculateMonthPillar(date);
-    if (fm) {
-      const fmTenGod = baziEngine.getTenGod(baziResult.day.stem, fm.stem);
-      if (fmTenGod) score += Math.round((tenGodScores[fmTenGod.name] || 0) * 0.2);
+    // 流月 (×0.6)
+    if (flowMonth) {
+      const fmTenGod = baziEngine.getTenGod(baziResult.day.stem, flowMonth.stem);
+      if (fmTenGod) baziScore += Math.round((tgScores[fmTenGod.name]||0) * 0.6);
     }
 
-    // 流日完整互動
+    // 流日完整
     if (dayGanzhi) {
       const fdTenGod = baziEngine.getTenGod(baziResult.day.stem, dayStem);
-      if (fdTenGod) score += Math.round((tenGodScores[fdTenGod.name] || 0) * 0.4);
-
-      // 流日支與時支
-      const baseBranches = [dayBranch, hb].filter(Boolean);
-      if (baseBranches.length >= 2) {
-        const rel = baziEngine.getBranchRelations(baseBranches);
-        if (rel) score += Math.round(baziEngine._calculateBranchRelationScore(rel) * 0.5);
-      }
-
-      // 流日 vs 四柱 (天干五合沖剋)
-      const heMap = { '甲':{p:'己'},'乙':{p:'庚'},'丙':{p:'辛'},'丁':{p:'壬'},'戊':{p:'癸'},'己':{p:'甲'},'庚':{p:'乙'},'辛':{p:'丙'},'壬':{p:'丁'},'癸':{p:'戊'} };
-      const chongMap = { '甲':'庚','庚':'甲','乙':'辛','辛':'乙','丙':'壬','壬':'丙','丁':'癸','癸':'丁' };
-      const branchOp = { '子':'午','午':'子','丑':'未','未':'丑','寅':'申','申':'寅','卯':'酉','酉':'卯','辰':'戌','戌':'辰','巳':'亥','亥':'巳' };
-
+      if (fdTenGod) baziScore += Math.round((tgScores[fdTenGod.name]||0) * 1.2);
+      // 流日支
+      const fdr = baziEngine.getBranchRelations([dayBranch, hb].filter(Boolean));
+      if (fdr) baziScore += Math.round(baziEngine._calculateBranchRelationScore(fdr) * 0.8);
+      // 流日 vs 四柱
+      const heMap = {'甲':{p:'己'},'乙':{p:'庚'},'丙':{p:'辛'},'丁':{p:'壬'},'戊':{p:'癸'},'己':{p:'甲'},'庚':{p:'乙'},'辛':{p:'丙'},'壬':{p:'丁'},'癸':{p:'戊'}};
+      const chongMap = {'甲':'庚','庚':'甲','乙':'辛','辛':'乙','丙':'壬','壬':'丙','丁':'癸','癸':'丁'};
+      const branchOp = {'子':'午','午':'子','丑':'未','未':'丑','寅':'申','申':'寅','卯':'酉','酉':'卯','辰':'戌','戌':'辰','巳':'亥','亥':'巳'};
       for (const key of ['year','month','day','hour']) {
         const p = baziResult[key];
         if (!p) continue;
-        if (heMap[dayStem]?.p === p.stem) score += 3;
-        if (chongMap[dayStem] === p.stem) score -= 3;
-        // 地支互動
+        if (heMap[dayStem]?.p === p.stem) baziScore += 3;
+        if (chongMap[dayStem] === p.stem) baziScore -= 3;
         const rel = baziEngine.getBranchRelations([dayBranch, p.branch]);
-        if (rel) score += Math.round(baziEngine._calculateBranchRelationScore(rel) * 0.7);
-        // 伏吟
-        if (dayStem === p.stem && dayBranch === p.branch) score += key === 'day' ? 8 : 5;
-        // 反吟
-        if (chongMap[dayStem] === p.stem && branchOp[dayBranch] === p.branch) score += key === 'day' ? -8 : -5;
+        if (rel) baziScore += Math.round(baziEngine._calculateBranchRelationScore(rel) * 1.0);
+        if (dayStem === p.stem && dayBranch === p.branch) baziScore += key === 'day' ? 8 : 5;
+        if (chongMap[dayStem] === p.stem && branchOp[dayBranch] === p.branch) baziScore += key === 'day' ? -8 : -5;
       }
     }
 
-    scores.push(Math.max(0, Math.min(100, score)));
+    // 流日神煞
+    if (flowMonth && dayGanzhi) {
+      const tianDeMap = {'寅':'丁','卯':'申','辰':'壬','巳':'辛','午':'亥','未':'甲','申':'癸','酉':'寅','戌':'丙','亥':'乙','子':'巳','丑':'庚'};
+      const yueDeMap = {'寅':'丙','午':'丙','戌':'丙','巳':'庚','酉':'庚','丑':'庚','申':'壬','子':'壬','辰':'壬','亥':'甲','卯':'甲','未':'甲'};
+      const tianSheMap = {'寅':'戊寅','卯':'戊寅','辰':'戊寅','巳':'甲午','午':'甲午','未':'甲午','申':'戊申','酉':'戊申','戌':'戊申','亥':'甲子','子':'甲子','丑':'甲子'};
+      const mb = flowMonth.branch;
+      if (tianDeMap[mb] === dayStem) baziScore += 3;
+      if (yueDeMap[mb] === dayStem) baziScore += 3;
+      if (tianSheMap[mb] === (dayStem+dayBranch)) baziScore += 3;
+    }
+
+    baziScore = Math.max(-35, Math.min(35, baziScore));
+
+    // 易經
+    let ichingScore = 0;
+    try {
+      if (window.__ichingEngine && window.__ichingEngine.loaded) {
+        const hex = window.__ichingEngine.deriveHourHexagram(date, hb, baziResult);
+        if (hex && hex.hexagram) {
+          const personalized = window.__ichingEngine.personalizeHexagramByElement(hex.hexagram, dmEl);
+          if (personalized) {
+            const scoreTable = { strong:5, moderate:0, weak:-3, harmful:-8 };
+            if (personalized.strengthLevel) ichingScore += scoreTable[personalized.strengthLevel] || 0;
+            if (hex.hexagram.quality === 'auspicious') ichingScore += 5;
+            else if (hex.hexagram.quality === 'ominous') ichingScore -= 5;
+          }
+        }
+      }
+    } catch(e) {}
+    ichingScore = Math.max(-20, Math.min(20, ichingScore));
+
+    // 奇門
+    let qimenScore = 0;
+    try {
+      if (window.__qimenEngine && window.__qimenEngine.loaded) {
+        const board = window.__qimenEngine.calculateHourBoard(date, hb, dayStem);
+        if (board) {
+          const qmDetail = window.__qimenEngine.deriveHourScore(board);
+          if (qmDetail) qimenScore = qmDetail.score;
+        }
+      }
+    } catch(e) {}
+    qimenScore = Math.max(-35, Math.min(35, qimenScore));
+
+    // 總分 = 60 + bazi + iching + qimen
+    let total = 60 + baziScore + ichingScore + qimenScore;
+    scores.push(Math.max(0, Math.min(100, total)));
   }
 
   return Math.round(scores.reduce((a,b)=>a+b,0) / scores.length);
