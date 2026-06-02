@@ -227,6 +227,18 @@ class BaziEngine {
     // 地支關係深度分數
     const branchRelationScore = this._calculateBranchRelationScore(branchRels);
 
+    // 十二長生
+    const shiErChangSheng = this._calculateShiErChangSheng(dayPillar.stem, { year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar });
+
+    // 天干沖剋
+    const stemClashScore = this._calculateStemClashScore(yearPillar.stem, monthPillar.stem, dayPillar.stem, hourPillar.stem);
+
+    // 大運細化（若有大運）
+    let enhancedDayun = null;
+    if (dayun) {
+      enhancedDayun = this._enhanceDayun(dayun, dayPillar.stem, yongShen);
+    }
+
     return {
       year: yearPillar,
       month: monthPillar,
@@ -246,11 +258,13 @@ class BaziEngine {
       hiddenStemDetails,
       rootInfo,
       branchRelationScore,
+      shiErChangSheng,
+      stemClashScore,
+      dayun: enhancedDayun || dayun,
       tenGods,
       branchRelations: branchRels,
       hiddenStems: hiddenStemsList,
       nayinMatch: this._checkNayinMatch([yearPillar, monthPillar, dayPillar, hourPillar]),
-      dayun,
       birthInfo: {
         date: this._formatDate(date),
         time: birthTime,
@@ -1717,6 +1731,75 @@ class BaziEngine {
 
     // 三會也可考慮（增加方局力量，但不轉化）
     return counts;
+  }
+
+  /**
+   * 十二長生表
+   * 以日干查四支，得日主在四柱的氣運狀態
+   */
+  _getShiErChangSheng(dayStem, branch) {
+    const table = {
+      '甲': { '亥': '長生', '子': '沐浴', '丑': '冠帶', '寅': '臨官', '卯': '帝旺', '辰': '衰', '巳': '病', '午': '死', '未': '墓', '申': '絕', '酉': '胎', '戌': '養' },
+      '乙': { '午': '長生', '巳': '沐浴', '辰': '冠帶', '卯': '臨官', '寅': '帝旺', '丑': '衰', '子': '病', '亥': '死', '戌': '墓', '酉': '絕', '申': '胎', '未': '養' },
+      '丙': { '寅': '長生', '卯': '沐浴', '辰': '冠帶', '巳': '臨官', '午': '帝旺', '未': '衰', '申': '病', '酉': '死', '戌': '墓', '亥': '絕', '子': '胎', '丑': '養' },
+      '丁': { '酉': '長生', '申': '沐浴', '未': '冠帶', '午': '臨官', '巳': '帝旺', '辰': '衰', '卯': '病', '寅': '死', '丑': '墓', '子': '絕', '亥': '胎', '戌': '養' },
+      '戊': { '寅': '長生', '卯': '沐浴', '辰': '冠帶', '巳': '臨官', '午': '帝旺', '未': '衰', '申': '病', '酉': '死', '戌': '墓', '亥': '絕', '子': '胎', '丑': '養' },
+      '己': { '酉': '長生', '申': '沐浴', '未': '冠帶', '午': '臨官', '巳': '帝旺', '辰': '衰', '卯': '病', '寅': '死', '丑': '墓', '子': '絕', '亥': '胎', '戌': '養' },
+      '庚': { '巳': '長生', '午': '沐浴', '未': '冠帶', '申': '臨官', '酉': '帝旺', '戌': '衰', '亥': '病', '子': '死', '丑': '墓', '寅': '絕', '卯': '胎', '辰': '養' },
+      '辛': { '子': '長生', '亥': '沐浴', '戌': '冠帶', '酉': '臨官', '申': '帝旺', '未': '衰', '午': '病', '巳': '死', '辰': '墓', '卯': '絕', '寅': '胎', '丑': '養' },
+      '壬': { '申': '長生', '酉': '沐浴', '戌': '冠帶', '亥': '臨官', '子': '帝旺', '丑': '衰', '寅': '病', '卯': '死', '辰': '墓', '巳': '絕', '午': '胎', '未': '養' },
+      '癸': { '卯': '長生', '寅': '沐浴', '丑': '冠帶', '子': '臨官', '亥': '帝旺', '戌': '衰', '酉': '病', '申': '死', '未': '墓', '午': '絕', '巳': '胎', '辰': '養' }
+    };
+    const scoreMap = { '長生': 3, '沐浴': 1, '冠帶': 1, '臨官': 2, '帝旺': 3, '衰': -1, '病': -2, '死': -3, '墓': -3, '絕': -4, '胎': 0, '養': 1 };
+    const state = table[dayStem]?.[branch] || '養';
+    return { state, score: scoreMap[state] || 0 };
+  }
+
+  /**
+   * 計算四柱各支的十二長生
+   * @private
+   */
+  _calculateShiErChangSheng(dayStem, pillars) {
+    const result = {};
+    for (const [pos, p] of Object.entries(pillars)) {
+      if (p && p.branch) {
+        result[pos] = this._getShiErChangSheng(dayStem, p.branch);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * 計算天干沖剋分數
+   * @private
+   */
+  _calculateStemClashScore(yearStem, monthStem, dayStem, hourStem) {
+    let score = 0;
+    const clashPairs = [['甲', '庚'], ['乙', '辛'], ['丙', '壬'], ['丁', '癸']];
+    const stems = [yearStem, monthStem, dayStem, hourStem];
+    for (let i = 0; i < stems.length; i++) {
+      for (let j = i + 1; j < stems.length; j++) {
+        if (Math.abs(i - j) > 2) continue; // 只檢查相鄰柱（年月、月日、日時）
+        if (clashPairs.some(p => (p[0] === stems[i] && p[1] === stems[j]) || (p[0] === stems[j] && p[1] === stems[i]))) {
+          score -= 3;
+        }
+      }
+    }
+    return score;
+  }
+
+  /**
+   * 大運細化：加入十神、用神匹配
+   * @private
+   */
+  _enhanceDayun(dayun, dayStem, yongShen) {
+    if (!dayun || !dayun.pillars) return dayun;
+    const pillars = dayun.pillars.map(p => {
+      const tenGod = this.getTenGod(dayStem, p.stem);
+      const isYongMatch = yongShen?.yongShen ? this._getStemElement(p.stem) === yongShen.yongShen : false;
+      return { ...p, tenGod: tenGod.name, tenGodType: tenGod.type, isYongMatch };
+    });
+    return { ...dayun, pillars };
   }
 
   _elementToChinese(el) {

@@ -664,6 +664,42 @@ class App {
       }
     }
 
+    // 十二長生（日主在時支狀態）
+    if (baziResult.shiErChangSheng?.hour) {
+      const ces = baziResult.shiErChangSheng.hour;
+      if (ces.score !== 0) {
+        baziScore += ces.score;
+        baziTrace.push({ system: 'bazi', rule: 'shiErChangSheng', value: ces.state, score: ces.score, reason: `日主在時支${ces.state}（${ces.score >= 0 ? '吉' : '凶'}）` });
+      }
+    }
+
+    // 天干沖剋
+    if (baziResult.stemClashScore && baziResult.stemClashScore !== 0) {
+      baziScore += baziResult.stemClashScore;
+      baziTrace.push({ system: 'bazi', rule: 'stemClash', score: baziResult.stemClashScore, reason: '天干沖剋，氣場不和' });
+    }
+
+    // 大運細化（放大運的影響）
+    if (baziResult.dayun?.pillars?.length > 0) {
+      const firstDayun = baziResult.dayun.pillars[0];
+      if (firstDayun.tenGod) {
+        const dyScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[firstDayun.tenGod] || 0;
+        const dyAdjusted = Math.round(dyScore * 0.4);
+        if (dyAdjusted !== 0) {
+          baziScore += dyAdjusted;
+          baziTrace.push({ system: 'bazi', rule: 'dayunGod', value: firstDayun.tenGod, score: dyAdjusted, reason: `大運天干為${firstDayun.tenGod}` });
+        }
+      }
+      if (firstDayun.isYongMatch) {
+        baziScore += 2;
+        baziTrace.push({ system: 'bazi', rule: 'dayunYong', score: 2, reason: '大運五行合用以神' });
+      }
+      if (!firstDayun.isFavorable) {
+        baziScore -= 2;
+        baziTrace.push({ system: 'bazi', rule: 'dayunFavorable', score: -2, reason: '大運五行不利日主' });
+      }
+    }
+
     // 天干合化加分
     if (baziResult.stemCombinations) {
       let combScore = 0;
@@ -1160,6 +1196,12 @@ class App {
         if (baziResult.rootInfo) {
           hourScore += baziResult.rootInfo.modifier;
         }
+        if (baziResult.shiErChangSheng?.hour) hourScore += baziResult.shiErChangSheng.hour.score;
+        if (baziResult.stemClashScore) hourScore += baziResult.stemClashScore;
+        if (baziResult.dayun?.pillars?.length > 0) {
+          const dy = baziResult.dayun.pillars[0];
+          hourScore += (dy.isYongMatch ? 2 : 0) + (dy.isFavorable ? 0 : -2);
+        }
         if (baziResult.stemCombinations) {
           if (baziResult.stemCombinations.yearMonth?.combined) hourScore += 2;
           if (baziResult.stemCombinations.monthDay?.combined) hourScore += 2;
@@ -1264,6 +1306,12 @@ class App {
         });
       }
       totalScore += hs;
+    }
+    if (baziResult.shiErChangSheng?.hour) totalScore += baziResult.shiErChangSheng.hour.score;
+    if (baziResult.stemClashScore) totalScore += baziResult.stemClashScore;
+    if (baziResult.dayun?.pillars?.length > 0) {
+      const dy = baziResult.dayun.pillars[0];
+      totalScore += (dy.isYongMatch ? 2 : 0) + (dy.isFavorable ? 0 : -2);
     }
     if (baziResult.stemCombinations) {
       if (baziResult.stemCombinations.yearMonth?.combined) totalScore += 2;
