@@ -552,24 +552,32 @@ class App {
     try {
       qimenChart = this.qimenEngine.calculateQimenHourChart(date, hourBranch.branch);
       qimenScore = this._calculateQimenScore(qimenChart);
+      const doorName = qimenChart.zhiShi?.door || '未知';
       qimenTrace.push({
-        system: 'qimen', rule: 'door', value: qimenChart.zhiShi?.door || '未知',
+        system: 'qimen', rule: 'door', value: doorName,
         score: this._getQimenDoorScore(qimenChart.zhiShi?.door),
-        reason: `值使門${qimenChart.zhiShi?.door || '未知'}`
+        reason: `值使門${doorName}`
       });
+      if (qimenChart.zhiFu?.star) {
+        qimenTrace.push({
+          system: 'qimen', rule: 'star', value: qimenChart.zhiFu.star,
+          score: this._getQimenStarScore(qimenChart.zhiFu.star),
+          reason: `值符星${qimenChart.zhiFu.star}`
+        });
+      }
     } catch (error) {
       console.warn('奇門計算錯誤:', error);
     }
     qimenScore = Math.max(-35, Math.min(35, qimenScore));
 
-    const balanceScore = 0;
+    const balanceScore = this._calculateBalanceScore(baziResult, ichingResult, qimenChart);
 
     const scoreResult = this.scoringEngine.calculateTotalScore(baziScore, ichingScore, qimenScore, balanceScore);
 
     let tenGodName = hourGanzhi.tenGod?.name || '未知';
     let doorName = qimenChart?.zhiShi?.door || '';
     let starName = qimenChart?.zhiFu?.star || '';
-    let godName = '';
+    let godName = this._getQimenGod(qimenChart);
 
     let interpretation = null;
     try {
@@ -694,16 +702,16 @@ class App {
     
     // 使用 scoringEngine 的規則，如果沒有則使用預設值
     const doorScores = this.scoringEngine.scoreRules?.qimenScores?.doors || {
-      '開門': 12, '休門': 10, '生門': 11, '傷門': -5,
-      '杜門': -3, '景門': 5, '死門': -8, '驚門': -4
+      '開門': 10, '休門': 8, '生門': 9, '傷門': -7,
+      '杜門': -5, '景門': 3, '死門': -10, '驚門': -6
     };
     const starScores = this.scoringEngine.scoreRules?.qimenScores?.stars || {
-      '天蓬': -4, '天芮': -3, '天沖': 6, '天輔': 9,
-      '天禽': 8, '天心': 10, '天柱': -1, '天任': 7, '天英': 4
+      '天蓬': -6, '天芮': -5, '天沖': 4, '天輔': 7,
+      '天禽': 6, '天心': 8, '天柱': -3, '天任': 5, '天英': 2
     };
     const godScores = this.scoringEngine.scoreRules?.qimenScores?.gods || {
-      '值符': 10, '騰蛇': -2, '太陰': 7, '六合': 8,
-      '白虎': -5, '玄武': -3, '九地': 5, '九天': 6
+      '值符': 8, '騰蛇': -4, '太陰': 5, '六合': 6,
+      '白虎': -7, '玄武': -5, '九地': 3, '九天': 4
     };
 
     if (chart.zhiShi?.door) score += doorScores[chart.zhiShi.door] || 0;
@@ -727,10 +735,97 @@ class App {
 
   _getQimenDoorScore(door) {
     const scores = this.scoringEngine.scoreRules?.qimenScores?.doors || {
-      '開門': 12, '休門': 10, '生門': 11, '傷門': -5,
-      '杜門': -3, '景門': 5, '死門': -8, '驚門': -4
+      '開門': 10, '休門': 8, '生門': 9, '傷門': -7,
+      '杜門': -5, '景門': 3, '死門': -10, '驚門': -6
     };
     return scores[door] || 0;
+  }
+
+  _getQimenStarScore(star) {
+    const scores = this.scoringEngine.scoreRules?.qimenScores?.stars || {
+      '天蓬': -6, '天芮': -5, '天沖': 4, '天輔': 7,
+      '天禽': 6, '天心': 8, '天柱': -3, '天任': 5, '天英': 2
+    };
+    return scores[star] || 0;
+  }
+
+  _getQimenGod(chart) {
+    if (!chart || !chart.gods || !chart.zhiShi) return '';
+    const hourPalace = chart.zhiShi.palace;
+    return chart.gods[hourPalace] || '';
+  }
+
+  _calculateBalanceScore(baziResult, ichingResult, qimenChart) {
+    let score = 0;
+    try {
+      if (baziResult && baziResult.day && baziResult.dayMaster) {
+        const elementMap = {
+          '甲': 'wood', '乙': 'wood', '丙': 'fire', '丁': 'fire',
+          '戊': 'earth', '己': 'earth', '庚': 'metal', '辛': 'metal',
+          '壬': 'water', '癸': 'water',
+          '子': 'water', '丑': 'earth', '寅': 'wood', '卯': 'wood',
+          '辰': 'earth', '巳': 'fire', '午': 'fire', '未': 'earth',
+          '申': 'metal', '酉': 'metal', '戌': 'earth', '亥': 'water'
+        };
+        const hiddenStemMap = {
+          '子': ['癸'], '丑': ['己', '癸', '辛'], '寅': ['甲', '丙', '戊'],
+          '卯': ['乙'], '辰': ['戊', '乙', '癸'], '巳': ['丙', '庚', '戊'],
+          '午': ['丁', '己'], '未': ['己', '丁', '乙'], '申': ['庚', '壬', '戊'],
+          '酉': ['辛'], '戌': ['戊', '辛', '丁'], '亥': ['壬', '甲']
+        };
+        const counts = { wood: 0, fire: 0, earth: 0, metal: 0, water: 0 };
+        const pillars = ['year', 'month', 'day', 'hour'];
+        for (const p of pillars) {
+          const pillar = baziResult[p];
+          if (!pillar) continue;
+          if (pillar.stem && elementMap[pillar.stem]) counts[elementMap[pillar.stem]] += 2;
+          if (pillar.branch && elementMap[pillar.branch]) counts[elementMap[pillar.branch]]++;
+          if (pillar.branch && hiddenStemMap[pillar.branch]) {
+            for (const hs of hiddenStemMap[pillar.branch]) {
+              if (elementMap[hs]) counts[elementMap[hs]]++;
+            }
+          }
+        }
+        const total = Object.values(counts).reduce((a, b) => a + b, 0);
+        if (total > 0) {
+          const avg = total / 5;
+          for (const [el, c] of Object.entries(counts)) {
+            if (c === 0) score -= 2;
+            else if (c > avg * 1.8) score -= 1;
+            else if (c >= avg * 0.6) score += 1;
+          }
+        }
+      }
+      if (baziResult && baziResult.branchRelations) {
+        const relations = baziResult.branchRelations;
+        if (relations.summary && relations.summary.length > 0) {
+          const harmonious = relations.summary.filter(r =>
+            r.includes('合')
+          ).length;
+          const conflicting = relations.summary.filter(r =>
+            r.includes('沖') || r.includes('刑') || r.includes('害')
+          ).length;
+          score += harmonious * 2 - conflicting * 2;
+        }
+      }
+      if (ichingResult && ichingResult.hexagram) {
+        const trigramMap = { '乾': 1, '坤': -1, '震': 1, '巽': -1, '坎': -1, '離': 1, '艮': 1, '兌': -1 };
+        const name = ichingResult.hexagram.name || '';
+        const upper = name.length >= 2 ? name[0] : '';
+        const lower = name.length >= 2 ? name[1] : name[0] || '';
+        const upperVal = trigramMap[upper] || 0;
+        const lowerVal = trigramMap[lower] || 0;
+        if (upperVal * lowerVal > 0) score += 2;
+        else if (upperVal * lowerVal < 0) score -= 2;
+      }
+      if (qimenChart && qimenChart.summary) {
+        if (qimenChart.summary.favorable && qimenChart.summary.favorable.length > 0) score += 2;
+        if (qimenChart.summary.unfavorable && qimenChart.summary.unfavorable.length > 0) score -= 2;
+      }
+    } catch (e) {
+      console.warn('平衡分數計算錯誤:', e);
+    }
+    return Math.max(-10, Math.min(10, score));
   }
 
   _calculate14Days(baziResult, startDate) {

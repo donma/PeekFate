@@ -191,6 +191,7 @@ class BaziEngine {
       tenGods,
       branchRelations: branchRels,
       hiddenStems: hiddenStemsList,
+      nayinMatch: this._checkNayinMatch([yearPillar, monthPillar, dayPillar, hourPillar]),
       birthInfo: {
         date: this._formatDate(date),
         time: birthTime,
@@ -1299,6 +1300,39 @@ class BaziEngine {
     }
 
     return summary;
+  }
+
+  _checkNayinMatch(pillars) {
+    const nayinElement = {
+      '金': 'metal', '木': 'wood', '水': 'water', '火': 'fire', '土': 'earth'
+    };
+    const generateMap = { wood: 'fire', fire: 'earth', earth: 'metal', metal: 'water', water: 'wood' };
+    const controlMap = { wood: 'earth', earth: 'water', water: 'fire', fire: 'metal', metal: 'wood' };
+    const elements = [];
+    for (const p of pillars) {
+      if (p && p.nayin) {
+        const lastChar = p.nayin.slice(-1);
+        const element = nayinElement[lastChar];
+        if (element) elements.push(element);
+      }
+    }
+    if (elements.length < 2) return null;
+    let harmonyCount = 0;
+    let conflictCount = 0;
+    for (let i = 0; i < elements.length; i++) {
+      for (let j = i + 1; j < elements.length; j++) {
+        if (elements[i] === elements[j]) harmonyCount++;
+        else if (generateMap[elements[i]] === elements[j] || generateMap[elements[j]] === elements[i]) harmonyCount++;
+        else if (controlMap[elements[i]] === elements[j] || controlMap[elements[j]] === elements[i]) conflictCount++;
+      }
+    }
+    const totalPairs = (elements.length * (elements.length - 1)) / 2;
+    if (totalPairs === 0) return null;
+    const harmonyRatio = harmonyCount / totalPairs;
+    const conflictRatio = conflictCount / totalPairs;
+    if (harmonyRatio > 0.5) return true;
+    if (conflictRatio > 0.5) return false;
+    return null;
   }
 
   /**
