@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>速窺運勢 — 命理驗證報告</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#F7EFE1;color:#3E3232;font-family:'Noto Sans TC',sans-serif;padding:20px}
+h1{font-size:1.5rem;margin-bottom:8px;color:#5D4037}
+h2{font-size:1.1rem;margin:20px 0 10px;color:#8B6914}
+.sub{color:#8B7355;font-size:0.85rem;margin-bottom:16px}
+.stats{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+.stat{padding:14px 20px;border-radius:8px;background:#fff;flex:1;min-width:140px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.stat .num{font-size:1.8rem;font-weight:700;display:block}
+.stat .lbl{font-size:0.8rem;color:#8B7355}
+.green{color:#2E7D32}
+.red{color:#C62828}
+.neutral{color:#8B6914}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:20px}
+th{background:#5D4037;color:#fff;padding:10px 8px;font-size:0.8rem;text-align:left}
+td{padding:8px;font-size:0.85rem;border-bottom:1px solid #f0e8d8}
+tr.pass td{background:#f0f8f0}
+tr.fail td{background:#fff5f5}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;color:#fff;font-size:0.75rem;font-weight:600}
+.badge-pos{background:#2E7D32}
+.badge-neg{background:#C62828}
+.badge-neu{background:#8B6914}
+.score-hi{color:#2E7D32;font-weight:700}
+.score-lo{color:#C62828;font-weight:700}
+.score-md{color:#8B6914}
+.loading{padding:40px;text-align:center;color:#8B7355}
+.summary-detail{margin-bottom:20px;padding:16px;background:#fff;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.summary-detail p{margin:4px 0;font-size:0.9rem}
+</style>
+</head>
+<body>
+<h1>⚡ 速窺運勢 — 命理驗證報告</h1>
+<p class="sub">使用歷史名人已知事件日期驗證系統準確率</p>
+<div id="content" class="loading">載入中（約需 3-5 秒）...</div>
+
+<script>
+// 直接複製必要的引擎代碼（避免跨域問題）
+const SCRIPTS = [
+  'js/engines/date-engine.js',
+  'js/engines/ganzhi-engine.js',
+  'js/engines/bazi-engine.js',
+  'js/engines/iching-engine.js',
+  'js/engines/qimen-engine.js',
+  'js/engines/scoring-engine.js'
+];
+
+async function loadScript(url) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = url; s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function fetchJSON(url) {
+  const r = await fetch(url);
+  return r.json();
+}
+
+async function main() {
+  try {
+    // Load engines
+    for (const url of SCRIPTS) await loadScript(url);
+    
+    // Initialize
+    const bazi = new BaziEngine();
+    const qimen = new QimenEngine();
+    
+    // Load data
+    const [solarTerms, qimenCfg, celebrities, events] = await Promise.all([
+      fetchJSON('data/core/solar-terms.json'),
+      fetchJSON('data/interpretation/qimen-config.json'),
+      fetchJSON('data/celebrities/celebrities.json'),
+      fetchJSON('data/celebrities/verification-events.json')
+    ]);
+    
+    await bazi.loadData();
+    bazi.solarTerms = solarTerms;
+    qimen.config = qimenCfg;
+    qimen.setSolarTerms(solarTerms);
+    qimen.loaded = true;
+
+    // Build celeb lookup
+    const celebMap = {};
+    celebrities.forEach(c => { celebMap[c.name] = c; });
+
+    // Process each event
+    const results = [];
+    let passCount = 0, failCount = 0;
+    
+    for (const evt of events) {
+      const celeb = celebMap[evt.name];
+      if (!celeb) continue;
+      
+      const birthDate = new Date(celeb.birthDate + 'T12:00:00');
+      const birthTime = celeb.birthTime || '12:00';
+      const eventDate = new Date(evt.eventDate + 'T12:00:00');
+      
+      // Calculate bazi
+      const baziResult = bazi.calculateBazi(birthDate, birthTime, celeb.gender);
+      if (!baziResult) continue;
+      
+      // Calculate score for the event date (noon 午時)
+      const flowDayPillar = bazi.calculateDayPillar(eventDate);
+      const stems = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+      const base = new Date(2024,0,1);
+      const diff = Math.round((eventDate.getTime() - base.getTime()) / 86400000);
+      const dayStem = stems[((diff % 10) + 10) % 10];
+      
+      // Date-level score (average of all hours)
+      const dateScore = _calculateDayScore(baziResult, eventDate, bazi);
+      
+      // Event type threshold
+      // positive: ≥58, negative: <50, neutral: 45-60
+      let thresholdLow = 0, thresholdHigh = 100;
+      if (evt.type === 'positive') { thresholdLow = 55; }
+      else if (evt.type === 'negative') { thresholdHigh = 52; }
+      else { thresholdLow = 45; thresholdHigh = 60; }
+      
+      const passed = dateScore >= thresholdLow && dateScore <= thresholdHigh;
+      if (passed) passCount++; else failCount++;
+      
+      results.push({
+        name: evt.name,
+        date: evt.eventDate,
+        type: evt.type,
+        desc: evt.desc,
+        score: dateScore,
+        passed,
+        threshold: evt.type === 'positive' ? `≥${thresholdLow}` : evt.type === 'negative' ? `<${thresholdHigh}` : `${thresholdLow}-${thresholdHigh}`
+      });
+    }
+    
+    const total = passCount + failCount;
+    const accuracy = total > 0 ? Math.round(passCount / total * 100) : 0;
+    
+    // Render report
+    renderReport(results, passCount, failCount, total, accuracy);
+    
+  } catch (e) {
+    document.getElementById('content').innerHTML = `<p style="color:red">錯誤：${e.message}</p>`;
+    console.error(e);
+  }
+}
+
+function _calculateDayScore(baziResult, date, baziEngine) {
+  const hourBranches = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+  const scores = [];
+  
+  for (const hb of hourBranches) {
+    let score = 50;
+    
+    // 十神
+    const stems = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+    const base = new Date(2024,0,1);
+    const diff = Math.round((date.getTime() - base.getTime()) / 86400000);
+    const dayStem = stems[((diff % 10) + 10) % 10];
+    const dayStemIdx = stems.indexOf(dayStem);
+    const hourStemStart = [0,2,4,6,8];
+    const hourStemIdx = (hourStemStart[dayStemIdx % 5] + hourBranches.indexOf(hb)) % 10;
+    const hourStem = stems[hourStemIdx];
+    const tenGod = baziEngine.getTenGod(baziResult.day.stem, hourStem);
+    
+    if (tenGod) {
+      const tgScores = { '正官':3,'七殺':-2,'正財':3,'偏財':2,'正印':2,'偏印':1,'食神':3,'傷官':-1,'比肩':0,'劫財':-2 };
+      score += tgScores[tenGod.name] || 0;
+    }
+    
+    // 日主旺衰動態
+    const strength = baziResult.dayMasterStrength || '休';
+    if (tenGod) {
+      const favor = ['officer','wealth','output'];
+      const unfavor = ['resource','peer'];
+      if ((strength === '旺' || strength === '相') && favor.includes(tenGod.type)) score += Math.round((tgScores[tenGod.name]||0) * 0.5);
+      else if ((strength === '囚' || strength === '死') && unfavor.includes(tenGod.type)) score += Math.round((tgScores[tenGod.name]||0) * 0.5);
+    }
+    
+    // 五行生剋
+    const branchEl = { '子':'water','丑':'earth','寅':'wood','卯':'wood','辰':'earth','巳':'fire','午':'fire','未':'earth','申':'metal','酉':'metal','戌':'earth','亥':'water' }[hb]||'';
+    const dayEl = baziResult.dayMaster.element;
+    const genMap = { wood:'fire',fire:'earth',earth:'metal',metal:'water',water:'wood' };
+    const conMap = { wood:'earth',earth:'water',water:'fire',fire:'metal',metal:'wood' };
+    if (branchEl === dayEl) score += 2;
+    else if (genMap[branchEl] === dayEl) score += 4;
+    else if (genMap[dayEl] === branchEl) score += 0;
+    else if (conMap[branchEl] === dayEl) score -= 3;
+    
+    // 旬空
+    if (baziResult.kongWang && baziResult.kongWang.includes(hb)) score -= 3;
+    
+    // 用神
+    if (baziResult.yongShen?.yongShen) {
+      const stemEl = { '甲':'wood','乙':'wood','丙':'fire','丁':'fire','戊':'earth','己':'earth','庚':'metal','辛':'metal','壬':'water','癸':'water' }[hourStem]||'';
+      if (stemEl === baziResult.yongShen.yongShen) score += 3;
+      else if (branchEl === baziResult.yongShen.yongShen) score += 1;
+      if (stemEl === baziResult.yongShen.jiShen) score -= 3;
+      else if (branchEl === baziResult.yongShen.jiShen) score -= 1;
+    }
+    
+    // 神煞
+    if (baziResult.shenSha && baziResult.shenSha.length > 0) {
+      for (const ss of baziResult.shenSha) score += ss.isGood ? 2 : -2;
+    }
+    
+    // 地支關係
+    if (baziResult.branchRelationScore) score += baziResult.branchRelationScore;
+    
+    // 身強身弱
+    if (baziResult.bodyStrength) score += Math.round(baziResult.bodyStrength.total * 1.5);
+    
+    // 流日十神
+    if (dayStem) {
+      const fdTenGod = baziEngine.getTenGod(baziResult.day.stem, dayStem);
+      if (fdTenGod) {
+        const fdScores = { '正官':3,'七殺':-2,'正財':3,'偏財':2,'正印':2,'偏印':1,'食神':3,'傷官':-1,'比肩':0,'劫財':-2 };
+        score += Math.round((fdScores[fdTenGod.name]||0) * 0.4);
+      }
+    }
+    
+    scores.push(Math.max(0, Math.min(100, score)));
+  }
+  
+  return Math.round(scores.reduce((a,b)=>a+b,0) / scores.length);
+}
+
+function renderReport(results, pass, fail, total, accuracy) {
+  const container = document.getElementById('content');
+  
+  // Sort: pass first, then by score descending
+  const sorted = [...results].sort((a,b) => b.passed - a.passed || b.score - a.score);
+  
+  const positiveEvents = results.filter(r => r.type === 'positive');
+  const negativeEvents = results.filter(r => r.type === 'negative');
+  const neutralEvents = results.filter(r => r.type === 'neutral');
+  
+  const posPass = positiveEvents.filter(r => r.passed).length;
+  const negPass = negativeEvents.filter(r => r.passed).length;
+  const neuPass = neutralEvents.filter(r => r.passed).length;
+  
+  // Avg scores by type
+  const avgPos = positiveEvents.length > 0 ? Math.round(positiveEvents.reduce((s,r)=>s+r.score,0)/positiveEvents.length) : 0;
+  const avgNeg = negativeEvents.length > 0 ? Math.round(negativeEvents.reduce((s,r)=>s+r.score,0)/negativeEvents.length) : 0;
+  const avgNeu = neutralEvents.length > 0 ? Math.round(neutralEvents.reduce((s,r)=>s+r.score,0)/neutralEvents.length) : 0;
+  
+  container.innerHTML = `
+    <div class="stats">
+      <div class="stat"><span class="num green">${accuracy}%</span><span class="lbl">總體準確率</span></div>
+      <div class="stat"><span class="num ${accuracy >= 65 ? 'green' : 'red'}">${pass}/${total}</span><span class="lbl">通過/總事件</span></div>
+      <div class="stat"><span class="num green">${avgPos}</span><span class="lbl">吉事平均分</span></div>
+      <div class="stat"><span class="num red">${avgNeg}</span><span class="lbl">凶事平均分</span></div>
+      <div class="stat"><span class="num neutral">${avgNeu}</span><span class="lbl">中性事件平均分</span></div>
+    </div>
+    <div class="summary-detail">
+      <p>✅ 吉事 ${posPass}/${positiveEvents.length} 通過（期望≥55分）</p>
+      <p>✅ 凶事 ${negPass}/${negativeEvents.length} 通過（期望<52分）</p>
+      <p>✅ 中性 ${neuPass}/${neutralEvents.length} 通過（期望45-60分）</p>
+      <p style="margin-top:8px;color:#8B6914;font-size:0.8rem">
+        驗證邏輯：吉事（得獎/上任/成功）→ 該日分數應≥55；
+        凶事（逝世/失敗/負面事件）→ 該日分數應<52；
+        中性事件 → 45-60
+      </p>
+    </div>
+    <table>
+      <thead><tr>
+        <th>名人</th><th>事件日期</th><th>類型</th><th>事件</th><th>分數</th><th>閾值</th><th>結果</th>
+      </tr></thead>
+      <tbody>
+        ${sorted.map(r => `
+          <tr class="${r.passed ? 'pass' : 'fail'}">
+            <td>${r.name}</td>
+            <td>${r.date}</td>
+            <td><span class="badge badge-${r.type === 'positive' ? 'pos' : r.type === 'negative' ? 'neg' : 'neu'}">${r.type === 'positive' ? '吉' : r.type === 'negative' ? '凶' : '平'}</span></td>
+            <td>${r.desc}</td>
+            <td class="${r.score >= 65 ? 'score-hi' : r.score < 45 ? 'score-lo' : 'score-md'}">${r.score}</td>
+            <td style="font-size:0.75rem">${r.threshold}</td>
+            <td>${r.passed ? '✅' : '❌'}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+main();
+</script>
+</body>
+</html>

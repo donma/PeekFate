@@ -207,6 +207,14 @@ class App {
       this.qimenEngine.setSolarTerms(this.baziEngine.solarTerms);
     }
 
+    // 載入名人資料庫
+    try {
+      const resp = await fetch('./data/celebrities/celebrities.json');
+      this.celebrities = await resp.json();
+    } catch (e) {
+      this.celebrities = [];
+    }
+
     const failed = loadResults.filter(r => r.status === 'rejected' || r.value === false);
     if (failed.length > 0) {
       console.warn(`${failed.length} 個引擎載入部分數據失敗，將使用備用數據`);
@@ -1785,6 +1793,7 @@ class App {
     let html = '';
 
     html += this._renderBaziSummary(bazi);
+    html += this._renderCelebrityVerification();
     html += this._renderScoreLegend();
     html += this._renderDaySummary(today.summary, '今日總覽');
     html += this._renderHourCards(today.hours, '今日時辰');
@@ -1795,6 +1804,7 @@ class App {
 
     container.innerHTML = html;
     this._bindCardToggle();
+    this._bindCelebEvents();
   }
 
   _renderScoreLegend() {
@@ -1937,6 +1947,70 @@ class App {
 
     svg += '</svg>';
     return svg;
+  }
+
+  _renderCelebrityVerification() {
+    if (!this.celebrities || this.celebrities.length === 0) return '';
+    const options = this.celebrities.map((c, i) =>
+      `<option value="${i}">${c.name}（${c.birthDate}）${c.note ? '—' + c.note : ''}</option>`
+    ).join('');
+    return `
+      <div class="result-card celebrity-verify" id="celebVerify">
+        <h3 class="card-title">⚡ 名人驗證</h3>
+        <div class="celeb-controls">
+          <select id="celebSelect" class="celeb-select">${options}</select>
+          <input type="date" id="celebDate" class="celeb-date">
+          <button id="celebCheckBtn" class="celeb-btn">驗證</button>
+        </div>
+        <div id="celebResult" class="celeb-result"></div>
+      </div>
+    `;
+  }
+
+  _bindCelebEvents() {
+    const btn = document.getElementById('celebCheckBtn');
+    if (btn) btn.addEventListener('click', () => this._checkCelebrity());
+    const sel = document.getElementById('celebSelect');
+    const dt = document.getElementById('celebDate');
+    if (dt) dt.valueAsDate = new Date();
+  }
+
+  _checkCelebrity() {
+    const sel = document.getElementById('celebSelect');
+    const dt = document.getElementById('celebDate');
+    if (!sel || !dt || !this.celebrities) return;
+    const celeb = this.celebrities[parseInt(sel.value)];
+    if (!celeb) return;
+
+    const date = new Date(dt.value + 'T12:00:00');
+    const birthDate = new Date(celeb.birthDate + 'T12:00:00');
+    const birthTime = celeb.birthTime || '12:00';
+    const bazi = this.baziEngine.calculateBazi(birthDate, birthTime, celeb.gender);
+    if (!bazi) {
+      document.getElementById('celebResult').innerHTML = '<p class="celeb-error">無法推算此名人的八字</p>';
+      return;
+    }
+
+    // 對選定日期計分
+    const hourBranch = { branch:'午', name:'午時', start:'11:00', end:'13:00' };
+    const hourResult = this._calculateSingleHour(bazi, date, hourBranch, bazi.dayMaster.element);
+
+    let html = `<div class="celeb-bazi">${this._renderBaziChartSVG(bazi)}</div>`;
+    html += `<div class="celeb-score">`;
+    html += `<span class="score-number">${hourResult.score}<span class="score-label">分</span></span>`;
+    html += ` <span class="level-badge" style="background:${hourResult.levelColor}">${hourResult.level}</span>`;
+    html += ` <span class="celeb-date-label">${celeb.name} × ${dt.value} 午時</span>`;
+    html += `</div>`;
+    html += `<div class="celeb-traces">`;
+    if (hourResult.trace) {
+      const qm = hourResult.trace.find(t => t.system === 'qimen');
+      const bz = hourResult.trace.find(t => t.system === 'bazi');
+      if (bz) html += `<p>八字：${bz.score > 0 ? '➕' : '➖'}${bz.score}（${bz.reason}）</p>`;
+      if (qm) html += `<p>奇門：${qm.score > 0 ? '➕' : '➖'}${qm.score}（${qm.reason}）</p>`;
+    }
+    html += `</div>`;
+
+    document.getElementById('celebResult').innerHTML = html;
   }
 
   _renderBaziSummary(bazi) {
