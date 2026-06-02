@@ -1381,6 +1381,7 @@ class App {
       level: levelInfo.level,
       levelColor: levelInfo.color,
       description: levelInfo.description,
+      theme: levelInfo.description,
       maxScore,
       minScore,
       bestHours: bestHours.slice(0, 3),
