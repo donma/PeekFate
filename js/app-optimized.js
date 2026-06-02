@@ -346,10 +346,14 @@ class App {
         }
       } else {
         // 無儲存資料時展開表單
+        const inputSection = document.getElementById('inputSection');
+        if (inputSection) inputSection.style.display = '';
         if (formContainer) formContainer.classList.remove('collapsed');
       }
     } catch (error) {
       console.warn('無法載入已儲存的資料:', error);
+      const inputSection = document.getElementById('inputSection');
+      if (inputSection) inputSection.style.display = '';
     }
   }
 
