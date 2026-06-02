@@ -38,7 +38,7 @@
             <div class="hero-divider"></div>
             <p class="hero-subtitle">八字 × 易經 × 奇門遁甲</p>
             <p class="hero-desc">每日時辰精算，掌握運勢先機</p>
-            <button type="button" class="btn-toggle-section" id="btnToggleSection">
+            <button type="button" class="btn-toggle-section" id="btnToggleSection" onclick="toggleSection()">
               ▼ 修改資料
             </button>
           </div>
@@ -146,17 +146,21 @@
   <div class="loading-progress" id="loadingProgress"></div>
 
   <script>
-    // 確保按鈕可以正常工作
+    function toggleSection() {
+      var btn = document.getElementById('btnToggleSection');
+      var container = document.getElementById('formContainer');
+      if (btn && container) {
+        var isCollapsed = container.classList.contains('collapsed');
+        container.classList.toggle('collapsed');
+        btn.textContent = isCollapsed ? '▲ 收合輸入區' : '▼ 修改資料';
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-      const btnToggle = document.getElementById('btnToggleSection');
-      const formContainer = document.getElementById('formContainer');
-      
+      var btnToggle = document.getElementById('btnToggleSection');
+      var formContainer = document.getElementById('formContainer');
       if (btnToggle && formContainer) {
-        btnToggle.addEventListener('click', function() {
-          const isCollapsed = formContainer.classList.contains('collapsed');
-          formContainer.classList.toggle('collapsed');
-          btnToggle.textContent = isCollapsed ? '▲ 收合輸入區' : '▼ 修改資料';
-        });
+        btnToggle.addEventListener('click', toggleSection);
       }
     });
   </script>
