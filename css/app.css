@@ -1089,6 +1089,27 @@ small {
   border-left: 3px solid var(--accent-gold);
 }
 
+.bazi-chart-container {
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--spacing-xs) 0;
+}
+
+.bazi-chart-svg {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.bazi-details {
+  border-top: 1px dashed var(--border-color);
+  padding-top: var(--spacing-md);
+}
+
 .master-info,
 .tengod-info {
   display: flex;
@@ -2155,8 +2176,8 @@ small {
    ======================================== */
 
 @media (max-width: 768px) {
-  .bazi-pillars {
-    grid-template-columns: repeat(2, 1fr);
+  .bazi-chart-svg {
+    max-width: 320px;
   }
 
   .hour-grid {
