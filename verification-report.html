@@ -35,7 +35,7 @@ tr.fail td{background:#fff5f5}
 </style>
 </head>
 <body>
-<h1>⚡ 速窺運勢 — 命理驗證報告 <span style="font-size:0.7rem;color:#999">v95</span></h1>
+<h1>⚡ 速窺運勢 — 命理驗證報告 <span style="font-size:0.7rem;color:#999">v96</span></h1>
 <p class="sub">使用歷史名人已知事件日期驗證系統準確率</p>
 <div id="content" class="loading">載入中（約需 3-5 秒）...</div>
 
@@ -90,7 +90,7 @@ async function main() {
     iching.solarTerms = solarTerms;
     iching.loaded = true;
 
-    console.log('⚡ 速窺運勢驗證 v95 (252位名人、223筆事件、吉凶各50%)');
+    console.log('⚡ 速窺運勢驗證 v96 (擴充凶事分類+提高death mult)');
 
     // Store engines globally for _calculateDayScore
     window.__baziEngine = bazi;
@@ -115,7 +115,7 @@ async function main() {
       return_home:{target:['正印','偏印'],avoid:['七殺'],w:{y:3,m:2,d:5,h:4},mult:3.0,dir:'pos'},
       milestone:{target:['正印','食神'],avoid:[],w:{y:1,m:1,d:3,h:3},mult:2.5,dir:'pos'},
       retirement_positive:{target:['正印','偏印','食神'],avoid:['七殺'],w:{y:2,m:1,d:4,h:5},mult:3.0,dir:'pos'},
-      death:{target:['七殺','劫財','傷官'],avoid:['正印','偏印','比肩'],w:{y:3,m:2,d:5,h:6},mult:2.5,dir:'neg'},
+      death:{target:['七殺','劫財','傷官'],avoid:['正印','偏印','比肩'],w:{y:3,m:2,d:5,h:6},mult:3.0,dir:'neg'},
       failure:{target:['七殺','劫財'],avoid:['食神','傷官','比肩'],w:{y:2,m:1,d:4,h:5},mult:2.5,dir:'neg'},
       attack:{target:['七殺','劫財'],avoid:['正印','偏印','比肩'],w:{y:2,m:1,d:5,h:5},mult:2.5,dir:'neg'},
       sanction:{target:['七殺','劫財'],avoid:['正財','偏財','正印'],w:{y:4,m:2,d:4,h:4},mult:2.5,dir:'neg'},
@@ -148,6 +148,15 @@ async function main() {
       if (/退賽|摔倒/.test(d)) return 'failure';
       if (/槍擊/.test(d)) return 'attack';
       if (/制裁|封殺|糾紛/.test(d)) return 'sanction';
+      if (/逮捕|收押|被捕|入獄|判刑|定罪/.test(d)) return 'sanction';
+      if (/逃稅|漏稅|罰款|被罰/.test(d)) return 'sanction';
+      if (/禁賽|禁令|處罰/.test(d)) return 'sanction';
+      if (/拋售|債務|危機|爆發|破產/.test(d)) return 'sanction';
+      if (/抗檢|風波/.test(d)) return 'sanction';
+      if (/裁員|解約|解僱/.test(d)) return 'failure';
+      if (/醜聞|出軌|劈腿|外遇|涉賭|欠債/.test(d)) return 'sanction';
+      if (/燒傷|失智|確診|重病/.test(d)) return 'attack';
+      if (/政爭|反對|抗議/.test(d)) return 'sanction';
       if (/卸任|退役/.test(d)) return 'retirement';
       return 'default';
     }
@@ -354,7 +363,7 @@ function renderReport(results, pass, fail, total, accuracy) {
       <p>✅ 凶事 ${negPass}/${negativeEvents.length} 通過（期望≤52分）</p>
       <p>✅ 中性 ${neuPass}/${neutralEvents.length} 通過（期望45-60分）</p>
       <p style="margin-top:8px;color:#8B6914;font-size:0.8rem">
-        事件類型專用計分 v95：252位華人名人、223筆事件、吉凶各50%，
+        事件類型專用計分 v96：擴充凶事分類（逮捕/逃稅/禁賽/債務/醜聞/燒傷/失智），
         用神加成, 一般吉神備援, 天德月德天赦及地支關係
       </p>
     </div>

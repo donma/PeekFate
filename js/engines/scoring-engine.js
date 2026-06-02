@@ -703,10 +703,10 @@ class ScoringEngine {
     return_home:{target:['正印','偏印'],avoid:['七殺'],w:{y:3,m:2,d:5,h:4},mult:3.0,dir:'pos'},
     milestone:{target:['正印','食神'],avoid:[],w:{y:1,m:1,d:3,h:3},mult:2.5,dir:'pos'},
     retirement_positive:{target:['正印','偏印','食神'],avoid:['七殺'],w:{y:2,m:1,d:4,h:5},mult:3.0,dir:'pos'},
-    death:{target:['七殺','劫財','傷官'],avoid:['正印','偏印','比肩'],w:{y:3,m:2,d:5,h:6},mult:2.5,dir:'neg'},
-    failure:{target:['七殺','劫財'],avoid:['食神','傷官','比肩'],w:{y:2,m:1,d:4,h:5},mult:2.5,dir:'neg'},
-    attack:{target:['七殺','劫財'],avoid:['正印','偏印','比肩'],w:{y:2,m:1,d:5,h:5},mult:2.5,dir:'neg'},
-    sanction:{target:['七殺','劫財'],avoid:['正財','偏財','正印'],w:{y:4,m:2,d:4,h:4},mult:2.5,dir:'neg'},
+    death:{target:['七殺','劫財','傷官'],avoid:['正印','偏印','比肩'],w:{y:3,m:2,d:5,h:6},mult:3.0,dir:'neg'},
+    failure:{target:['七殺','劫財'],avoid:['食神','傷官','比肩'],w:{y:2,m:1,d:4,h:5},mult:3.0,dir:'neg'},
+    attack:{target:['七殺','劫財'],avoid:['正印','偏印','比肩'],w:{y:2,m:1,d:5,h:5},mult:3.0,dir:'neg'},
+    sanction:{target:['七殺','劫財'],avoid:['正財','偏財','正印'],w:{y:4,m:2,d:4,h:4},mult:3.0,dir:'neg'},
     retirement:{target:['正印','偏印'],avoid:['七殺'],w:{y:1,m:1,d:3,h:3},mult:1.5,dir:'neu'},
     neutral:{target:[],avoid:[],w:{y:1,m:.5,d:2,h:1},mult:1,dir:'neu'}
   };

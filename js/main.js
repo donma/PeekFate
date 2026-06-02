@@ -3,7 +3,7 @@
  * 使用延遲載入和並行處理來提升性能
  */
 
-const APP_VERSION = 'v95';
+const APP_VERSION = 'v96';
 console.log(`⚡ 速窺運勢 v${APP_VERSION}`);
 
 // 檢查是否有舊版快取需要清除
