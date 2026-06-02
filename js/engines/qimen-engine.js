@@ -71,53 +71,53 @@ class QimenEngine {
         name: '天遁',
         description: '天盤丙奇，地盤生門，合吉格',
         check: (chart) => {
-          return chart.tianPan[4] === '丙' && chart.diPan[1] === '生門';
+          return chart.tianPan[4]?.gan === '丙' && chart.diPan[1]?.door === '生門';
         }
       },
       {
         name: '地遁',
         description: '天盤乙奇，地盤開門，合吉格',
         check: (chart) => {
-          return chart.tianPan[4] === '乙' && chart.diPan[7] === '開門';
+          return chart.tianPan[4]?.gan === '乙' && chart.diPan[7]?.door === '開門';
         }
       },
       {
         name: '人遁',
         description: '天盤丁奇，地盤休門，合吉格',
         check: (chart) => {
-          return chart.tianPan[4] === '丁' && chart.diPan[0] === '休門';
+          return chart.tianPan[4]?.gan === '丁' && chart.diPan[0]?.door === '休門';
         }
       },
       {
         name: '龍遁',
         description: '天盤乙奇，地盤開門或休門',
         check: (chart) => {
-          return chart.tianPan[4] === '乙' && 
-                 (chart.diPan[7] === '開門' || chart.diPan[0] === '休門');
+          return chart.tianPan[4]?.gan === '乙' && 
+                 (chart.diPan[7]?.door === '開門' || chart.diPan[0]?.door === '休門');
         }
       },
       {
         name: '虎遁',
         description: '天盤乙奇，地盤生門或開門',
         check: (chart) => {
-          return chart.tianPan[4] === '乙' && 
-                 (chart.diPan[1] === '生門' || chart.diPan[7] === '開門');
+          return chart.tianPan[4]?.gan === '乙' && 
+                 (chart.diPan[1]?.door === '生門' || chart.diPan[7]?.door === '開門');
         }
       },
       {
         name: '風遁',
         description: '天盤乙奇，地盤吉門，合吉格',
         check: (chart) => {
-          return chart.tianPan[4] === '乙' && 
-                 ['生門', '開門', '休門'].includes(chart.diPan[1]);
+          return chart.tianPan[4]?.gan === '乙' && 
+                 ['生門', '開門', '休門'].includes(chart.diPan[1]?.door);
         }
       },
       {
         name: '雲遁',
         description: '天盤乙奇，地盤吉門，合吉格',
         check: (chart) => {
-          return chart.tianPan[4] === '乙' && 
-                 ['生門', '開門', '休門'].includes(chart.diPan[7]);
+          return chart.tianPan[4]?.gan === '乙' && 
+                 ['生門', '開門', '休門'].includes(chart.diPan[7]?.door);
         }
       },
       {
@@ -126,8 +126,10 @@ class QimenEngine {
         check: (chart) => {
           const yiQi = ['甲子戊', '甲戌己', '甲申庚', '甲午辛', '甲辰壬', '甲寅癸'];
           const sanQi = ['乙', '丙', '丁'];
-          return yiQi.some(y => chart.tianPan.includes(y)) && 
-                 sanQi.some(q => chart.diPan.includes(q));
+          const tianGans = Object.values(chart.tianPan).map(v => v.gan);
+          const diGans = Object.values(chart.diPan).map(v => v.gan);
+          return yiQi.some(y => tianGans.includes(y)) && 
+                 sanQi.some(q => diGans.includes(q));
         }
       }
     ];
@@ -789,8 +791,8 @@ class QimenEngine {
       }
 
       // 悖格：丙加庚
-      if (chart.tianPan && chart.tianPan[4] === '丙' && 
-          chart.diPan && chart.diPan[6] === '庚') {
+      if (chart.tianPan && chart.tianPan[4]?.gan === '丙' && 
+          chart.diPan && chart.diPan[6]?.gan === '庚') {
         patterns.push({
           name: '悖格',
           description: '丙加庚，主悖亂'

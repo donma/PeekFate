@@ -21,7 +21,7 @@
 // ============================================
 
 /** 快取名稱（更新版本時需更改） */
-const CACHE_NAME = 'su-kui-yun-shi-v24';
+const CACHE_NAME = 'su-kui-yun-shi-v25';
 
 /** 需要預先快取的資源清單 */
 const CACHE_URLS = [
