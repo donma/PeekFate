@@ -213,7 +213,7 @@ class BaziEngine {
     }
     // 合化調整五行分布（地支合局）
     const adjustedElementCount = this._adjustElementsForCombinations({ ...elementCount }, branchRels);
-    const yongShen = this._calculateYongShen(dayMaster.element, dayMasterStrength, adjustedElementCount);
+    let yongShen = this._calculateYongShen(dayMaster.element, dayMasterStrength, adjustedElementCount);
 
     // 神煞
     const shenSha = this._calculateShenSha({ year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar });
