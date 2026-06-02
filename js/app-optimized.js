@@ -202,10 +202,14 @@ class App {
       this.interpretationEngine.loadData()
     ]);
 
+    // 共享節氣數據給奇門引擎
+    if (this.baziEngine?.solarTerms) {
+      this.qimenEngine.setSolarTerms(this.baziEngine.solarTerms);
+    }
+
     const failed = loadResults.filter(r => r.status === 'rejected' || r.value === false);
     if (failed.length > 0) {
       console.warn(`${failed.length} 個引擎載入部分數據失敗，將使用備用數據`);
-      // 顯示錯誤在頁面上，並提供清除緩存按鈕
       const errorDiv = document.getElementById('engineError');
       if (errorDiv) {
         errorDiv.innerHTML = `
@@ -844,7 +848,7 @@ class App {
     const qimenTrace = [];
     try {
       qimenChart = this.qimenEngine.calculateQimenHourChart(date, hourBranch.branch);
-      qimenScore = this._calculateQimenScore(qimenChart);
+      qimenScore = this._calculateQimenScore(qimenChart, date, hourBranch.branch, flowDayPillar?.stem);
       const doorName = qimenChart.zhiShi?.door || '未知';
       qimenTrace.push({
         system: 'qimen', rule: 'door', value: doorName,
@@ -1112,11 +1116,11 @@ class App {
     return Math.max(-20, Math.min(20, score));
   }
 
-  _calculateQimenScore(chart) {
+  _calculateQimenScore(chart, date, hourBranch, dayStem) {
     if (!chart) return 0;
 
     let score = 0;
-    
+
     // 使用 scoringEngine 的規則，如果沒有則使用預設值
     const doorScores = this.scoringEngine.scoreRules?.qimenScores?.doors || {
       '開門': 10, '休門': 8, '生門': 9, '傷門': -7,
@@ -1126,14 +1130,12 @@ class App {
       '天蓬': -6, '天芮': -5, '天沖': 4, '天輔': 7,
       '天禽': 6, '天心': 8, '天柱': -3, '天任': 5, '天英': 2
     };
-    const godScores = this.scoringEngine.scoreRules?.qimenScores?.gods || {
-      '值符': 8, '騰蛇': -4, '太陰': 5, '六合': 6,
-      '白虎': -7, '玄武': -5, '九地': 3, '九天': 4
-    };
 
-    if (chart.zhiShi?.door) score += doorScores[chart.zhiShi.door] || 0;
+    // 值符星 + 值使門（基礎）
     if (chart.zhiFu?.star) score += starScores[chart.zhiFu.star] || 0;
+    if (chart.zhiShi?.door) score += doorScores[chart.zhiShi.door] || 0;
 
+    // 全盤門（現有）
     if (chart.doors) {
       for (const palace in chart.doors) {
         const door = chart.doors[palace];
@@ -1141,9 +1143,21 @@ class App {
       }
     }
 
+    // 特殊格局（現有）
     if (chart.patterns) {
       for (const pattern of chart.patterns) {
         if (pattern.name === '天遁' || pattern.name === '地遁' || pattern.name === '人遁') score += 5;
+      }
+    }
+
+    // 新增：完整奇門深層計分（新引擎）
+    if (date && hourBranch && dayStem) {
+      const board = this.qimenEngine.calculateHourBoard(date, hourBranch, dayStem);
+      if (board) {
+        const detail = this.qimenEngine.deriveHourScore(board);
+        if (detail) {
+          score += detail.score;
+        }
       }
     }
 
@@ -1373,6 +1387,16 @@ class App {
             hourScore += fdi.totalScore;
           }
         }
+        // 奇門遁甲每時辰計分
+        try {
+          const qmBoard = this.qimenEngine.calculateHourBoard(date, hourBranches[h], fdPillar?.stem);
+          if (qmBoard) {
+            const qmDetail = this.qimenEngine.deriveHourScore(qmBoard);
+            if (qmDetail) {
+              hourScore += qmDetail.score;
+            }
+          }
+        } catch (e) { /* skip */ }
 
         if (hourScore >= 60) bestHours.push(hourNames[h]);
         if (hourScore < 40) riskHours.push(hourNames[h]);
@@ -1483,6 +1507,14 @@ class App {
       if (fdr2) {
         totalScore += Math.round(this.baziEngine._calculateBranchRelationScore(fdr2) * 0.5);
       }
+      // 奇門遁甲日盤（以午時為代表）
+      try {
+        const qmBoard = this.qimenEngine.calculateHourBoard(date, '午', fdPillar2.stem);
+        if (qmBoard) {
+          const qmDay = this.qimenEngine.deriveHourScore(qmBoard);
+          if (qmDay) totalScore += Math.round(qmDay.score * 0.5);
+        }
+      } catch (e) { /* skip */ }
     }
 
     totalScore = Math.max(0, Math.min(100, totalScore));

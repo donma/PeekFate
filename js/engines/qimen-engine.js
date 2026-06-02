@@ -1,1133 +1,448 @@
-/**
- * 奇門遁甲引擎
- * 處理奇門遁甲計算
- * 
- * 主要功能：
- * 1. 時家盤計算
- * 2. 節氣判斷
- * 3. 陰陽遁確定
- * 4. 局數計算
- * 5. 九星、八門、八神排布
- * 6. 格局檢測
- */
-
 class QimenEngine {
   constructor() {
-    this.palaces = null;
-    this.doors = null;
-    this.stars = null;
-    this.gods = null;
     this.loaded = false;
-    this.tianGan = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
-    this.diZhi = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
-    this.jiuGong = ['坎一', '坤二', '震三', '巽四', '中五', '乾六', '兌七', '艮八', '離九'];
-    this.baMen = ['休門', '生門', '傷門', '杜門', '景門', '死門', '驚門', '開門'];
-    this.jiuXing = ['天蓬', '天芮', '天沖', '天輔', '天禽', '天心', '天柱', '天任', '天英'];
-    this.baShen = ['值符', '騰蛇', '太陰', '六合', '白虎', '玄武', '九地', '九天'];
-    this.solarTerms = this._initSolarTerms();
-    this.patterns = this._initPatterns();
+    this.config = null;
+    this.solarTerms = null;
+    this.stems = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+    this.branches = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+    this.sixtyCycle = [];
+    for (let i = 0; i < 60; i++) {
+      this.sixtyCycle.push({ stem: this.stems[i % 10], branch: this.branches[i % 12], name: this.stems[i % 10] + this.branches[i % 12] });
+    }
   }
 
-  /**
-   * 初始化節氣數據
-   * @returns {Array} 節氣列表
-   */
-  _initSolarTerms() {
-    return [
-      { name: '冬至', month: 12, dun: '陽', ju: [1, 7, 4] },
-      { name: '小寒', month: 1, dun: '陽', ju: [2, 8, 5] },
-      { name: '大寒', month: 1, dun: '陽', ju: [3, 9, 6] },
-      { name: '立春', month: 2, dun: '陽', ju: [8, 5, 2] },
-      { name: '雨水', month: 2, dun: '陽', ju: [9, 6, 3] },
-      { name: '驚蟄', month: 3, dun: '陽', ju: [1, 7, 4] },
-      { name: '春分', month: 3, dun: '陽', ju: [3, 9, 6] },
-      { name: '清明', month: 4, dun: '陽', ju: [4, 1, 7] },
-      { name: '穀雨', month: 4, dun: '陽', ju: [5, 2, 8] },
-      { name: '立夏', month: 5, dun: '陽', ju: [4, 1, 7] },
-      { name: '小滿', month: 5, dun: '陽', ju: [5, 2, 8] },
-      { name: '芒種', month: 6, dun: '陽', ju: [6, 3, 9] },
-      { name: '夏至', month: 6, dun: '陰', ju: [9, 3, 6] },
-      { name: '小暑', month: 7, dun: '陰', ju: [8, 2, 5] },
-      { name: '大暑', month: 7, dun: '陰', ju: [7, 1, 4] },
-      { name: '立秋', month: 8, dun: '陰', ju: [2, 5, 8] },
-      { name: '處暑', month: 8, dun: '陰', ju: [1, 4, 7] },
-      { name: '白露', month: 9, dun: '陰', ju: [9, 3, 6] },
-      { name: '秋分', month: 9, dun: '陰', ju: [7, 1, 4] },
-      { name: '寒露', month: 10, dun: '陰', ju: [6, 9, 3] },
-      { name: '霜降', month: 10, dun: '陰', ju: [5, 8, 2] },
-      { name: '立冬', month: 11, dun: '陰', ju: [6, 9, 3] },
-      { name: '小雪', month: 11, dun: '陰', ju: [5, 8, 2] },
-      { name: '大雪', month: 12, dun: '陰', ju: [4, 7, 1] }
-    ];
-  }
-
-  /**
-   * 初始化格局數據
-   * @returns {Array} 格局列表
-   */
-  _initPatterns() {
-    return [
-      {
-        name: '天遁',
-        description: '天盤丙奇，地盤生門，合吉格',
-        check: (chart) => {
-          return chart.tianPan[4]?.gan === '丙' && chart.diPan[1]?.door === '生門';
-        }
-      },
-      {
-        name: '地遁',
-        description: '天盤乙奇，地盤開門，合吉格',
-        check: (chart) => {
-          return chart.tianPan[4]?.gan === '乙' && chart.diPan[7]?.door === '開門';
-        }
-      },
-      {
-        name: '人遁',
-        description: '天盤丁奇，地盤休門，合吉格',
-        check: (chart) => {
-          return chart.tianPan[4]?.gan === '丁' && chart.diPan[0]?.door === '休門';
-        }
-      },
-      {
-        name: '龍遁',
-        description: '天盤乙奇，地盤開門或休門',
-        check: (chart) => {
-          return chart.tianPan[4]?.gan === '乙' && 
-                 (chart.diPan[7]?.door === '開門' || chart.diPan[0]?.door === '休門');
-        }
-      },
-      {
-        name: '虎遁',
-        description: '天盤乙奇，地盤生門或開門',
-        check: (chart) => {
-          return chart.tianPan[4]?.gan === '乙' && 
-                 (chart.diPan[1]?.door === '生門' || chart.diPan[7]?.door === '開門');
-        }
-      },
-      {
-        name: '風遁',
-        description: '天盤乙奇，地盤吉門，合吉格',
-        check: (chart) => {
-          return chart.tianPan[4]?.gan === '乙' && 
-                 ['生門', '開門', '休門'].includes(chart.diPan[1]?.door);
-        }
-      },
-      {
-        name: '雲遁',
-        description: '天盤乙奇，地盤吉門，合吉格',
-        check: (chart) => {
-          return chart.tianPan[4]?.gan === '乙' && 
-                 ['生門', '開門', '休門'].includes(chart.diPan[7]?.door);
-        }
-      },
-      {
-        name: '儀奇得使',
-        description: '天盤六儀，地盤三奇',
-        check: (chart) => {
-          const yiQi = ['甲子戊', '甲戌己', '甲申庚', '甲午辛', '甲辰壬', '甲寅癸'];
-          const sanQi = ['乙', '丙', '丁'];
-          const tianGans = Object.values(chart.tianPan).map(v => v.gan);
-          const diGans = Object.values(chart.diPan).map(v => v.gan);
-          return yiQi.some(y => tianGans.includes(y)) && 
-                 sanQi.some(q => diGans.includes(q));
-        }
-      }
-    ];
-  }
-
-  /**
-   * 載入數據
-   * 注意：此方法為異步，實際使用時需要等待數據載入完成
-   */
-  async loadData() {
+  async initialize() {
     try {
-      // 嘗試載入 JSON 數據文件
-      // 由於 JavaScript 環境限制，這裡使用內建數據
-      // 實際應用中可改為從文件或 API 載入
-      this.palaces = {
-        1: { name: '坎一宮', element: '水', direction: '北' },
-        2: { name: '坤二宮', element: '土', direction: '西南' },
-        3: { name: '震三宮', element: '木', direction: '東' },
-        4: { name: '巽四宮', element: '木', direction: '東南' },
-        5: { name: '中五宮', element: '土', direction: '中' },
-        6: { name: '乾六宮', element: '金', direction: '西北' },
-        7: { name: '兌七宮', element: '金', direction: '西' },
-        8: { name: '艮八宮', element: '土', direction: '東北' },
-        9: { name: '離九宮', element: '火', direction: '南' }
-      };
-
-      this.doors = {
-        '休門': { element: '水', nature: '吉' },
-        '生門': { element: '土', nature: '吉' },
-        '傷門': { element: '木', nature: '兇' },
-        '杜門': { element: '木', nature: '中' },
-        '景門': { element: '火', nature: '中' },
-        '死門': { element: '土', nature: '兇' },
-        '驚門': { element: '金', nature: '兇' },
-        '開門': { element: '金', nature: '吉' }
-      };
-
-      this.stars = {
-        '天蓬': { element: '水', nature: '兇' },
-        '天芮': { element: '土', nature: '兇' },
-        '天沖': { element: '木', nature: '吉' },
-        '天輔': { element: '木', nature: '吉' },
-        '天禽': { element: '土', nature: '吉' },
-        '天心': { element: '金', nature: '吉' },
-        '天柱': { element: '金', nature: '兇' },
-        '天任': { element: '土', nature: '吉' },
-        '天英': { element: '火', nature: '中' }
-      };
-
-      this.gods = {
-        '值符': { nature: '吉' },
-        '騰蛇': { nature: '兇' },
-        '太陰': { nature: '吉' },
-        '六合': { nature: '吉' },
-        '白虎': { nature: '兇' },
-        '玄武': { nature: '兇' },
-        '九地': { nature: '吉' },
-        '九天': { nature: '吉' }
-      };
-
+      const [configResp] = await Promise.all([
+        fetch('./data/interpretation/qimen-config.json')
+      ]);
+      this.config = await configResp.json();
       this.loaded = true;
       return true;
-    } catch (error) {
-      console.error('載入數據失敗:', error.message);
-      throw new Error(`數據載入失敗: ${error.message}`);
+    } catch (e) {
+      console.warn('奇門遁甲引擎初始化失敗:', e);
+      return false;
     }
   }
 
+  setSolarTerms(data) { this.solarTerms = data; }
+
+  /* ---- 60甲子工具 ---- */
+  _getIndex(stem, branch) {
+    for (let i = 0; i < 60; i++) {
+      if (this.sixtyCycle[i].stem === stem && this.sixtyCycle[i].branch === branch) return i;
+    }
+    return -1;
+  }
+
+  /* ---- 節氣判定 ---- */
+  _getSolarTermName(date) {
+    // solarTerms 格式: { "1900": { "立春": "1900-02-04", ... }, ... }
+    if (!this.solarTerms) return null;
+    const y = String(date.getFullYear());
+    const yearData = this.solarTerms[y];
+    if (!yearData) return null;
+    const ts = date.getTime();
+    const termOrder = ['立春','雨水','驚蟄','春分','清明','穀雨','立夏','小滿','芒種','夏至','小暑','大暑','立秋','處暑','白露','秋分','寒露','霜降','立冬','小雪','大雪','冬至','小寒','大寒'];
+    let lastTerm = null;
+    for (const name of termOrder) {
+      const dStr = yearData[name];
+      if (!dStr) continue;
+      const d = new Date(dStr);
+      if (d <= ts) lastTerm = name;
+    }
+    return lastTerm;
+  }
+
+  _daysSinceTermStart(date, termName) {
+    if (!this.solarTerms) return 0;
+    const y = String(date.getFullYear());
+    const yearData = this.solarTerms[y];
+    if (!yearData) return 0;
+    const dStr = yearData[termName];
+    if (!dStr) return 0;
+    const d = new Date(dStr);
+    return Math.floor((date.getTime() - d.getTime()) / 86400000);
+  }
+
+  _getSexagenaryIndex(stem, branch) {
+    return this._getIndex(stem, branch);
+  }
+
+  /* ---- 三元判定 ---- */
+  _getYuan(daysSinceTerm) {
+    if (daysSinceTerm < 0) daysSinceTerm = 0;
+    if (daysSinceTerm < 5) return 0; // 上元
+    if (daysSinceTerm < 10) return 1; // 中元
+    return 2; // 下元
+  }
+
+  /* ---- 陰陽遁判定 ---- */
+  _isYang(date, termName) {
+    // 陽遁: 冬至→夏至; 陰遁: 夏至→冬至
+    const yangTerms = ['冬至','小寒','大寒','立春','雨水','驚蟄','春分','清明','穀雨','立夏','小滿','芒種'];
+    return yangTerms.includes(termName);
+  }
+
+  /* ===== 核心排盤 ===== */
+
   /**
-   * 計算時家盤
-   * @param {Date} date - 日期時間
-   * @param {string} hourBranch - 時辰地支
-   * @returns {Object} 時家盤數據
+   * 布三奇六儀（地盤）
+   */
+  _placeDiPan(boardNum, isYang) {
+    const order = ['戊','己','庚','辛','壬','癸','丁','丙','乙'];
+    const result = {};
+    for (let i = 0; i < 9; i++) {
+      let palace;
+      if (isYang) {
+        palace = ((boardNum - 1 + i) % 9) + 1;
+      } else {
+        palace = (((boardNum - 1 - i) % 9) + 9) % 9 + 1;
+      }
+      result[palace] = order[i];
+    }
+    return result;
+  }
+
+  /**
+   * 定旬首
+   */
+  _getXunShou(hourIndex) {
+    const xunStart = Math.floor(hourIndex / 10) * 10;
+    return {
+      index: xunStart,
+      name: this.sixtyCycle[xunStart].name,
+      stem: this.sixtyCycle[xunStart].stem,
+      branch: this.sixtyCycle[xunStart].branch,
+      yi: ['戊','己','庚','辛','壬','癸'][Math.floor(xunStart / 10) % 6] // 甲子→戊, 甲戌→己, etc
+    };
+  }
+
+  /**
+   * 找奇儀所在的宮位（地盤）
+   */
+  _findYiPalace(diPan, yi) {
+    for (const [palace, val] of Object.entries(diPan)) {
+      if (val === yi) return parseInt(palace);
+    }
+    return null;
+  }
+
+  /**
+   * 找天干所在宮位（地盤）
+   */
+  _findStemPalace(diPan, stem) {
+    const heavenStems = ['戊','己','庚','辛','壬','癸','丁','丙','乙'];
+    if (heavenStems.includes(stem)) return this._findYiPalace(diPan, stem);
+    // 甲遁在戊, 乙/丙/丁 直接查
+    if (stem === '甲') return this._findYiPalace(diPan, '戊');
+    for (const [palace, val] of Object.entries(diPan)) {
+      if (val === stem) return parseInt(palace);
+    }
+    return null;
+  }
+
+  /* ---- 九星/八門/八神查表 ---- */
+  _getStarByPalace(palace) {
+    return this.config.stars.find(s => s.palace === palace);
+  }
+
+  _getStarByName(name) {
+    return this.config.stars.find(s => s.name === name);
+  }
+
+  _getDoorByPalace(palace) {
+    if (palace === 5) return this.config.doors.find(d => d.name === '死寄');
+    // 八門映射: 1休,2死,3傷,4杜,6開,7驚,8生,9景
+    const doorMap = { 1:'休',2:'死',3:'傷',4:'杜',6:'開',7:'驚',8:'生',9:'景' };
+    return this.config.doors.find(d => d.name === doorMap[palace]);
+  }
+
+  _getDoorByName(name) {
+    return this.config.doors.find(d => d.name === name);
+  }
+
+  _getSpiritByIndex(index) {
+    return this.config.spirits[index];
+  }
+
+  /**
+   * 計算時辰奇門盤
+   * @param {Date} date
+   * @param {string} hourBranch - 時支（子丑寅卯...）
+   * @param {string} dayStem - 日干（用於定時干）
+   * @param {string} birthDayStem - 命主日干（用於十神對照，可選）
+   * @returns {Object} board state with scoring info
+   */
+  calculateHourBoard(date, hourBranch, dayStem) {
+    if (!this.loaded || !this.config) return null;
+    const termName = this._getSolarTermName(date);
+    if (!termName) return null;
+
+    const isYang = this._isYang(date, termName);
+    const daysSince = this._daysSinceTermStart(date, termName);
+    const yuan = this._getYuan(daysSince);
+    const boardKey = isYang ? 'yang' : 'yin';
+    const boardList = this.config.board[boardKey][termName];
+    if (!boardList) return null;
+    const boardNum = boardList[yuan];
+
+    // 地盤
+    const diPan = this._placeDiPan(boardNum, isYang);
+
+    // 時辰 60甲子 index
+    const hourIndex = this._getSexagenaryIndex(dayStem, hourBranch);
+    if (hourIndex < 0) return null;
+
+    // 旬首
+    const xunShou = this._getXunShou(hourIndex);
+
+    // 值符宮 = 旬首奇儀在地盤的宮位
+    const zhiFuPalace = this._findYiPalace(diPan, xunShou.yi);
+
+    // 值符星 = 該宮的九星
+    const zhiFuStar = this._getStarByPalace(zhiFuPalace);
+
+    // 值使門 = 該宮的八門
+    const zhiShiDoor = this._getDoorByPalace(zhiFuPalace);
+
+    // 時干宮（地盤中時干的位置）
+    const hourStemPalace = this._findStemPalace(diPan, dayStem);
+
+    // 時支宮（地支對應的宮位）
+    const branchPalaceMap = { '子':1,'丑':2,'寅':3,'卯':4,'辰':5,'巳':6,'午':7,'未':8,'申':9,'酉':10,'戌':11,'亥':12 };
+    const palaceBranchMap = { 1:'子',2:'丑',3:'寅',4:'卯',5:'辰',6:'巳',7:'午',8:'未',9:'申' }; // Only 9 palaces, use modulo
+    const hourBranchPalace = (branchPalaceMap[hourBranch] % 9) || 9;
+
+    // 天盤旋轉位移
+    let tianPanDisp = 0;
+    if (hourStemPalace && zhiFuPalace) {
+      tianPanDisp = (hourStemPalace - zhiFuPalace + 9) % 9;
+    }
+
+    // 計算各宮天盤九星
+    const tianPanStars = {};
+    for (const p of this.config.palaces) {
+      if (p.num === 5) continue;
+      const origStar = this._getStarByPalace(p.num);
+      if (!origStar) continue;
+      const targetPalace = ((p.num - 1 + tianPanDisp) % 9) + 1;
+      tianPanStars[targetPalace] = origStar.name;
+    }
+
+    // 人盤旋轉位移
+    let renPanDisp = 0;
+    if (zhiFuPalace) {
+      renPanDisp = (hourBranchPalace - zhiFuPalace + 9) % 9;
+    }
+
+    // 計算各宮人盤八門
+    const renPanDoors = {};
+    for (const p of this.config.palaces) {
+      if (p.num === 5) continue;
+      const origDoor = this._getDoorByPalace(p.num);
+      if (!origDoor) continue;
+      const targetPalace = ((p.num - 1 + renPanDisp) % 9) + 1;
+      renPanDoors[targetPalace] = origDoor.name;
+    }
+
+    // 當值宮位 = 值符宮（天盤中值符所在位置）
+    const currentZhiFuPalace = hourStemPalace || zhiFuPalace;
+    const currentZhiFuStar = tianPanStars[currentZhiFuPalace] || zhiFuStar?.name;
+    const currentZhiFuDoor = renPanDoors[currentZhiFuPalace];
+
+    // 八神（簡化版：只計算值符位置）
+    const spirits = this._placeShenPan(currentZhiFuPalace, isYang);
+
+    return {
+      date,
+      termName,
+      isYang,
+      boardNum,
+      yuan,
+      hourIndex,
+      xunShou: xunShou.name,
+      diPan,
+      zhiFuPalace,
+      zhiFuStar: zhiFuStar?.name || null,
+      zhiFuStarQuality: zhiFuStar?.quality || null,
+      zhiShiPalace: zhiFuPalace,
+      zhiShiDoor: zhiShiDoor?.name || null,
+      zhiShiDoorQuality: zhiShiDoor?.quality || null,
+      hourStemPalace,
+      hourBranchPalace,
+      tianPanDisp,
+      tianPanStars,
+      renPanDisp,
+      renPanDoors,
+      currentZhiFuPalace,
+      currentZhiFuStar,
+      currentZhiFuDoor,
+      spirits
+    };
+  }
+
+  _placeShenPan(zhiFuPalace, isYang) {
+    const result = {};
+    if (!zhiFuPalace) return result;
+    for (let i = 0; i < 8; i++) {
+      const offset = isYang ? i : -i;
+      const palace = (((zhiFuPalace - 1 + offset) % 9) + 9) % 9 + 1;
+      if (palace === 5) continue;
+      result[palace] = this.config.spirits[i];
+    }
+    return result;
+  }
+
+  /**
+   * 從奇門盤推導時辰分數
+   * @returns {Object} { score, trace }
+   */
+  deriveHourScore(board) {
+    if (!board) return { score: 0, trace: [] };
+
+    let score = 0;
+    const trace = [];
+
+    // 1. 值符星品質
+    if (board.zhiFuStarQuality === '吉') { score += 4; trace.push({ rule: 'zhiFu', score: 4, reason: `值符${board.zhiFuStar}吉星，貴人庇護` }); }
+    else if (board.zhiFuStarQuality === '凶') { score -= 4; trace.push({ rule: 'zhiFu', score: -4, reason: `值符${board.zhiFuStar}凶星，動盪不安` }); }
+
+    // 2. 值使門品質
+    if (board.zhiShiDoorQuality === '吉') { score += 3; trace.push({ rule: 'zhiShi', score: 3, reason: `值使${board.zhiShiDoor}吉門，行動通達` }); }
+    else if (board.zhiShiDoorQuality === '凶') { score -= 3; trace.push({ rule: 'zhiShi', score: -3, reason: `值使${board.zhiShiDoor}凶門，阻礙衝突` }); }
+
+    // 3. 三奇在位（乙丙丁）
+    const sanQi = ['乙','丙','丁'];
+    for (const q of sanQi) {
+      const palace = this._findYiPalace(board.diPan, q);
+      if (palace) {
+        // 三奇在值符宮 = 大吉
+        if (palace === board.currentZhiFuPalace) {
+          score += 5;
+          trace.push({ rule: 'sanQiZhiFu', score: 5, reason: `三奇${q}在值符宮，大利` });
+        } else if (palace === board.hourStemPalace) {
+          score += 3;
+          trace.push({ rule: 'sanQiHour', score: 3, reason: `三奇${q}在時干宮，時機有利` });
+        } else {
+          score += 1;
+          trace.push({ rule: 'sanQi', score: 1, reason: `三奇${q}在位` });
+        }
+      }
+    }
+
+    // 4. 門迫（門剋宮）
+    const menPo = this._checkMenPo(board);
+    if (menPo > 0) { score += menPo; trace.push({ rule: 'menPoGood', score: menPo, reason: '門宮相生，和諧' }); }
+    else if (menPo < 0) { score += menPo; trace.push({ rule: 'menPoBad', score: menPo, reason: '門迫，凶' }); }
+
+    // 5. 反吟/伏吟
+    if (board.tianPanDisp === 0) {
+      score -= 2;
+      trace.push({ rule: 'fuYinQM', score: -2, reason: '星伏吟（天盤不動），遲滯' });
+    } else if (board.tianPanDisp === 5) {
+      score -= 3;
+      trace.push({ rule: 'fanYinQM', score: -3, reason: '星反吟（天盤對沖），反覆' });
+    }
+
+    // 6. 八神吉凶
+    if (board.spirits && board.currentZhiFuPalace) {
+      const spirit = board.spirits[board.currentZhiFuPalace];
+      if (spirit) {
+        if (spirit.quality === '吉') { score += 3; trace.push({ rule: 'spirit', score: 3, reason: `值符宮神${spirit.name}，吉` }); }
+        else if (spirit.quality === '凶') { score -= 2; trace.push({ rule: 'spirit', score: -2, reason: `值符宮神${spirit.name}，凶` }); }
+      }
+    }
+
+    // 7. 陰陽遁加成
+    score += board.isYang ? 1 : -1;
+    trace.push({ rule: 'dunType', score: board.isYang ? 1 : -1, reason: board.isYang ? '陽遁，陽氣升發' : '陰遁，陰氣收斂' });
+
+    return { score, trace };
+  }
+
+  _checkMenPo(board) {
+    const doorElementMap = { '休':'water', '生':'earth', '傷':'wood', '杜':'wood', '景':'fire', '死':'earth', '驚':'metal', '開':'metal', '死寄':'earth' };
+    const palaceElMap = { 1:'water', 2:'earth', 3:'wood', 4:'wood', 5:'earth', 6:'metal', 7:'metal', 8:'earth', 9:'fire' };
+    const generateMap = { wood:'fire', fire:'earth', earth:'metal', metal:'water', water:'wood' };
+    const controlMap = { wood:'earth', earth:'water', water:'fire', fire:'metal', metal:'wood' };
+    let score = 0;
+    for (let p = 1; p <= 9; p++) {
+      if (p === 5) continue;
+      const doorName = board.renPanDoors[p];
+      const palaceEl = palaceElMap[p];
+      const doorEl = doorElementMap[doorName];
+      if (!doorEl || !palaceEl) continue;
+      if (doorEl === palaceEl) score += 1;
+      else if (generateMap[doorEl] === palaceEl) score += 2;
+      else if (generateMap[palaceEl] === doorEl) score -= 2;
+      else if (controlMap[doorEl] === palaceEl) score -= 3;
+    }
+    return score;
+  }
+
+  /**
+   * 相容舊版接口：計算奇門時盤（包裝 calculateHourBoard）
+   * 回傳 { zhiFu: {star}, zhiShi: {door}, dun, ju, doors, gods, patterns, summary }
    */
   calculateQimenHourChart(date, hourBranch) {
-    try {
-      // 驗證輸入
-      if (!(date instanceof Date) || isNaN(date.getTime())) {
-        throw new Error('無效的日期格式');
-      }
+    // 需要 dayStem 來定時干，這裡用當日日干
+    const dayStem = this._getDayStem(date);
+    const board = this.calculateHourBoard(date, hourBranch, dayStem);
+    if (!board) return null;
 
-      if (!this.diZhi.includes(hourBranch)) {
-        throw new Error('無效的時辰地支');
-      }
+    // 計算值符/值使對象
+    const zhiFuObj = { star: board.zhiFuStar, palace: board.zhiFuPalace };
+    const zhiShiObj = { door: board.zhiShiDoor, palace: board.zhiShiPalace };
 
-      // 獲取節氣
-      const solarTerm = this.getSolarTermForQimen(date);
-      if (!solarTerm) {
-        throw new Error('無法獲取節氣信息');
-      }
-
-      // 獲取陰陽遁
-      const dun = this.getYinYangDun(date);
-      if (!dun) {
-        throw new Error('無法確定陰陽遁');
-      }
-
-      // 獲取局數
-      const ju = this.getJuNumber(date);
-      if (!ju || ju < 1 || ju > 9) {
-        throw new Error('無效的局數');
-      }
-
-      // 計算日干支
-      const dayGanzhi = this._getDayGanzhi(date);
-      
-      // 計算時干支
-      const hourGanzhi = this._getHourGanzhi(date, hourBranch);
-
-      // 獲取旬首
-      const xunShou = this.getXunShou(dayGanzhi, hourGanzhi);
-      if (!xunShou) {
-        throw new Error('無法計算旬首');
-      }
-
-      // 排列九宮
-      const palaces = this.arrangePalaces(dun, ju);
-      if (!palaces) {
-        throw new Error('無法排列九宮');
-      }
-
-      // 獲取值符
-      const zhiFu = this.getZhiFu({
-        dun,
-        ju,
-        xunShou,
-        hourGanzhi,
-        palaces
-      });
-
-      // 獲取值使
-      const zhiShi = this.getZhiShi({
-        dun,
-        ju,
-        xunShou,
-        hourGanzhi,
-        palaces
-      });
-
-      // 安排八門
-      const doors = this.arrangeDoors({
-        dun,
-        ju,
-        xunShou,
-        hourGanzhi,
-        palaces,
-        zhiShi
-      });
-
-      // 安排九星
-      const stars = this.arrangeStars({
-        dun,
-        ju,
-        xunShou,
-        hourGanzhi,
-        palaces,
-        zhiFu
-      });
-
-      // 安排八神
-      const gods = this.arrangeGods({
-        dun,
-        ju,
-        hourGanzhi,
-        palaces
-      });
-
-      // 構建完整盤面
-      const chart = {
-        date: date.toISOString(),
-        hourBranch,
-        solarTerm: solarTerm.name,
-        dun,
-        ju,
-        dayGanzhi,
-        hourGanzhi,
-        xunShou,
-        zhiFu,
-        zhiShi,
-        palaces,
-        doors,
-        stars,
-        gods,
-        tianPan: this._buildTianPan(palaces, stars),
-        diPan: this._buildDiPan(palaces, doors)
-      };
-
-      // 檢測格局
-      chart.patterns = this.detectQimenPatterns(chart);
-
-      // 總結奇門
-      chart.summary = this.summarizeQimen(chart);
-
-      return chart;
-    } catch (error) {
-      console.error('計算時家盤失敗:', error.message);
-      throw new Error(`計算時家盤失敗: ${error.message}`);
+    // 八神整理為名稱映射
+    const gods = {};
+    for (const [p, spirit] of Object.entries(board.spirits || {})) {
+      gods[p] = spirit.name;  // 只保留神名
     }
+
+    // 門數值版（舊版計分用）
+    const doors = board.renPanDoors || {};
+
+    // 特殊格局
+    const patterns = [];
+    if (board.zhiFuStarQuality === '吉' && board.zhiShiDoorQuality === '吉') {
+      patterns.push({ name: '天遁', quality: '吉' });
+    }
+    if (board.zhiFuStarQuality === '凶' && board.zhiShiDoorQuality === '凶') {
+      patterns.push({ name: '天網', quality: '凶' });
+    }
+
+    // 摘要
+    const favorable = [];
+    const unfavorable = [];
+    if (board.zhiFuStarQuality === '吉') favorable.push(board.zhiFuStar);
+    if (board.zhiShiDoorQuality === '吉') favorable.push(board.zhiShiDoor);
+    if (board.zhiFuStarQuality === '凶') unfavorable.push(board.zhiFuStar);
+    if (board.zhiShiDoorQuality === '凶') unfavorable.push(board.zhiShiDoor);
+
+    return {
+      zhiFu: zhiFuObj,
+      zhiShi: zhiShiObj,
+      dun: board.isYang ? '陽遁' : '陰遁',
+      ju: board.boardNum,
+      doors,
+      gods,
+      patterns,
+      summary: { favorable, unfavorable }
+    };
   }
 
-  /**
-   * 獲取節氣
-   * @param {Date} date - 日期
-   * @returns {Object|null} 節氣信息
-   */
-  getSolarTermForQimen(date) {
-    try {
-      if (!(date instanceof Date) || isNaN(date.getTime())) {
-        throw new Error('無效的日期格式');
-      }
-
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-
-      // 簡化的節氣計算
-      // 實際應用中應使用精確的天文計算
-      const termDates = [
-        { month: 1, day: 6, name: '小寒' },
-        { month: 1, day: 20, name: '大寒' },
-        { month: 2, day: 4, name: '立春' },
-        { month: 2, day: 19, name: '雨水' },
-        { month: 3, day: 6, name: '驚蟄' },
-        { month: 3, day: 21, name: '春分' },
-        { month: 4, day: 5, name: '清明' },
-        { month: 4, day: 20, name: '穀雨' },
-        { month: 5, day: 6, name: '立夏' },
-        { month: 5, day: 21, name: '小滿' },
-        { month: 6, day: 6, name: '芒種' },
-        { month: 6, day: 21, name: '夏至' },
-        { month: 7, day: 7, name: '小暑' },
-        { month: 7, day: 23, name: '大暑' },
-        { month: 8, day: 7, name: '立秋' },
-        { month: 8, day: 23, name: '處暑' },
-        { month: 9, day: 8, name: '白露' },
-        { month: 9, day: 23, name: '秋分' },
-        { month: 10, day: 8, name: '寒露' },
-        { month: 10, day: 23, name: '霜降' },
-        { month: 11, day: 7, name: '立冬' },
-        { month: 11, day: 22, name: '小雪' },
-        { month: 12, day: 7, name: '大雪' },
-        { month: 12, day: 22, name: '冬至' }
-      ];
-
-      // 找到當前或最近的節氣
-      let currentTerm = null;
-      for (let i = termDates.length - 1; i >= 0; i--) {
-        const term = termDates[i];
-        if (month > term.month || (month === term.month && day >= term.day)) {
-          currentTerm = this.solarTerms.find(t => t.name === term.name);
-          break;
-        }
-      }
-
-      // 如果在第一個節氣之前，使用最後一個節氣
-      if (!currentTerm) {
-        currentTerm = this.solarTerms[this.solarTerms.length - 1];
-      }
-
-      return currentTerm;
-    } catch (error) {
-      console.error('獲取節氣失敗:', error.message);
-      return null;
-    }
-  }
-
-  /**
-   * 獲取陰陽遁
-   * @param {Date} date - 日期
-   * @returns {string|null} '陽' 或 '陰'
-   */
-  getYinYangDun(date) {
-    try {
-      const solarTerm = this.getSolarTermForQimen(date);
-      if (!solarTerm) {
-        throw new Error('無法獲取節氣');
-      }
-
-      return solarTerm.dun;
-    } catch (error) {
-      console.error('獲取陰陽遁失敗:', error.message);
-      return null;
-    }
-  }
-
-  /**
-   * 獲取局數
-   * @param {Date} date - 日期
-   * @returns {number|null} 局數 (1-9)
-   */
-  getJuNumber(date) {
-    try {
-      const solarTerm = this.getSolarTermForQimen(date);
-      if (!solarTerm) {
-        throw new Error('無法獲取節氣');
-      }
-
-      const dayGanzhi = this._getDayGanzhi(date);
-      const dayStem = dayGanzhi.charAt(0);
-      const stemIndex = this.tianGan.indexOf(dayStem);
-
-      // 根據日干確定上中下元
-      // 甲己為符頭，根據日干支確定屬於哪一元
-      let yuan;
-      const dayBranch = dayGanzhi.charAt(1);
-      const branchIndex = this.diZhi.indexOf(dayBranch);
-
-      // 簡化的元數計算
-      // 實際應用中需要更精確的計算
-      if (stemIndex % 3 === 0) {
-        yuan = 0; // 上元
-      } else if (stemIndex % 3 === 1) {
-        yuan = 1; // 中元
-      } else {
-        yuan = 2; // 下元
-      }
-
-      return solarTerm.ju[yuan];
-    } catch (error) {
-      console.error('獲取局數失敗:', error.message);
-      return null;
-    }
-  }
-
-  /**
-   * 獲取旬首
-   * @param {string} dayGanzhi - 日干支
-   * @param {string} hourGanzhi - 時干支
-   * @returns {string|null} 旬首
-   */
-  getXunShou(dayGanzhi, hourGanzhi) {
-    try {
-      if (!dayGanzhi || dayGanzhi.length < 2) {
-        throw new Error('無效的日干支');
-      }
-
-      const hourStem = hourGanzhi.charAt(0);
-      const hourBranch = hourGanzhi.charAt(1);
-      const hourBranchIndex = this.diZhi.indexOf(hourBranch);
-
-      // 計算旬首
-      // 甲子旬：甲子、乙丑、丙寅、丁卯、戊辰、己巳、庚午、辛未、壬申、癸酉
-      // 甲戌旬：甲戌、乙亥、丙子、丁丑、戊寅、己卯、庚辰、辛巳、壬午、癸未
-      // 以此類推
-      const xunShouList = [
-        '甲子', '甲戌', '甲申', '甲午', '甲辰', '甲寅'
-      ];
-
-      // 計算時支在旬中的位置
-      const stemIndex = this.tianGan.indexOf(hourStem);
-      const xunIndex = (hourBranchIndex - stemIndex + 12) % 12;
-      
-      // 確定旬首
-      const xunShouBranchIndex = (hourBranchIndex - xunIndex + 12) % 12;
-      const xunShou = xunShouList[Math.floor(xunShouBranchIndex / 2)];
-
-      return xunShou;
-    } catch (error) {
-      console.error('獲取旬首失敗:', error.message);
-      return null;
-    }
-  }
-
-  /**
-   * 獲取值符
-   * @param {Object} chart - 盤面數據
-   * @returns {Object|null} 值符信息
-   */
-  getZhiFu(chart) {
-    try {
-      const { dun, ju, xunShou, hourGanzhi, palaces } = chart;
-
-      if (!xunShou || !hourGanzhi) {
-        throw new Error('缺少旬首或時干支信息');
-      }
-
-      const hourStem = hourGanzhi.charAt(0);
-      const hourBranch = hourGanzhi.charAt(1);
-      const hourBranchIndex = this.diZhi.indexOf(hourBranch);
-
-      // 值符跟隨時干
-      // 陽遁：值符隨時干飛布
-      // 陰遁：值符隨時干飛布（逆飛）
-      
-      // 找到旬首所在宮位
-      const xunShouBranch = xunShou.charAt(1);
-      const xunShouBranchIndex = this.diZhi.indexOf(xunShouBranch);
-      
-      // 計算值符宮位
-      let zhiFuPalace;
-      if (dun === '陽') {
-        // 陽遁：從旬首宮位順數到時干
-        zhiFuPalace = (xunShouBranchIndex + this.tianGan.indexOf(hourStem)) % 9 + 1;
-      } else {
-        // 陰遁：從旬首宮位逆數到時干
-        zhiFuPalace = (xunShouBranchIndex - this.tianGan.indexOf(hourStem) + 9) % 9 + 1;
-      }
-
-      // 獲取值符星
-      const zhiFuStar = this.jiuXing[(ju - 1 + 9) % 9];
-
-      return {
-        palace: zhiFuPalace,
-        star: zhiFuStar,
-        stem: hourStem
-      };
-    } catch (error) {
-      console.error('獲取值符失敗:', error.message);
-      return null;
-    }
-  }
-
-  /**
-   * 獲取值使
-   * @param {Object} chart - 盤面數據
-   * @returns {Object|null} 值使信息
-   */
-  getZhiShi(chart) {
-    try {
-      const { dun, ju, xunShou, hourGanzhi, palaces } = chart;
-
-      if (!xunShou || !hourGanzhi) {
-        throw new Error('缺少旬首或時干支信息');
-      }
-
-      const hourStem = hourGanzhi.charAt(0);
-      const hourBranch = hourGanzhi.charAt(1);
-      const hourBranchIndex = this.diZhi.indexOf(hourBranch);
-
-      // 值使跟隨時支
-      // 陽遁：值使隨時支飛布
-      // 陰遁：值使隨時支飛布（逆飛）
-
-      // 找到旬首所在宮位
-      const xunShouBranch = xunShou.charAt(1);
-      const xunShouBranchIndex = this.diZhi.indexOf(xunShouBranch);
-      
-      // 計算值使宮位
-      let zhiShiPalace;
-      if (dun === '陽') {
-        // 陽遁：從旬首宮位順數到時支
-        zhiShiPalace = (xunShouBranchIndex + hourBranchIndex) % 9 + 1;
-      } else {
-        // 陰遁：從旬首宮位逆數到時支
-        zhiShiPalace = (xunShouBranchIndex - hourBranchIndex + 9) % 9 + 1;
-      }
-
-      // 獲取值使門
-      const zhiShiDoor = this.baMen[(ju - 1 + 9) % 8];
-
-      return {
-        palace: zhiShiPalace,
-        door: zhiShiDoor,
-        branch: hourBranch
-      };
-    } catch (error) {
-      console.error('獲取值使失敗:', error.message);
-      return null;
-    }
-  }
-
-  /**
-   * 安排九宮
-   * @param {string} dun - 陰陽遁
-   * @param {number} ju - 局數
-   * @returns {Object|null} 九宮排列
-   */
-  arrangePalaces(dun, ju) {
-    try {
-      if (!dun || !ju) {
-        throw new Error('缺少陰陽遁或局數');
-      }
-
-      const palaces = {};
-      
-      // 三奇六儀排列順序
-      const sanQiLiuYi = ['戊', '己', '庚', '辛', '壬', '癸', '丁', '丙', '乙'];
-      
-      // 陽遁順排，陰遁逆排
-      if (dun === '陽') {
-        // 陽遁：從局數對應的宮位開始順排
-        for (let i = 0; i < 9; i++) {
-          const palaceNum = ((ju - 1 + i) % 9) + 1;
-          palaces[palaceNum] = sanQiLiuYi[i];
-        }
-      } else {
-        // 陰遁：從局數對應的宮位開始逆排
-        for (let i = 0; i < 9; i++) {
-          const palaceNum = ((ju - 1 - i + 9) % 9) + 1;
-          palaces[palaceNum] = sanQiLiuYi[i];
-        }
-      }
-
-      return palaces;
-    } catch (error) {
-      console.error('安排九宮失敗:', error.message);
-      return null;
-    }
-  }
-
-  /**
-   * 安排八門
-   * @param {Object} chart - 盤面數據
-   * @returns {Object|null} 八門排列
-   */
-  arrangeDoors(chart) {
-    try {
-      const { dun, ju, xunShou, hourGanzhi, palaces, zhiShi } = chart;
-
-      if (!zhiShi) {
-        throw new Error('缺少值使信息');
-      }
-
-      const doors = {};
-      const doorNames = [...this.baMen];
-      
-      // 八門排列：值使門確定後，按宮位順序排列
-      // 陽遁順排，陰遁逆排
-      
-      // 找到值使門在八門中的位置
-      const zhiShiDoorIndex = doorNames.indexOf(zhiShi.door);
-      
-      if (dun === '陽') {
-        // 陽遁：從值使宮位開始順排
-        for (let i = 0; i < 8; i++) {
-          const palaceNum = ((zhiShi.palace - 1 + i) % 9) + 1;
-          if (palaceNum !== 5) { // 中五宮不排門
-            doors[palaceNum] = doorNames[(zhiShiDoorIndex + i) % 8];
-          }
-        }
-      } else {
-        // 陰遁：從值使宮位開始逆排
-        for (let i = 0; i < 8; i++) {
-          const palaceNum = ((zhiShi.palace - 1 - i + 9) % 9) + 1;
-          if (palaceNum !== 5) { // 中五宮不排門
-            doors[palaceNum] = doorNames[(zhiShiDoorIndex - i + 8) % 8];
-          }
-        }
-      }
-
-      return doors;
-    } catch (error) {
-      console.error('安排八門失敗:', error.message);
-      return null;
-    }
-  }
-
-  /**
-   * 安排九星
-   * @param {Object} chart - 盤面數據
-   * @returns {Object|null} 九星排列
-   */
-  arrangeStars(chart) {
-    try {
-      const { dun, ju, xunShou, hourGanzhi, palaces, zhiFu } = chart;
-
-      if (!zhiFu) {
-        throw new Error('缺少值符信息');
-      }
-
-      const stars = {};
-      const starNames = [...this.jiuXing];
-      
-      // 九星排列：值符星確定後，按宮位順序排列
-      // 陽遁順排，陰遁逆排
-      
-      // 找到值符星在九星中的位置
-      const zhiFuStarIndex = starNames.indexOf(zhiFu.star);
-      
-      if (dun === '陽') {
-        // 陽遁：從值符宮位開始順排
-        for (let i = 0; i < 9; i++) {
-          const palaceNum = ((zhiFu.palace - 1 + i) % 9) + 1;
-          stars[palaceNum] = starNames[(zhiFuStarIndex + i) % 9];
-        }
-      } else {
-        // 陰遁：從值符宮位開始逆排
-        for (let i = 0; i < 9; i++) {
-          const palaceNum = ((zhiFu.palace - 1 - i + 9) % 9) + 1;
-          stars[palaceNum] = starNames[(zhiFuStarIndex - i + 9) % 9];
-        }
-      }
-
-      return stars;
-    } catch (error) {
-      console.error('安排九星失敗:', error.message);
-      return null;
-    }
-  }
-
-  /**
-   * 安排八神
-   * @param {Object} chart - 盤面數據
-   * @returns {Object|null} 八神排列
-   */
-  arrangeGods(chart) {
-    try {
-      const { dun, ju, hourGanzhi, palaces } = chart;
-
-      const gods = {};
-      const godNames = [...this.baShen];
-      
-      // 八神排列：值符確定後，按宮位順序排列
-      // 陽遁順排，陰遁逆排
-      
-      // 值符在中五宮
-      const zhiFuPalace = 5;
-      
-      if (dun === '陽') {
-        // 陽遁：從值符宮位開始順排
-        for (let i = 0; i < 8; i++) {
-          const palaceNum = ((zhiFuPalace - 1 + i) % 9) + 1;
-          if (palaceNum !== 5) { // 中五宮不排神
-            gods[palaceNum] = godNames[i % 8];
-          }
-        }
-      } else {
-        // 陰遁：從值符宮位開始逆排
-        for (let i = 0; i < 8; i++) {
-          const palaceNum = ((zhiFuPalace - 1 - i + 9) % 9) + 1;
-          if (palaceNum !== 5) { // 中五宮不排神
-            gods[palaceNum] = godNames[i % 8];
-          }
-        }
-      }
-
-      return gods;
-    } catch (error) {
-      console.error('安排八神失敗:', error.message);
-      return null;
-    }
-  }
-
-  /**
-   * 檢測格局
-   * @param {Object} chart - 盤面數據
-   * @returns {Array} 格局列表
-   */
-  detectQimenPatterns(chart) {
-    try {
-      const patterns = [];
-
-      // 檢查各種格局
-      for (const pattern of this.patterns) {
-        if (pattern.check(chart)) {
-          patterns.push({
-            name: pattern.name,
-            description: pattern.description
-          });
-        }
-      }
-
-      // 檢查特殊格局
-      // 天顯時格：六甲之時
-      if (chart.hourGanzhi.startsWith('甲')) {
-        patterns.push({
-          name: '天顯時格',
-          description: '六甲之時，諸事皆宜'
-        });
-      }
-
-      // 悖格：丙加庚
-      if (chart.tianPan && chart.tianPan[4]?.gan === '丙' && 
-          chart.diPan && chart.diPan[6]?.gan === '庚') {
-        patterns.push({
-          name: '悖格',
-          description: '丙加庚，主悖亂'
-        });
-      }
-
-      return patterns;
-    } catch (error) {
-      console.error('檢測格局失敗:', error.message);
-      return [];
-    }
-  }
-
-  /**
-   * 總結奇門
-   * @param {Object} chart - 盤面數據
-   * @returns {Object} 總結信息
-   */
-  summarizeQimen(chart) {
-    try {
-      const summary = {
-        overall: '',
-        favorable: [],
-        unfavorable: [],
-        advice: ''
-      };
-
-      // 統計吉凶
-      let jiCount = 0;
-      let xiongCount = 0;
-
-      // 檢查八門
-      if (chart.doors) {
-        for (const palace in chart.doors) {
-          const door = chart.doors[palace];
-          const doorInfo = this.doors[door];
-          if (doorInfo) {
-            if (doorInfo.nature === '吉') {
-              jiCount++;
-              summary.favorable.push(`${this.palaces[palace].name}${door}吉門`);
-            } else if (doorInfo.nature === '兇') {
-              xiongCount++;
-              summary.unfavorable.push(`${this.palaces[palace].name}${door}兇門`);
-            }
-          }
-        }
-      }
-
-      // 檢查九星
-      if (chart.stars) {
-        for (const palace in chart.stars) {
-          const star = chart.stars[palace];
-          const starInfo = this.stars[star];
-          if (starInfo) {
-            if (starInfo.nature === '吉') {
-              jiCount++;
-              summary.favorable.push(`${this.palaces[palace].name}${star}吉星`);
-            } else if (starInfo.nature === '兇') {
-              xiongCount++;
-              summary.unfavorable.push(`${this.palaces[palace].name}${star}兇星`);
-            }
-          }
-        }
-      }
-
-      // 檢查八神
-      if (chart.gods) {
-        for (const palace in chart.gods) {
-          const god = chart.gods[palace];
-          const godInfo = this.gods[god];
-          if (godInfo) {
-            if (godInfo.nature === '吉') {
-              jiCount++;
-              summary.favorable.push(`${this.palaces[palace].name}${god}吉神`);
-            } else if (godInfo.nature === '兇') {
-              xiongCount++;
-              summary.unfavorable.push(`${this.palaces[palace].name}${god}兇神`);
-            }
-          }
-        }
-      }
-
-      // 檢查格局
-      if (chart.patterns && chart.patterns.length > 0) {
-        for (const pattern of chart.patterns) {
-          summary.favorable.push(`遇${pattern.name}格`);
-        }
-      }
-
-      // 總體判斷
-      if (jiCount > xiongCount) {
-        summary.overall = '吉';
-        summary.advice = '此局吉利，諸事可行，宜積極進取。';
-      } else if (xiongCount > jiCount) {
-        summary.overall = '兇';
-        summary.advice = '此局兇險，諸事宜慎，宜保守行事。';
-      } else {
-        summary.overall = '平';
-        summary.advice = '此局平穩，吉兇參半，宜謹慎行事。';
-      }
-
-      return summary;
-    } catch (error) {
-      console.error('總結奇門失敗:', error.message);
-      return {
-        overall: '未知',
-        favorable: [],
-        unfavorable: [],
-        advice: '無法總結'
-      };
-    }
-  }
-
-  /**
-   * 獲取日干支
-   * @param {Date} date - 日期
-   * @returns {string} 日干支
-   */
-  _getDayGanzhi(date) {
-    try {
-      // 簡化的日干支計算
-      // 實際應用中需要使用精確的萬年曆算法
-      const baseDate = new Date(1900, 0, 1); // 1900年1月1日為甲戌日
-      const baseGanzhi = '甲戌';
-      
-      const diffTime = date.getTime() - baseDate.getTime();
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      
-      const ganzhiIndex = (diffDays + 10) % 60; // 加10是為了調整到正確的干支
-      const stemIndex = ganzhiIndex % 10;
-      const branchIndex = ganzhiIndex % 12;
-      
-      return this.tianGan[stemIndex] + this.diZhi[branchIndex];
-    } catch (error) {
-      console.error('獲取日干支失敗:', error.message);
-      return '甲子'; // 返回默認值
-    }
-  }
-
-  /**
-   * 獲取時干支
-   * @param {Date} date - 日期
-   * @param {string} hourBranch - 時辰地支
-   * @returns {string} 時干支
-   */
-  _getHourGanzhi(date, hourBranch) {
-    try {
-      const dayGanzhi = this._getDayGanzhi(date);
-      const dayStem = dayGanzhi.charAt(0);
-      const dayStemIndex = this.tianGan.indexOf(dayStem);
-      
-      const hourBranchIndex = this.diZhi.indexOf(hourBranch);
-      
-      // 時干計算：根據日干確定時干
-      // 甲己日起甲子時，乙庚日起丙子時，丙辛日起戊子時，丁壬日起庚子時，戊癸日起壬子時
-      const hourStemStart = [0, 2, 4, 6, 8]; // 甲己、乙庚、丙辛、丁壬、戊癸
-      const dayStemMod = dayStemIndex % 5;
-      const hourStemIndex = (hourStemStart[dayStemMod] + hourBranchIndex) % 10;
-      
-      return this.tianGan[hourStemIndex] + hourBranch;
-    } catch (error) {
-      console.error('獲取時干支失敗:', error.message);
-      return '甲子'; // 返回默認值
-    }
-  }
-
-  /**
-   * 構建天盤
-   * @param {Object} palaces - 九宮排列
-   * @param {Object} stars - 九星排列
-   * @returns {Object} 天盤
-   */
-  _buildTianPan(palaces, stars) {
-    try {
-      const tianPan = {};
-      
-      for (let i = 1; i <= 9; i++) {
-        tianPan[i] = {
-          gan: palaces ? palaces[i] : null,
-          star: stars ? stars[i] : null
-        };
-      }
-
-      return tianPan;
-    } catch (error) {
-      console.error('構建天盤失敗:', error.message);
-      return {};
-    }
-  }
-
-  /**
-   * 構建地盤
-   * @param {Object} palaces - 九宮排列
-   * @param {Object} doors - 八門排列
-   * @returns {Object} 地盤
-   */
-  _buildDiPan(palaces, doors) {
-    try {
-      const diPan = {};
-      
-      for (let i = 1; i <= 9; i++) {
-        diPan[i] = {
-          gan: palaces ? palaces[i] : null,
-          door: doors ? doors[i] : null
-        };
-      }
-
-      return diPan;
-    } catch (error) {
-      console.error('構建地盤失敗:', error.message);
-      return {};
-    }
-  }
-
-  /**
-   * 獲取宮位信息
-   * @param {number} palaceNum - 宮位號
-   * @returns {Object} 宮位信息
-   */
-  getPalaceInfo(palaceNum) {
-    try {
-      if (palaceNum < 1 || palaceNum > 9) {
-        throw new Error('無效的宮位號');
-      }
-
-      return this.palaces[palaceNum] || null;
-    } catch (error) {
-      console.error('獲取宮位信息失敗:', error.message);
-      return null;
-    }
-  }
-
-  /**
-   * 獲取門信息
-   * @param {string} doorName - 門名
-   * @returns {Object} 門信息
-   */
-  getDoorInfo(doorName) {
-    try {
-      return this.doors[doorName] || null;
-    } catch (error) {
-      console.error('獲取門信息失敗:', error.message);
-      return null;
-    }
-  }
-
-  /**
-   * 獲取星信息
-   * @param {string} starName - 星名
-   * @returns {Object} 星信息
-   */
-  getStarInfo(starName) {
-    try {
-      return this.stars[starName] || null;
-    } catch (error) {
-      console.error('獲取星信息失敗:', error.message);
-      return null;
-    }
-  }
-
-  /**
-   * 獲取神信息
-   * @param {string} godName - 神名
-   * @returns {Object} 神信息
-   */
-  getGodInfo(godName) {
-    try {
-      return this.gods[godName] || null;
-    } catch (error) {
-      console.error('獲取神信息失敗:', error.message);
-      return null;
-    }
-  }
-
-  /**
-   * 格式化盤面顯示
-   * @param {Object} chart - 盤面數據
-   * @returns {string} 格式化後的盤面
-   */
-  formatChart(chart) {
-    try {
-      let output = '=== 奇門遁甲盤 ===\n\n';
-      
-      output += `日期: ${chart.date}\n`;
-      output += `時辰: ${chart.hourBranch}\n`;
-      output += `節氣: ${chart.solarTerm}\n`;
-      output += `遁: ${chart.dun}遁\n`;
-      output += `局數: ${chart.ju}局\n`;
-      output += `日干支: ${chart.dayGanzhi}\n`;
-      output += `時干支: ${chart.hourGanzhi}\n`;
-      output += `旬首: ${chart.xunShou}\n`;
-      output += `值符: ${chart.zhiFu.star} (宮${chart.zhiFu.palace})\n`;
-      output += `值使: ${chart.zhiShi.door} (宮${chart.zhiShi.palace})\n\n`;
-
-      output += '--- 九宮排列 ---\n';
-      for (let i = 1; i <= 9; i++) {
-        const palace = this.palaces[i];
-        const gan = chart.palaces[i];
-        const door = chart.doors[i] || '無';
-        const star = chart.stars[i] || '無';
-        const god = chart.gods[i] || '無';
-        
-        output += `${palace.name}: ${gan} | ${door} | ${star} | ${god}\n`;
-      }
-
-      output += '\n--- 格局 ---\n';
-      if (chart.patterns && chart.patterns.length > 0) {
-        for (const pattern of chart.patterns) {
-          output += `${pattern.name}: ${pattern.description}\n`;
-        }
-      } else {
-        output += '無特殊格局\n';
-      }
-
-      output += '\n--- 總結 ---\n';
-      output += `整體: ${chart.summary.overall}\n`;
-      output += `建議: ${chart.summary.advice}\n`;
-
-      if (chart.summary.favorable.length > 0) {
-        output += `有利因素: ${chart.summary.favorable.join('、')}\n`;
-      }
-      if (chart.summary.unfavorable.length > 0) {
-        output += `不利因素: ${chart.summary.unfavorable.join('、')}\n`;
-      }
-
-      return output;
-    } catch (error) {
-      console.error('格式化盤面失敗:', error.message);
-      return '無法格式化盤面';
-    }
+  _getDayStem(date) {
+    const stems = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+    // 粗略計算日干（用於時辰定奇門，精確度已足夠）
+    // 使用 2024-01-01 = 甲子日 為基準
+    const base = new Date(2024, 0, 1);
+    const diff = Math.round((date.getTime() - base.getTime()) / 86400000);
+    return stems[((diff % 10) + 10) % 10];
   }
 }
 
-// 導出
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = QimenEngine;
 }
-

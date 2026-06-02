@@ -1,0 +1,76 @@
+{
+  "board": {
+    "yang": {
+      "冬至": [7,1,4],
+      "小寒": [2,8,5],
+      "大寒": [3,9,6],
+      "立春": [8,5,2],
+      "雨水": [9,6,3],
+      "驚蟄": [1,7,4],
+      "春分": [3,9,6],
+      "清明": [4,1,7],
+      "穀雨": [5,2,8],
+      "立夏": [4,1,7],
+      "小滿": [5,2,8],
+      "芒種": [6,3,9]
+    },
+    "yin": {
+      "夏至": [9,3,6],
+      "小暑": [8,2,5],
+      "大暑": [7,1,4],
+      "立秋": [2,5,8],
+      "處暑": [1,4,7],
+      "白露": [9,3,6],
+      "秋分": [7,1,4],
+      "寒露": [6,9,3],
+      "霜降": [5,8,2],
+      "立冬": [6,9,3],
+      "小雪": [5,8,2],
+      "大雪": [4,7,1]
+    }
+  },
+  "palaces": [
+    {"num":1,"name":"坎","element":"water","direction":"北","position":[1,1]},
+    {"num":2,"name":"坤","element":"earth","direction":"西南","position":[1,2]},
+    {"num":3,"name":"震","element":"wood","direction":"東","position":[2,1]},
+    {"num":4,"name":"巽","element":"wood","direction":"東南","position":[2,2]},
+    {"num":5,"name":"中","element":"earth","direction":"中","position":[2,3]},
+    {"num":6,"name":"乾","element":"metal","direction":"西北","position":[3,1]},
+    {"num":7,"name":"兌","element":"metal","direction":"西","position":[3,2]},
+    {"num":8,"name":"艮","element":"earth","direction":"東北","position":[3,3]},
+    {"num":9,"name":"離","element":"fire","direction":"南","position":[1,3]}
+  ],
+  "stars": [
+    {"name":"天蓬","palace":1,"element":"water","quality":"凶","meaning":"盜賊破財"},
+    {"name":"天芮","palace":2,"element":"earth","quality":"凶","meaning":"病患虛驚"},
+    {"name":"天沖","palace":3,"element":"wood","quality":"凶","meaning":"征伐震動"},
+    {"name":"天輔","palace":4,"element":"wood","quality":"吉","meaning":"教化文書"},
+    {"name":"天禽","palace":5,"element":"earth","quality":"吉","meaning":"忠厚穩健"},
+    {"name":"天心","palace":6,"element":"metal","quality":"吉","meaning":"醫藥計劃"},
+    {"name":"天柱","palace":7,"element":"metal","quality":"凶","meaning":"口舌破敗"},
+    {"name":"天任","palace":8,"element":"earth","quality":"吉","meaning":"農耕財富"},
+    {"name":"天英","palace":9,"element":"fire","quality":"凶","meaning":"血光虛幻"}
+  ],
+  "doors": [
+    {"name":"休","palace":1,"element":"water","quality":"吉","meaning":"休養洽談"},
+    {"name":"死","palace":2,"element":"earth","quality":"凶","meaning":"爭鬥僵局"},
+    {"name":"傷","palace":3,"element":"wood","quality":"凶","meaning":"損傷爭鬥"},
+    {"name":"杜","palace":4,"element":"wood","quality":"平","meaning":"隱藏封閉"},
+    {"name":"景","palace":9,"element":"fire","quality":"平","meaning":"文書計畫"},
+    {"name":"死寄","palace":5,"element":"earth","quality":"凶","meaning":"僵局"},
+    {"name":"開","palace":6,"element":"metal","quality":"吉","meaning":"開創通達"},
+    {"name":"驚","palace":7,"element":"metal","quality":"凶","meaning":"驚恐驚慌"},
+    {"name":"生","palace":8,"element":"earth","quality":"吉","meaning":"生機財運"},
+    {"name":"死","palace":2,"element":"earth","quality":"凶","meaning":"死亡停滯"}
+  ],
+  "spirits": [
+    {"name":"值符","quality":"吉","meaning":"貴人庇護"},
+    {"name":"騰蛇","quality":"凶","meaning":"虛幻糾纏"},
+    {"name":"太陰","quality":"吉","meaning":"謀劃隱藏"},
+    {"name":"六合","quality":"吉","meaning":"合作婚姻"},
+    {"name":"白虎","quality":"凶","meaning":"血光爭鬥"},
+    {"name":"玄武","quality":"凶","meaning":"盜竊欺騙"},
+    {"name":"九地","quality":"平","meaning":"穩定緩慢"},
+    {"name":"九天","quality":"吉","meaning":"高遠發展"}
+  ]
+}
