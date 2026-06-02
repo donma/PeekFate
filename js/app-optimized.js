@@ -1050,6 +1050,7 @@ class App {
     let totalScore = 0;
     const stemInt = [];
     const branchInt = [];
+    const keyZh = { year: '年', month: '月', day: '日', hour: '時' };
     const fuYin = {};
     const fanYin = {};
 
@@ -1063,6 +1064,7 @@ class App {
     for (const key of pillarKeys) {
       const p = baziResult[key];
       if (!p) continue;
+      const kz = keyZh[key] || key;
 
       // === 天干互動 ===
       const pStem = p.stem;
@@ -1074,21 +1076,21 @@ class App {
         const s = 3;
         totalScore += s;
         stemInt.push({ stem: fStem, target: key, type: '合', element: heMap[fStem].el, score: s });
-        traces.push({ rule: 'flowStemHe', key, score: s, reason: `流日${fStem}與${key}柱${pStem}五合化${elZh(heMap[fStem].el)}` });
+        traces.push({ rule: 'flowStemHe', key, score: s, reason: `流日${fStem}與${kz}柱${pStem}五合化${elZh(heMap[fStem].el)}` });
       }
       // 天干相沖
       if (chongMap[fStem] === pStem) {
         const s = -3;
         totalScore += s;
         stemInt.push({ stem: fStem, target: key, type: '沖', score: s });
-        traces.push({ rule: 'flowStemChong', key, score: s, reason: `流日${fStem}沖${key}柱${pStem}` });
+        traces.push({ rule: 'flowStemChong', key, score: s, reason: `流日${fStem}沖${kz}柱${pStem}` });
       }
       // 天干生入（流日生日柱）
       if (generateMap[fStemEl] === pStemEl && key !== 'day') {
         const s = 2;
         totalScore += s;
         stemInt.push({ stem: fStem, target: key, type: '生', score: s });
-        traces.push({ rule: 'flowStemGenerate', key, score: s, reason: `流日${fStem}(${elZh(fStemEl)})生${key}柱${pStem}(${elZh(pStemEl)})` });
+        traces.push({ rule: 'flowStemGenerate', key, score: s, reason: `流日${fStem}(${elZh(fStemEl)})生${kz}柱${pStem}(${elZh(pStemEl)})` });
       }
       // 天干剋入（流日剋日柱）— 視為凶
       if (controlMap[fStemEl] === pStemEl && key === 'day') {
@@ -1102,7 +1104,7 @@ class App {
         const s = -3;
         totalScore += s;
         stemInt.push({ stem: fStem, target: key, type: '沖', score: s });
-        traces.push({ rule: 'flowStemChong', key, score: s, reason: `流日${fStem}沖${key}柱${pStem}` });
+        traces.push({ rule: 'flowStemChong', key, score: s, reason: `流日${fStem}沖${kz}柱${pStem}` });
       }
       // 天干生入（流日生日柱）
       if (generateMap[fStemEl] === pStemEl && key !== 'day') {
@@ -1116,7 +1118,7 @@ class App {
         const s = -2;
         totalScore += s;
         stemInt.push({ stem: fStem, target: key, type: '剋', score: s });
-        traces.push({ rule: 'flowStemControl', key, score: s, reason: `流日${fStem}(${fStemEl})剋日主${pStem}(${pStemEl})` });
+        traces.push({ rule: 'flowStemControl', key, score: s, reason: `流日${fStem}(${elZh(fStemEl)})剋日主${pStem}(${elZh(pStemEl)})` });
       }
 
       // === 地支互動 ===
@@ -1128,7 +1130,7 @@ class App {
           const s = Math.round(relScore * 1.0);
           totalScore += s;
           branchInt.push({ branch: fBranch, target: key, type: rels.summary?.[0] || '刑', score: s });
-          traces.push({ rule: 'flowBranchRelation', key, score: s, reason: `流日${fBranch}與${key}柱${pBranch}${rels.summary?.[0] || '刑沖'}` });
+          traces.push({ rule: 'flowBranchRelation', key, score: s, reason: `流日${fBranch}與${kz}柱${pBranch}${rels.summary?.[0] || '刑沖'}` });
         }
       }
 
@@ -1137,7 +1139,7 @@ class App {
         const s = key === 'day' ? 8 : 5;
         totalScore += s;
         fuYin[key] = true;
-        traces.push({ rule: 'fuYin', key, score: s, reason: `流日${flowDayPillar.name}與${key}柱伏吟` });
+        traces.push({ rule: 'fuYin', key, score: s, reason: `流日${flowDayPillar.name}與${kz}柱伏吟` });
       }
       // 反吟：天干相沖 + 地支相沖
       const branchOpposite = { '子':'午','丑':'未','寅':'申','卯':'酉','辰':'戌','巳':'亥','午':'子','未':'丑','申':'寅','酉':'卯','戌':'辰','亥':'巳' };
@@ -1145,7 +1147,7 @@ class App {
         const s = key === 'day' ? -8 : -5;
         totalScore += s;
         fanYin[key] = true;
-        traces.push({ rule: 'fanYin', key, score: s, reason: `流日${flowDayPillar.name}與${key}柱反吟` });
+        traces.push({ rule: 'fanYin', key, score: s, reason: `流日${flowDayPillar.name}與${kz}柱反吟` });
       }
     }
 
