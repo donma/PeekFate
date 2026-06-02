@@ -803,10 +803,6 @@ class ScoringEngine {
       if (yueDe[mb] === dStem) ausp += 3;
       if (tianShe[mb] === (dStem + dBranch)) ausp += 3;
     }
-    const dr = [dBranch].filter(Boolean);
-    if (dr.length >= 1) {
-      try { const r = baziEngine.getBranchRelations(dr); if (r) ausp += Math.round(baziEngine._calculateBranchRelationScore(r) * 0.5); } catch(e) {}
-    }
     ausp = Math.max(-10, Math.min(10, ausp));
     if (profile.dir === 'pos') ausp = Math.max(-10, Math.min(15, ausp));
     score += ausp;
