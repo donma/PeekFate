@@ -128,7 +128,7 @@
   {"name":"蘇姿丰","eventDate":"2022-01-31","type":"positive","desc":"AMD市值超越英特爾"},
   {"name":"張忠謀","eventDate":"1987-02-21","type":"positive","desc":"台積電創立"},
   {"name":"張忠謀","eventDate":"2018-06-05","type":"neutral","desc":"退休卸任董事長"},
-  {"name":"林百里","birthDate":"1949-04-24","type":"positive","desc":"廣達電腦創立"},
+  {"name":"林百里","eventDate":"1988-05-01","type":"positive","desc":"廣達電腦創立"},
   {"name":"郭台銘","eventDate":"1974-02-20","type":"positive","desc":"鴻海創立"},
   {"name":"郭台銘","eventDate":"2019-06-21","type":"neutral","desc":"宣布參選後退出"},
   {"name":"丁磊","eventDate":"2000-06-30","type":"positive","desc":"網易NASDAQ上市"},
