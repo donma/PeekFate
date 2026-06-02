@@ -377,6 +377,9 @@ class App {
       this.currentResult = result;
       this._renderResult(result);
       this._handleRememberMe(formData);
+      // 收合表單
+      const formContainer = document.getElementById('formContainer');
+      if (formContainer) formContainer.classList.add('collapsed');
       this._hideLoading();
       this._showResultSection();
     } catch (error) {
@@ -1513,12 +1516,8 @@ class App {
 
     // 展開表單區域
     const formContainer = document.getElementById('formContainer');
-    const btnToggle = document.getElementById('btnToggleSection');
     if (formContainer) {
       formContainer.classList.remove('collapsed');
-    }
-    if (btnToggle) {
-      btnToggle.textContent = '▲ 收合輸入區';
     }
 
     this.currentResult = null;
@@ -1597,7 +1596,12 @@ class App {
 
     let html = '';
 
-    html += this._renderBaziSummary(bazi);
+    html += `<button type="button" class="btn-toggle-section btn-toggle-result" id="btnToggleForm" onclick="toggleSection()">▼ 修改資料</button>`;
+    html += `<div class="result-card bazi-summary" id="baziSummaryCard">`;
+    html += `<div class="card-header-toggle" id="baziToggleBtn" onclick="toggleBazi()">▼ 個人基本盤</div>`;
+    html += `<div class="card-body-collapsible collapsed" id="baziBody">`;
+    html += this._renderBaziSummaryInner(bazi);
+    html += `</div></div>`;
     html += this._renderScoreLegend();
     html += this._renderDaySummary(today.summary, '今日總覽');
     html += this._renderHourCards(today.hours, '今日時辰');
@@ -1752,7 +1756,7 @@ class App {
     return svg;
   }
 
-  _renderBaziSummary(bazi) {
+  _renderBaziSummaryInner(bazi) {
     const strengthLabels = { '旺': '旺（得令）', '相': '相（得生）', '休': '休（退休）', '囚': '囚（受制）', '死': '死（受剋）' };
     const strengthVal = bazi.dayMasterStrength
       ? `<span class="strength-${bazi.dayMasterStrength}">${strengthLabels[bazi.dayMasterStrength] || bazi.dayMasterStrength}</span>`
@@ -1830,11 +1834,8 @@ class App {
     ).join('');
 
     return `
-      <div class="result-card bazi-summary">
-        <h3 class="card-title">個人基本盤</h3>
-        <div class="bazi-chart-container">${this._renderBaziChartSVG(bazi)}</div>
-        <dl class="bazi-details">${dlHtml}</dl>
-      </div>
+      <div class="bazi-chart-container">${this._renderBaziChartSVG(bazi)}</div>
+      <dl class="bazi-details">${dlHtml}</dl>
     `;
   }
 

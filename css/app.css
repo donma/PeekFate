@@ -2589,6 +2589,45 @@ small {
   background-color: rgba(255,255,255,0.2);
 }
 
+.btn-toggle-result {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--primary-color);
+  font-weight: 600;
+  max-width: 100%;
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+.btn-toggle-result:hover {
+  background-color: var(--border-color);
+}
+
+.card-header-toggle {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  cursor: pointer;
+  padding: var(--spacing-md) 0;
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+
+.card-header-toggle:hover {
+  opacity: 0.8;
+}
+
+.card-body-collapsible {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  overflow: hidden;
+}
+
+.card-body-collapsible.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
 .btn-toggle-section:hover {
   background-color: var(--border-color);
   color: var(--text-color);

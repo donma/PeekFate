@@ -87,12 +87,9 @@
             <div class="hero-divider"></div>
             <p class="hero-subtitle">八字 × 易經 × 奇門遁甲</p>
             <p class="hero-desc">每日時辰精算，掌握運勢先機</p>
-            <button type="button" class="btn-toggle-section" id="btnToggleSection" onclick="toggleSection()">
-              ▼ 修改資料
-            </button>
           </div>
           
-          <div class="form-container collapsed" id="formContainer">
+          <div class="form-container" id="formContainer">
             <form id="birthForm" class="birth-form">
               <div class="form-group">
                 <label for="birthDate" class="form-label">
@@ -245,8 +242,8 @@
 
   <script>
     function toggleSection() {
-      var btn = document.getElementById('btnToggleSection');
       var container = document.getElementById('formContainer');
+      var btn = document.getElementById('btnToggleForm');
       if (btn && container) {
         var isCollapsed = container.classList.contains('collapsed');
         container.classList.toggle('collapsed');
@@ -254,9 +251,19 @@
       }
     }
 
+    function toggleBazi() {
+      var body = document.getElementById('baziBody');
+      var btn = document.getElementById('baziToggleBtn');
+      if (body && btn) {
+        var isCollapsed = body.classList.contains('collapsed');
+        body.classList.toggle('collapsed');
+        btn.textContent = isCollapsed ? '▲ 個人基本盤' : '▼ 個人基本盤';
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-      var btnToggle = document.getElementById('btnToggleSection');
       var formContainer = document.getElementById('formContainer');
+      var btnToggle = document.getElementById('btnToggleForm');
       if (btnToggle && formContainer) {
         btnToggle.addEventListener('click', toggleSection);
       }
