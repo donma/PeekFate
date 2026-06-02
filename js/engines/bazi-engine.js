@@ -1982,7 +1982,7 @@ class BaziEngine {
       if (ge && ge[mainTenGod.name]) pattern = { name: ge[mainTenGod.name], type: '八格' };
     }
 
-    // 從格檢查
+      // 從格檢查
     const dayEl = dayMaster.element;
     const isBodyWeak = bodyStrength.level === '身弱' || bodyStrength.level === '偏弱';
     const isBodyStrong = bodyStrength.level === '身強' || bodyStrength.level === '偏強';
@@ -1993,16 +1993,15 @@ class BaziEngine {
       // 極弱 → 從格檢查
       const allStems = Object.values(pillars).filter(p => p && p.stem).map(p => p.stem);
       const allBranches = Object.values(pillars).filter(p => p && p.branch).map(p => p.branch);
-      // 計算非日主五行比例
       const nonPeerCount = allStems.filter(s => this._getStemElement(s) !== dayEl).length +
-        allBranches.filter(b => this._getBranchElement(b) !== dayEl).length;
+        allBranches.filter(b => this._getMonthElement(b) !== dayEl).length;
       const totalCount = allStems.length + allBranches.length;
       if (totalCount > 0 && nonPeerCount / totalCount >= 0.75) {
         // 從弱：非日主五行占主導
         // 確定從什麼（看主要非日主五行）
         const elCounts = { wood:0, fire:0, earth:0, metal:0, water:0 };
         for (const s of allStems) { const e = this._getStemElement(s); if (e !== dayEl) elCounts[e]++; }
-        for (const b of allBranches) { const e = this._getBranchElement(b); if (e !== dayEl) elCounts[e]++; }
+        for (const b of allBranches) { const e = this._getMonthElement(b); if (e !== dayEl) elCounts[e]++; }
         const maxEl = Object.entries(elCounts).sort((a,b) => b[1]-a[1])[0];
         const maxCount = maxEl ? maxEl[1] : 0;
         if (maxCount >= 3) {
@@ -2018,7 +2017,7 @@ class BaziEngine {
       const allBranches = Object.values(pillars).filter(p => p && p.branch).map(p => p.branch);
       const elCounts = { wood:0, fire:0, earth:0, metal:0, water:0 };
       for (const s of allStems) elCounts[this._getStemElement(s)]++;
-      for (const b of allBranches) elCounts[this._getBranchElement(b)]++;
+      for (const b of allBranches) elCounts[this._getMonthElement(b)]++;
       const totalEl = Object.values(elCounts).reduce((a,b)=>a+b,0);
       if (totalEl > 0 && elCounts[dayEl] / totalEl >= 0.65) {
         const zhuanWang = { wood:'曲直仁壽格', fire:'炎上格', earth:'稼穡格', metal:'從革格', water:'潤下格' };
