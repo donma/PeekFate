@@ -1594,9 +1594,15 @@ class App {
 
     const { bazi, today, tomorrow, fourteenDays } = result;
 
+    // 把表單從 hero 區移到結果區
+    const formContainer = document.getElementById('formContainer');
+    if (formContainer) {
+      formContainer.classList.add('collapsed');
+    }
+
     let html = '';
 
-    html += `<button type="button" class="btn-toggle-section btn-toggle-result" id="btnToggleForm" onclick="toggleSection()">▼ 修改資料</button>`;
+    html += `<div id="formToggleArea"></div>`;
     html += `<div class="result-card bazi-summary" id="baziSummaryCard">`;
     html += `<div class="card-header-toggle" id="baziToggleBtn" onclick="toggleBazi()">▼ 個人基本盤</div>`;
     html += `<div class="card-body-collapsible collapsed" id="baziBody">`;
@@ -1611,6 +1617,24 @@ class App {
     html += this._renderDisclaimer();
 
     container.innerHTML = html;
+
+    // 把表單 DOM 插入到結果區
+    if (formContainer) {
+      const toggleArea = document.getElementById('formToggleArea');
+      if (toggleArea) {
+        // 插入 toggle 按鈕
+        const toggleBtn = document.createElement('button');
+        toggleBtn.type = 'button';
+        toggleBtn.className = 'btn-toggle-section btn-toggle-result';
+        toggleBtn.id = 'btnToggleForm';
+        toggleBtn.textContent = '▼ 修改資料';
+        toggleBtn.onclick = toggleSection;
+        toggleArea.parentNode.insertBefore(toggleBtn, toggleArea.nextSibling);
+        // 插入表單
+        toggleBtn.parentNode.insertBefore(formContainer, toggleBtn.nextSibling);
+      }
+    }
+
     this._bindCardToggle();
   }
 

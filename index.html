@@ -244,11 +244,10 @@
     function toggleSection() {
       var container = document.getElementById('formContainer');
       var btn = document.getElementById('btnToggleForm');
-      if (btn && container) {
-        var isCollapsed = container.classList.contains('collapsed');
-        container.classList.toggle('collapsed');
-        btn.textContent = isCollapsed ? '▲ 收合輸入區' : '▼ 修改資料';
-      }
+      if (!container) return;
+      var isCollapsed = container.classList.contains('collapsed');
+      container.classList.toggle('collapsed');
+      if (btn) btn.textContent = isCollapsed ? '▲ 收合輸入區' : '▼ 修改資料';
     }
 
     function toggleBazi() {

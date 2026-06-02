@@ -2605,17 +2605,17 @@ small {
 
 .card-header-toggle {
   font-family: var(--font-serif);
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 0.9rem;
+  font-weight: 600;
   color: var(--primary-color);
   cursor: pointer;
-  padding: var(--spacing-md) 0;
+  padding: 10px 20px;
   text-align: center;
   letter-spacing: 0.05em;
-}
-
-.card-header-toggle:hover {
-  opacity: 0.8;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  margin: 0;
 }
 
 .card-body-collapsible {
