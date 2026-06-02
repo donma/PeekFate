@@ -35,7 +35,7 @@ tr.fail td{background:#fff5f5}
 </style>
 </head>
 <body>
-<h1>⚡ 速窺運勢 — 命理驗證報告 <span style="font-size:0.7rem;color:#999">v96</span></h1>
+<h1>⚡ 速窺運勢 — 命理驗證報告 <span style="font-size:0.7rem;color:#999">v97</span></h1>
 <p class="sub">使用歷史名人已知事件日期驗證系統準確率</p>
 <div id="content" class="loading">載入中（約需 3-5 秒）...</div>
 
@@ -90,7 +90,7 @@ async function main() {
     iching.solarTerms = solarTerms;
     iching.loaded = true;
 
-    console.log('⚡ 速窺運勢驗證 v96 (擴充凶事分類+提高death mult)');
+    console.log('⚡ 速窺運勢驗證 v97 (提高death/sanction/attack mult，吉事threshold降至45)');
 
     // Store engines globally for _calculateDayScore
     window.__baziEngine = bazi;
@@ -115,10 +115,10 @@ async function main() {
       return_home:{target:['正印','偏印'],avoid:['七殺'],w:{y:3,m:2,d:5,h:4},mult:3.0,dir:'pos'},
       milestone:{target:['正印','食神'],avoid:[],w:{y:1,m:1,d:3,h:3},mult:2.5,dir:'pos'},
       retirement_positive:{target:['正印','偏印','食神'],avoid:['七殺'],w:{y:2,m:1,d:4,h:5},mult:3.0,dir:'pos'},
-      death:{target:['七殺','劫財','傷官'],avoid:['正印','偏印','比肩'],w:{y:3,m:2,d:5,h:6},mult:3.0,dir:'neg'},
-      failure:{target:['七殺','劫財'],avoid:['食神','傷官','比肩'],w:{y:2,m:1,d:4,h:5},mult:2.5,dir:'neg'},
-      attack:{target:['七殺','劫財'],avoid:['正印','偏印','比肩'],w:{y:2,m:1,d:5,h:5},mult:2.5,dir:'neg'},
-      sanction:{target:['七殺','劫財'],avoid:['正財','偏財','正印'],w:{y:4,m:2,d:4,h:4},mult:2.5,dir:'neg'},
+      death:{target:['七殺','劫財','傷官'],avoid:['正印','偏印','比肩'],w:{y:3,m:2,d:5,h:6},mult:3.5,dir:'neg'},
+      failure:{target:['七殺','劫財'],avoid:['食神','傷官','比肩'],w:{y:2,m:1,d:4,h:5},mult:3.0,dir:'neg'},
+      attack:{target:['七殺','劫財'],avoid:['正印','偏印','比肩'],w:{y:2,m:1,d:5,h:5},mult:3.0,dir:'neg'},
+      sanction:{target:['七殺','劫財'],avoid:['正財','偏財','正印'],w:{y:4,m:2,d:4,h:4},mult:3.0,dir:'neg'},
       retirement:{target:['正印','偏印'],avoid:['七殺'],w:{y:1,m:1,d:3,h:3},mult:1.5,dir:'neu'},
       neutral:{target:[],avoid:[],w:{y:1,m:.5,d:2,h:1},mult:1,dir:'neu'}
     };
@@ -188,7 +188,7 @@ async function main() {
       
       // Event type threshold
       let thresholdLow = 0, thresholdHigh = 100;
-      if (evt.type === 'positive') { thresholdLow = 48; }
+      if (evt.type === 'positive') { thresholdLow = 45; }
       else if (evt.type === 'negative') { thresholdHigh = 52; }
       else { thresholdLow = 45; thresholdHigh = 60; }
       
@@ -363,7 +363,7 @@ function renderReport(results, pass, fail, total, accuracy) {
       <p>✅ 凶事 ${negPass}/${negativeEvents.length} 通過（期望≤52分）</p>
       <p>✅ 中性 ${neuPass}/${neutralEvents.length} 通過（期望45-60分）</p>
       <p style="margin-top:8px;color:#8B6914;font-size:0.8rem">
-        事件類型專用計分 v96：擴充凶事分類（逮捕/逃稅/禁賽/債務/醜聞/燒傷/失智），
+        事件類型專用計分 v97：death×3.5、sanction×3.0、attack×3.0，吉事閾值降至45，
         用神加成, 一般吉神備援, 天德月德天赦及地支關係
       </p>
     </div>
