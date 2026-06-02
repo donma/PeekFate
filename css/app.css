@@ -2634,6 +2634,11 @@ small {
   color: var(--text-color);
 }
 
+.input-section {
+  max-width: 480px;
+  margin: 0 auto var(--spacing-lg);
+}
+
 .form-container {
   overflow: hidden;
   transition: max-height 0.3s ease-out, opacity 0.2s ease-out;

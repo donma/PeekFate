@@ -377,9 +377,11 @@ class App {
       this.currentResult = result;
       this._renderResult(result);
       this._handleRememberMe(formData);
-      // 收合表單
-      const formContainer = document.getElementById('formContainer');
-      if (formContainer) formContainer.classList.add('collapsed');
+      // 隱藏首頁 hero + 輸入區
+      const heroSection = document.querySelector('.hero-section');
+      const inputSection = document.getElementById('inputSection');
+      if (heroSection) heroSection.style.display = 'none';
+      if (inputSection) inputSection.style.display = 'none';
       this._hideLoading();
       this._showResultSection();
     } catch (error) {
@@ -1513,6 +1515,12 @@ class App {
 
     const resultSection = document.getElementById('resultSection');
     if (resultSection) resultSection.style.display = 'none';
+
+    // 顯示首頁 hero + 輸入區
+    const heroSection = document.querySelector('.hero-section');
+    const inputSection = document.getElementById('inputSection');
+    if (heroSection) heroSection.style.display = '';
+    if (inputSection) inputSection.style.display = '';
 
     // 展開表單區域
     const formContainer = document.getElementById('formContainer');
