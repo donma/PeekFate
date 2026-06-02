@@ -1610,10 +1610,14 @@ class App {
     html += `<div class="result-card bazi-summary" id="baziSummaryCard">`;
     html += `<div class="card-header-toggle" id="baziToggleBtn" onclick="toggleBazi()">▼ 個人基本盤</div>`;
     html += `<div class="card-body-collapsible collapsed" id="baziBody">`;
+    // 河圖幸運數字（喜用神五行→數字）
+    const hetuMap = { 'water': '1、6', 'fire': '2、7', 'wood': '3、8', 'metal': '4、9', 'earth': '5、10' };
+    const luckyNum = bazi.yongShen?.yongShen ? hetuMap[bazi.yongShen.yongShen] || '' : '';
+
     html += this._renderBaziSummaryInner(bazi);
     html += `</div></div>`;
     html += this._renderScoreLegend();
-    html += this._renderDaySummary(today.summary, '今日總覽');
+    html += this._renderDaySummary(today.summary, '今日總覽', luckyNum);
     html += this._renderHourCards(today.hours, '今日時辰');
     html += this._renderDaySummary(tomorrow.summary, '明日總覽');
     html += this._renderHourCards(tomorrow.hours, '明日時辰');
@@ -1867,7 +1871,7 @@ class App {
     `;
   }
 
-  _renderDaySummary(summary, title) {
+  _renderDaySummary(summary, title, luckyNum) {
     const score = summary.averageScore;
     const circumference = 2 * Math.PI * 40;
     const dashoffset = circumference - (score / 100) * circumference;
@@ -1897,6 +1901,7 @@ class App {
         </div>
         ${summary.bestHours.length > 0 ? `<p class="day-best">最佳時辰：${summary.bestHours.join('、')}</p>` : ''}
         ${summary.riskHours.length > 0 ? `<p class="day-risk">注意時辰：${summary.riskHours.join('、')}</p>` : ''}
+        ${luckyNum ? `<p class="day-lucky">幸運數字：${luckyNum}</p>` : ''}
       </div>
     `;
   }
