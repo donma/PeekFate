@@ -519,7 +519,9 @@ class App {
     const isPast = (hb) => {
       if (!isToday) return false;
       const startHour = parseInt(hb.start.split(':')[0]);
-      if (hb.branch === '子') return currentHour >= 1 && currentHour < 23;
+      // 23點以後，今日所有時辰都已過（子時屬於明日）
+      if (currentHour >= 23) return true;
+      if (hb.branch === '子') return currentHour >= 1;
       return currentHour > startHour + 2;
     };
 
