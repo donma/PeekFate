@@ -1648,7 +1648,10 @@ class App {
     html += `</div></div>`;
     html += this._renderScoreLegend();
     html += this._renderDaySummary(today.summary, '今日總覽', luckyNum);
-    html += this._renderHourCards(today.hours.filter(h => !h._past), '今日時辰');
+    const todayRemaining = today.hours.filter(h => !h._past);
+    if (todayRemaining.length > 0) {
+      html += this._renderHourCards(todayRemaining, '今日時辰');
+    }
     html += this._renderDaySummary(tomorrow.summary, '明日總覽');
     html += this._renderHourCards(tomorrow.hours, '明日時辰');
     html += this._render14Days(fourteenDays);
