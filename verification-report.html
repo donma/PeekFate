@@ -169,7 +169,7 @@ async function main() {
       const eventDate = new Date(evt.eventDate + 'T12:00:00');
       
       // Calculate bazi
-      const baziResult = be.calculateBazi(birthDate, birthTime, celeb.gender);
+      const baziResult = bazi.calculateBazi(birthDate, birthTime, celeb.gender);
       if (!baziResult) continue;
       
       // Classify event and score with event-type-specific engine
