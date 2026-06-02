@@ -1174,6 +1174,15 @@ small {
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-sm);
 }
+.bazi-misc {
+  font-size: 0.8rem;
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: rgba(111, 91, 70, 0.03);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+}
+
 .bazi-hidden-stems {
   font-size: 0.8rem;
   margin-bottom: var(--spacing-sm);

@@ -192,9 +192,26 @@ class BaziEngine {
     // 旬空（空亡）
     const kongWang = this._getKongWang(dayPillar);
 
-    // 用神喜忌
+    // 胎元+命宮+天干合化
+    const taiYuan = this._calculateTaiYuan(monthPillar);
+    const mingGong = hourPillar?.branch ? this._calculateMingGong(monthPillar, hourPillar.branch) : null;
+    const stemCombinations = this._calculateStemCombinations(yearPillar.stem, monthPillar.stem, dayPillar.stem);
+
+    // 用神喜忌（含胎元+天干合化調整）
     const elementCount = this._countElements({ year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar });
-    // 合化調整五行分布
+    // 胎元計入五行
+    if (taiYuan) {
+      const taiEl = this._getMonthElement(taiYuan.branch);
+      elementCount[taiEl] = (elementCount[taiEl] || 0) + 1;
+    }
+    // 天干合化調整
+    if (stemCombinations.yearMonth?.combined) {
+      elementCount[stemCombinations.yearMonth.element] = (elementCount[stemCombinations.yearMonth.element] || 0) + 1;
+    }
+    if (stemCombinations.monthDay?.combined) {
+      elementCount[stemCombinations.monthDay.element] = (elementCount[stemCombinations.monthDay.element] || 0) + 1;
+    }
+    // 合化調整五行分布（地支合局）
     const adjustedElementCount = this._adjustElementsForCombinations({ ...elementCount }, branchRels);
     const yongShen = this._calculateYongShen(dayMaster.element, dayMasterStrength, adjustedElementCount);
 
@@ -221,6 +238,9 @@ class BaziEngine {
       monthElement,
       elementCount,
       adjustedElementCount,
+      taiYuan,
+      mingGong,
+      stemCombinations,
       yongShen,
       shenSha,
       hiddenStemDetails,
@@ -1595,6 +1615,69 @@ class BaziEngine {
     }
 
     return { hasRoot, rootSources: [...new Set(rootSources)], exposed, modifier };
+  }
+
+  /**
+   * 計算胎元（受孕月）
+   * 月干前一位、月支前三位即為胎元
+   * @private
+   * @param {Object} monthPillar - 月柱
+   * @returns {Object} { stem, branch, name }
+   */
+  _calculateTaiYuan(monthPillar) {
+    if (!monthPillar || !monthPillar.stem) return null;
+    const si = BaziEngine.STEMS.indexOf(monthPillar.stem);
+    const bi = BaziEngine.BRANCHES.indexOf(monthPillar.branch);
+    const taiStem = BaziEngine.STEMS[(si + 1) % 10];
+    const taiBranch = BaziEngine.BRANCHES[(bi + 3) % 12];
+    return { stem: taiStem, branch: taiBranch, name: taiStem + taiBranch };
+  }
+
+  /**
+   * 計算命宮（生月+生時）
+   * @private
+   * @param {Object} monthPillar - 月柱
+   * @param {string} hourBranch - 時支
+   * @returns {Object} { stem, branch, name }
+   */
+  _calculateMingGong(monthPillar, hourBranch) {
+    if (!monthPillar || !hourBranch) return null;
+    const bi = BaziEngine.BRANCHES.indexOf(monthPillar.branch);
+    const hi = BaziEngine.BRANCHES.indexOf(hourBranch);
+    if (bi === -1 || hi === -1) return null;
+    const mgBranchIdx = (bi - hi + 12) % 12;
+    // 命宮天干用五虎遁（正月寅起，按年干定）
+    const mgBranch = BaziEngine.BRANCHES[mgBranchIdx];
+    return { stem: '?', branch: mgBranch, name: `?${mgBranch}` };
+  }
+
+  /**
+   * 天干合化
+   * 年月干或月日干相合時，五行轉化
+   * @private
+   * @param {Object} yearStem - 年干
+   * @param {Object} monthStem - 月干
+   * @param {Object} dayStem - 日干
+   * @returns {Object} { yearMonth: { combined, element } | null, monthDay: { combined, element } | null }
+   */
+  _calculateStemCombinations(yearStem, monthStem, dayStem) {
+    const heMap = {
+      '甲': { partner: '己', element: 'earth' },
+      '己': { partner: '甲', element: 'earth' },
+      '乙': { partner: '庚', element: 'metal' },
+      '庚': { partner: '乙', element: 'metal' },
+      '丙': { partner: '辛', element: 'water' },
+      '辛': { partner: '丙', element: 'water' },
+      '丁': { partner: '壬', element: 'wood' },
+      '壬': { partner: '丁', element: 'wood' },
+      '戊': { partner: '癸', element: 'fire' },
+      '癸': { partner: '戊', element: 'fire' }
+    };
+    const yearMonth = (heMap[yearStem] && heMap[yearStem].partner === monthStem)
+      ? { combined: true, element: heMap[yearStem].element } : null;
+    const monthDay = (heMap[monthStem] && heMap[monthStem].partner === dayStem)
+      ? { combined: true, element: heMap[monthStem].element } : null;
+    return { yearMonth, monthDay };
   }
 
   /**

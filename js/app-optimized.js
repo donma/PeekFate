@@ -664,6 +664,17 @@ class App {
       }
     }
 
+    // 天干合化加分
+    if (baziResult.stemCombinations) {
+      let combScore = 0;
+      if (baziResult.stemCombinations.yearMonth?.combined) combScore += 2;
+      if (baziResult.stemCombinations.monthDay?.combined) combScore += 2;
+      if (combScore > 0) {
+        baziScore += combScore;
+        baziTrace.push({ system: 'bazi', rule: 'stemCombine', score: combScore, reason: '天干合化成功，氣場和諧' });
+      }
+    }
+
     // 流年/流月影響
     const flowYear = this.baziEngine.calculateYearPillar(date);
     const flowMonth = this.baziEngine.calculateMonthPillar(date);
@@ -1149,6 +1160,10 @@ class App {
         if (baziResult.rootInfo) {
           hourScore += baziResult.rootInfo.modifier;
         }
+        if (baziResult.stemCombinations) {
+          if (baziResult.stemCombinations.yearMonth?.combined) hourScore += 2;
+          if (baziResult.stemCombinations.monthDay?.combined) hourScore += 2;
+        }
         // 流年流月
         const fy = this.baziEngine.calculateYearPillar(date);
         const fm = this.baziEngine.calculateMonthPillar(date);
@@ -1249,6 +1264,10 @@ class App {
         });
       }
       totalScore += hs;
+    }
+    if (baziResult.stemCombinations) {
+      if (baziResult.stemCombinations.yearMonth?.combined) totalScore += 2;
+      if (baziResult.stemCombinations.monthDay?.combined) totalScore += 2;
     }
     // 流年流月
     const fy = this.baziEngine.calculateYearPillar(date);
@@ -1577,6 +1596,14 @@ class App {
       ? `<p class="bazi-yongshen"><span class="yongshen-label">用神：</span><span class="yongshen-val">${bazi.yongShen.yongShenLabel}</span>　<span class="jishen-label">忌神：</span><span class="jishen-val">${bazi.yongShen.jiShenLabel || '無'}</span></p>`
       : '';
 
+    const miscInfo = [
+      bazi.taiYuan ? `胎元：${bazi.taiYuan.name}` : '',
+      bazi.mingGong?.branch ? `命宮：${bazi.mingGong.branch}` : '',
+      bazi.stemCombinations?.yearMonth?.combined ? `年干合化：${bazi.stemCombinations.yearMonth.element}` : '',
+      bazi.stemCombinations?.monthDay?.combined ? `月干合化：${bazi.stemCombinations.monthDay.element}` : ''
+    ].filter(Boolean);
+    const miscInfoHtml = miscInfo.length > 0 ? `<p class="bazi-misc">${miscInfo.join(' | ')}</p>` : '';
+
     const hiddenStemInfo = bazi.hiddenStemDetails
       ? `<p class="bazi-hidden-stems">藏干透出：${Object.entries(bazi.hiddenStemDetails).filter(([,v]) => v?.length).map(([pos, items]) => {
         const labels = { year: '年', month: '月', day: '日', hour: '時' };
@@ -1601,6 +1628,7 @@ class App {
         ${rootInfo}
         ${kongWangInfo}
         ${yongShenInfo}
+        ${miscInfoHtml}
         ${hiddenStemInfo}
         ${shenShaInfo}
         ${branchScoreInfo}
