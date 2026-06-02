@@ -123,7 +123,7 @@ class BaziEngine {
    * engine.calculateBazi('1990-05-15', '14:30')
    * // => { year: {...}, month: {...}, day: {...}, hour: {...}, dayMaster: {...}, ... }
    */
-  calculateBazi(birthDate, birthTime = null) {
+  calculateBazi(birthDate, birthTime = null, gender = null) {
     this._ensureLoaded();
 
     const date = this._ensureDate(birthDate);
@@ -182,6 +182,9 @@ class BaziEngine {
       hour: hourPillar
     });
 
+    // 大運計算
+    const dayun = gender ? this.calculateDayun(adjustedDate, gender, yearPillar, monthPillar) : null;
+
     return {
       year: yearPillar,
       month: monthPillar,
@@ -192,12 +195,14 @@ class BaziEngine {
       branchRelations: branchRels,
       hiddenStems: hiddenStemsList,
       nayinMatch: this._checkNayinMatch([yearPillar, monthPillar, dayPillar, hourPillar]),
+      dayun,
       birthInfo: {
         date: this._formatDate(date),
         time: birthTime,
         isTimeKnown: birthTime !== null,
         isCrossDay,
-        adjustedDate: isCrossDay ? this._formatDate(adjustedDate) : null
+        adjustedDate: isCrossDay ? this._formatDate(adjustedDate) : null,
+        gender
       }
     };
   }
@@ -390,6 +395,149 @@ class BaziEngine {
       name,
       nayin,
       label: '時柱'
+    };
+  }
+
+  /**
+   * 計算大運
+   * 陽男陰女順排，陰男陽女逆排
+   * @param {Date} date - 出生日期（已調整跨日）
+   * @param {string} gender - 'male' 或 'female'
+   * @param {Object} yearPillar - 年柱
+   * @param {Object} monthPillar - 月柱
+   * @returns {Object|null} 大運信息
+   */
+  calculateDayun(date, gender, yearPillar, monthPillar) {
+    if (!gender || !yearPillar || !monthPillar) return null;
+
+    // 年干陰陽判定：甲丙戊庚壬(索引0,2,4,6,8)為陽
+    const yearStemIndex = BaziEngine.STEMS.indexOf(yearPillar.stem);
+    const isYearYang = yearStemIndex % 2 === 0;
+
+    // 陽男陰女順排，陰男陽女逆排
+    const isForward = (isYearYang && gender === 'male') || (!isYearYang && gender === 'female');
+
+    // 尋找最近的下一個／上一個節氣（十二節）
+    const terms = ['小寒', '立春', '驚蟄', '清明', '立夏', '芒種',
+                   '小暑', '立秋', '白露', '寒露', '立冬', '大雪'];
+
+    let targetTerm = null;
+    let targetDate = null;
+    let minDiff = Infinity;
+
+    const year = date.getFullYear();
+    const yearStr = year.toString();
+    const yearTerms = this.solarTerms && this.solarTerms[yearStr];
+
+    // 順排：找之後的第一個節氣；逆排：找之前的第一個節氣
+    for (const termName of terms) {
+      let termDateStr = null;
+      if (yearTerms && yearTerms[termName]) {
+        termDateStr = yearTerms[termName];
+      } else {
+        const approx = this._getSolarTermDate(year, termName);
+        termDateStr = this._formatDate(approx);
+      }
+      if (!termDateStr) continue;
+      const termDate = this._ensureDate(termDateStr);
+      const diff = termDate.getTime() - date.getTime();
+      const diffDays = diff / (1000 * 60 * 60 * 24);
+
+      if (isForward && diffDays > 0 && diffDays < minDiff) {
+        minDiff = diffDays;
+        targetTerm = termName;
+        targetDate = termDate;
+      } else if (!isForward && diffDays < 0 && -diffDays < minDiff) {
+        minDiff = -diffDays;
+        targetTerm = termName;
+        targetDate = termDate;
+      }
+    }
+
+    // 如果沒找到 (可能跨年)，搜索前後年份
+    if (!targetTerm) {
+      const searchYears = isForward ? [yearStr, String(year + 1)] : [String(year - 1), yearStr];
+      for (const sy of searchYears) {
+        const yTerms = this.solarTerms && this.solarTerms[sy];
+        if (!yTerms) continue;
+        for (const termName of terms) {
+          const termDateStr = yTerms[termName];
+          if (!termDateStr) continue;
+          const termDate = this._ensureDate(termDateStr);
+          const diff = termDate.getTime() - date.getTime();
+          const diffDays = diff / (1000 * 60 * 60 * 24);
+          if (isForward && diffDays > 0 && diffDays < minDiff) {
+            minDiff = diffDays;
+            targetTerm = termName;
+            targetDate = termDate;
+          } else if (!isForward && diffDays < 0 && -diffDays < minDiff) {
+            minDiff = -diffDays;
+            targetTerm = termName;
+            targetDate = termDate;
+          }
+        }
+      }
+    }
+
+    if (!targetTerm) return null;
+
+    // 計算起運年齡：3天 = 1年
+    const totalHours = minDiff * 24;
+    const startAge = Math.floor(totalHours / 72); // 72 hours = 3 days = 1 year
+    const remainderHours = totalHours % 72;
+    const remainderMonths = Math.floor(remainderHours / 6); // 6 hours = 1 month (0.25 day = 6h → 1 month)
+    const remainderDays = Math.floor((remainderHours % 6) * 5); // 1 hour = 5 days
+
+    const startAgeFormatted = `${startAge}歲${remainderMonths > 0 ? ` ${remainderMonths}個月` : ''}${remainderDays > 0 ? ` ${remainderDays}天` : ''}`;
+
+    // 排大運（每十年一運，從月柱開始順/逆排）
+    const monthStemIndex = BaziEngine.STEMS.indexOf(monthPillar.stem);
+    const monthBranchIndex = BaziEngine.BRANCHES.indexOf(monthPillar.branch);
+
+    const dayunPillars = [];
+    const maxDayun = 8; // 最多排八步大運
+
+    for (let i = 0; i < maxDayun; i++) {
+      const step = isForward ? i + 1 : -(i + 1);
+      const stemIdx = ((monthStemIndex + step) % 10 + 10) % 10;
+      const branchIdx = ((monthBranchIndex + step) % 12 + 12) % 12;
+      const stem = BaziEngine.STEMS[stemIdx];
+      const branch = BaziEngine.BRANCHES[branchIdx];
+      const name = stem + branch;
+      const nayin = this._getNayin(stem, branch);
+
+      const pillarEl = this._stemToElement(stem);
+      const dayEl = this._stemToElement(monthPillar.stem);
+      const isFavorable = dayEl === pillarEl;
+
+      dayunPillars.push({
+        index: i + 1,
+        startAge: startAge + i * 10,
+        endAge: startAge + (i + 1) * 10 - 1,
+        stem,
+        branch,
+        name,
+        nayin,
+        isFavorable: isFavorable
+      });
+    }
+
+    // 判斷當前大運是否有利：比和或生我為吉
+    const firstPillar = dayunPillars[0];
+    const dayStem = this.getDayMaster({ day: { stem: monthPillar.stem } }).element;
+    const pillarEl = this._stemToElement(firstPillar.stem);
+    const generateMap = { wood: 'fire', fire: 'earth', earth: 'metal', metal: 'water', water: 'wood' };
+    const isFavorable = dayStem === pillarEl || generateMap[pillarEl] === dayStem;
+
+    return {
+      startAge,
+      startAgeFormatted,
+      isForward,
+      gender,
+      isFavorable,
+      targetTerm,
+      targetDate: this._formatDate(targetDate),
+      pillars: dayunPillars
     };
   }
 
@@ -920,6 +1068,18 @@ class BaziEngine {
       label: `${label}柱`,
       isUnknown: true
     };
+  }
+
+  /**
+   * 天干轉五行
+   * @private
+   * @param {string} stem - 天干
+   * @returns {string} 五行
+   */
+  _stemToElement(stem) {
+    const elements = ['wood', 'wood', 'fire', 'fire', 'earth', 'earth', 'metal', 'metal', 'water', 'water'];
+    const idx = BaziEngine.STEMS.indexOf(stem);
+    return idx >= 0 ? elements[idx] : 'earth';
   }
 
   /**

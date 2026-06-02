@@ -360,9 +360,16 @@ class App {
     const birthHour = document.getElementById('birthHour')?.value || '';
     const unknownTime = document.getElementById('unknownTime')?.checked || false;
     const rememberMe = document.getElementById('rememberMe')?.checked || false;
+    let gender = null;
+    const genderRadios = document.querySelectorAll('input[name="gender"]');
+    if (genderRadios) {
+      for (const radio of genderRadios) {
+        if (radio.checked) { gender = radio.value; break; }
+      }
+    }
 
     const hourMap = {
-      'zi': '00:00', 'chou': '02:00', 'yin': '04:00', 'mao': '06:00',
+      'zi': '23:00', 'chou': '02:00', 'yin': '04:00', 'mao': '06:00',
       'chen': '08:00', 'si': '10:00', 'wu': '12:00', 'wei': '14:00',
       'shen': '16:00', 'you': '18:00', 'xu': '20:00', 'hai': '22:00'
     };
@@ -376,7 +383,7 @@ class App {
       }
     }
 
-    return { birthDate, birthTime: time, unknownTime, rememberMe };
+    return { birthDate, birthTime: time, unknownTime, rememberMe, gender };
   }
 
   _validateForm(data) {
@@ -415,7 +422,7 @@ class App {
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const tomorrow = this.dateEngine.addDays(today, 1);
 
-    const baziResult = this.baziEngine.calculateBazi(birthDate, birthTime);
+    const baziResult = this.baziEngine.calculateBazi(birthDate, birthTime, formData.gender);
 
     const [todayHours, tomorrowHours] = await Promise.all([
       this._calculateDayHours(baziResult, today),
@@ -442,7 +449,7 @@ class App {
   _generateCacheKey(formData) {
     const now = new Date();
     const today = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
-    return `${formData.birthDate}_${formData.birthTime || 'unknown'}_${today}`;
+    return `${formData.birthDate}_${formData.birthTime || 'unknown'}_${formData.gender || 'unknown'}_${today}`;
   }
 
   async _calculateDayHours(baziResult, date) {

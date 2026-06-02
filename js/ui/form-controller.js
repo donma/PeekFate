@@ -13,11 +13,12 @@ class FormController {
     this.hourSelect = null;
     this.unknownTimeCheckbox = null;
     this.rememberCheckbox = null;
+    this.genderRadios = null;
     this.onSubmitCallback = null;
     this.privacyManager = null;
 
     this.hourMap = {
-      zi: { time: '00:00', branch: '子', range: '23:00-01:00' },
+      zi: { time: '23:00', branch: '子', range: '23:00-01:00' },
       chou: { time: '02:00', branch: '丑', range: '01:00-03:00' },
       yin: { time: '04:00', branch: '寅', range: '03:00-05:00' },
       mao: { time: '06:00', branch: '卯', range: '05:00-07:00' },
@@ -52,6 +53,7 @@ class FormController {
       this.hourSelect = document.getElementById('birthHour');
       this.unknownTimeCheckbox = document.getElementById('unknownTime');
       this.rememberCheckbox = document.getElementById('rememberMe');
+      this.genderRadios = document.querySelectorAll('input[name="gender"]');
 
       if (!this.form) {
         console.error('找不到表單元素 #birthForm');
@@ -223,6 +225,12 @@ class FormController {
     const birthHour = this.hourSelect?.value || '';
     const unknownTime = this.unknownTimeCheckbox?.checked || false;
     const rememberMe = this.rememberCheckbox?.checked || false;
+    let gender = null;
+    if (this.genderRadios) {
+      for (const radio of this.genderRadios) {
+        if (radio.checked) { gender = radio.value; break; }
+      }
+    }
 
     const dateValidation = this.validateBirthDate(birthDate);
     if (!dateValidation.valid) {
@@ -256,6 +264,7 @@ class FormController {
         birthHour: birthHour || null,
         unknownTime,
         rememberMe,
+        gender,
         hasTimeInfo: !unknownTime && resolvedTime !== null
       }
     };
@@ -361,7 +370,8 @@ class FormController {
           birthDate: formData.birthDate,
           birthTime: formData.birthTime,
           birthHour: formData.birthHour,
-          unknownTime: formData.unknownTime
+          unknownTime: formData.unknownTime,
+          gender: formData.gender
         };
 
         if (this.privacyManager) {
@@ -411,6 +421,15 @@ class FormController {
         }
         if (this.hourSelect && profile.birthHour) {
           this.hourSelect.value = profile.birthHour;
+        }
+      }
+
+      if (profile.gender && this.genderRadios) {
+        for (const radio of this.genderRadios) {
+          if (radio.value === profile.gender) {
+            radio.checked = true;
+            break;
+          }
         }
       }
 

@@ -2302,6 +2302,49 @@ small {
   cursor: pointer;
 }
 
+/* ========== 性別選擇 ========== */
+.gender-group {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xs);
+}
+
+.gender-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  padding: 8px 20px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  background: var(--bg-primary);
+}
+
+.gender-label:hover {
+  border-color: var(--primary-color);
+  background: color-mix(in srgb, var(--primary-color) 8%, var(--bg-primary));
+}
+
+.gender-radio {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary-color);
+  cursor: pointer;
+}
+
+.gender-radio:checked + .gender-custom {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.gender-label:has(.gender-radio:checked) {
+  border-color: var(--primary-color);
+  background: color-mix(in srgb, var(--primary-color) 12%, var(--bg-primary));
+}
+
 /* ========== 表單操作按鈕 ========== */
 .form-actions {
   display: flex;
