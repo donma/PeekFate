@@ -48,8 +48,8 @@ tr.fail td{background:#fff5f5}
 </style>
 </head>
 <body>
-<h1>⚡ 速窺運勢 — 命理驗證報告 <span style="font-size:0.7rem;color:#999">v107</span></h1>
-<p class="sub">使用歷史名人已知事件日期驗證系統準確率</p>
+<h1>⚡ 速窺運勢 — 命理驗證報告 <span style="font-size:0.7rem;color:#999">v108</span></h1>
+<p class="sub">歷史事件回測通過率 — 252位華人名人、231筆已知事件</p>
 <div id="content" class="loading">載入中（約需 3-5 秒）...</div>
 
 <script>
@@ -103,7 +103,7 @@ async function main() {
     iching.solarTerms = solarTerms;
     iching.loaded = true;
 
-    console.log('⚡ 速窺運勢驗證 v107 (自動定位今日總覽)');
+    console.log('⚡ 速窺運勢驗證 v108 (改名回測通過率)');
 
     // Store engines globally for _calculateDayScore
     window.__baziEngine = bazi;
@@ -365,7 +365,7 @@ function renderReport(results, pass, fail, total, accuracy) {
   
   container.innerHTML = `
     <div class="stats">
-      <div class="stat"><span class="num green">${accuracy}%</span><span class="lbl">總體準確率</span></div>
+      <div class="stat"><span class="num green">${accuracy}%</span><span class="lbl">回測通過率</span></div>
       <div class="stat"><span class="num ${accuracy >= 65 ? 'green' : 'red'}">${pass}/${total}</span><span class="lbl">通過/總事件</span></div>
       <div class="stat"><span class="num green">${avgPos}</span><span class="lbl">吉事平均分</span></div>
       <div class="stat"><span class="num red">${avgNeg}</span><span class="lbl">凶事平均分</span></div>
@@ -376,7 +376,7 @@ function renderReport(results, pass, fail, total, accuracy) {
       <p>✅ 凶事 ${negPass}/${negativeEvents.length} 通過（期望≤52分）</p>
       <p>✅ 中性 ${neuPass}/${neutralEvents.length} 通過（期望45-60分）</p>
       <p style="margin-top:8px;color:#8B6914;font-size:0.8rem">
-        事件類型專用計分 v107：自動定位今日總覽，
+        事件類型專用計分 v108：回測通過率，
         用神加成, 一般吉神備援, 天德月德天赦及地支關係
       </p>
     </div>
