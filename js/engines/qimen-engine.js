@@ -11,6 +11,10 @@ class QimenEngine {
     }
   }
 
+  async loadData() {
+    return this.initialize();
+  }
+
   async initialize() {
     try {
       const [configResp] = await Promise.all([
