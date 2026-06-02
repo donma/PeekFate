@@ -624,6 +624,66 @@ class App {
       }
     }
 
+    // 日主有根/無根修正
+    if (baziResult.rootInfo) {
+      const rm = baziResult.rootInfo.modifier;
+      if (rm !== 0) {
+        baziScore += rm;
+        baziTrace.push({
+          system: 'bazi', rule: 'root',
+          score: rm,
+          reason: rm > 0 ? `日主有根${baziResult.rootInfo.exposed ? '且透出' : ''}，扎根有力`
+            : '日主無根，虛浮無力'
+        });
+      }
+    }
+
+    // 流年/流月影響
+    const flowYear = this.baziEngine.calculateYearPillar(date);
+    const flowMonth = this.baziEngine.calculateMonthPillar(date);
+    if (flowYear) {
+      const flowYearTenGod = this.baziEngine.getTenGod(baziResult.day.stem, flowYear.stem);
+      if (flowYearTenGod) {
+        const fyScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[flowYearTenGod.name] || 0;
+        const fyAdjusted = Math.round(fyScore * 0.3);
+        if (fyAdjusted !== 0) {
+          baziScore += fyAdjusted;
+          baziTrace.push({
+            system: 'bazi', rule: 'flowYear', value: `${flowYear.name} ${flowYearTenGod.name}`,
+            score: fyAdjusted, reason: `流年${flowYear.name}對日主形成${flowYearTenGod.name}（${fyScore >= 0 ? '吉' : '凶'}）`
+          });
+        }
+      }
+      // 流年支與四柱刑沖合會
+      const flowYearBranches = [flowYear.branch, baziResult.year?.branch, baziResult.month?.branch, baziResult.day?.branch, hourBranch?.branch].filter(Boolean);
+      if (flowYearBranches.length >= 2) {
+        const flowYearRels = this.baziEngine.getBranchRelations(flowYearBranches);
+        const flowScore = this.baziEngine._calculateBranchRelationScore(flowYearRels) * 0.5;
+        if (Math.abs(flowScore) > 0) {
+          baziScore += Math.round(flowScore);
+          baziTrace.push({
+            system: 'bazi', rule: 'flowYearBranch',
+            score: Math.round(flowScore),
+            reason: flowScore > 0 ? '流年支與命局合會，吉' : '流年支與命局刑沖，凶'
+          });
+        }
+      }
+    }
+    if (flowMonth) {
+      const flowMonthTenGod = this.baziEngine.getTenGod(baziResult.day.stem, flowMonth.stem);
+      if (flowMonthTenGod) {
+        const fmScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[flowMonthTenGod.name] || 0;
+        const fmAdjusted = Math.round(fmScore * 0.2);
+        if (fmAdjusted !== 0) {
+          baziScore += fmAdjusted;
+          baziTrace.push({
+            system: 'bazi', rule: 'flowMonth', value: `${flowMonth.name} ${flowMonthTenGod.name}`,
+            score: fmAdjusted, reason: `流月${flowMonth.name}對日主形成${flowMonthTenGod.name}`
+          });
+        }
+      }
+    }
+
     baziScore = Math.max(-25, Math.min(25, baziScore));
 
     let ichingResult = null;
@@ -1026,6 +1086,32 @@ class App {
         if (baziResult.branchRelationScore) {
           hourScore += baziResult.branchRelationScore;
         }
+        // 日主有根/無根
+        if (baziResult.rootInfo) {
+          hourScore += baziResult.rootInfo.modifier;
+        }
+        // 流年流月
+        const fy = this.baziEngine.calculateYearPillar(date);
+        const fm = this.baziEngine.calculateMonthPillar(date);
+        if (fy) {
+          const fyTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fy.stem);
+          if (fyTenGod) {
+            const fyScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fyTenGod.name] || 0;
+            hourScore += Math.round(fyScore * 0.3);
+          }
+          // 流年支與時支
+          const fyr = this.baziEngine.getBranchRelations([fy.branch, hourBranches[h]].filter(Boolean));
+          if (fyr) {
+            const fyrScore = this.baziEngine._calculateBranchRelationScore(fyr) * 0.5;
+            hourScore += Math.round(fyrScore);
+          }
+        }
+        if (fm) {
+          const fmTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fm.stem);
+          if (fmTenGod) {
+            hourScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fmTenGod.name] || 0) * 0.2);
+          }
+        }
 
         if (hourScore >= 60) bestHours.push(hourNames[h]);
         if (hourScore < 40) riskHours.push(hourNames[h]);
@@ -1074,6 +1160,29 @@ class App {
     // 地支關係深度
     if (baziResult.branchRelationScore) {
       totalScore += baziResult.branchRelationScore;
+    }
+    // 日主有根/無根
+    if (baziResult.rootInfo) {
+      totalScore += baziResult.rootInfo.modifier;
+    }
+    // 流年流月
+    const fy = this.baziEngine.calculateYearPillar(date);
+    const fm = this.baziEngine.calculateMonthPillar(date);
+    if (fy) {
+      const fyTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fy.stem);
+      if (fyTenGod) {
+        totalScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fyTenGod.name] || 0) * 0.3);
+      }
+      const fyr = this.baziEngine.getBranchRelations([fy.branch, dayGanzhi.branch].filter(Boolean));
+      if (fyr) {
+        totalScore += Math.round(this.baziEngine._calculateBranchRelationScore(fyr) * 0.5);
+      }
+    }
+    if (fm) {
+      const fmTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fm.stem);
+      if (fmTenGod) {
+        totalScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fmTenGod.name] || 0) * 0.2);
+      }
     }
 
     totalScore = Math.max(0, Math.min(100, totalScore));
@@ -1355,6 +1464,10 @@ class App {
       ? `<p class="bazi-strength">日主旺衰：<span class="strength-${bazi.dayMasterStrength}">${strengthLabels[bazi.dayMasterStrength] || bazi.dayMasterStrength}</span></p>`
       : '';
 
+    const rootInfo = bazi.rootInfo
+      ? `<p class="bazi-root">日主根基：${bazi.rootInfo.hasRoot ? `<span class="root-yes">有根</span>（${bazi.rootInfo.rootSources.slice(0, 2).join('、')}）${bazi.rootInfo.exposed ? '<span class="root-exposed">且透出</span>' : ''}` : `<span class="root-no">無根（虛浮）</span>`}</p>`
+      : '';
+
     const kongWangInfo = bazi.kongWang?.length > 0
       ? `<p class="bazi-kongwang">旬空：${bazi.kongWang.join('、')}</p>`
       : '';
@@ -1377,6 +1490,7 @@ class App {
         <div class="bazi-pillars">${pillars.map(p => `<span class="pillar">${p}</span>`).join('')}</div>
         <div class="bazi-master">日主：${bazi.dayMaster.stem}（${bazi.dayMaster.label}）</div>
         ${strengthInfo}
+        ${rootInfo}
         ${kongWangInfo}
         ${yongShenInfo}
         ${shenShaInfo}

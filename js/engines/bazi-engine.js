@@ -194,10 +194,15 @@ class BaziEngine {
 
     // 用神喜忌
     const elementCount = this._countElements({ year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar });
-    const yongShen = this._calculateYongShen(dayMaster.element, dayMasterStrength, elementCount);
+    // 合化調整五行分布
+    const adjustedElementCount = this._adjustElementsForCombinations({ ...elementCount }, branchRels);
+    const yongShen = this._calculateYongShen(dayMaster.element, dayMasterStrength, adjustedElementCount);
 
     // 神煞
     const shenSha = this._calculateShenSha({ year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar });
+
+    // 日主有根/無根
+    const rootInfo = this._calculateRoot(dayMaster.element, { year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar });
 
     // 地支關係深度分數
     const branchRelationScore = this._calculateBranchRelationScore(branchRels);
@@ -211,8 +216,11 @@ class BaziEngine {
       dayMasterStrength,
       kongWang,
       monthElement,
+      elementCount,
+      adjustedElementCount,
       yongShen,
       shenSha,
+      rootInfo,
       branchRelationScore,
       tenGods,
       branchRelations: branchRels,
@@ -1517,6 +1525,111 @@ class BaziEngine {
     if (harmonyRatio > 0.5) return true;
     if (conflictRatio > 0.5) return false;
     return null;
+  }
+
+  _getStemElement(stem) {
+    const map = { '甲': 'wood', '乙': 'wood', '丙': 'fire', '丁': 'fire', '戊': 'earth', '己': 'earth', '庚': 'metal', '辛': 'metal', '壬': 'water', '癸': 'water' };
+    return map[stem] || '';
+  }
+
+  /**
+   * 計算日主有根/無根 + 藏干透出
+   * 根：日主五行在地支主氣（本氣藏干）中出現
+   * 透：日主五行在天干中出現（比肩/劫財）
+   * @private
+   * @param {string} dayMasterElement - 日主五行
+   * @param {Object} pillars - 四柱
+   * @returns {Object} { hasRoot, rootSource, exposed, modifier }
+   */
+  _calculateRoot(dayMasterElement, pillars) {
+    const branchElementMap = {
+      '子': 'water', '丑': 'earth', '寅': 'wood', '卯': 'wood',
+      '辰': 'earth', '巳': 'fire', '午': 'fire', '未': 'earth',
+      '申': 'metal', '酉': 'metal', '戌': 'earth', '亥': 'water'
+    };
+    const hiddenStemsMap = this.hiddenStems || {
+      '子': ['癸'], '丑': ['己', '癸', '辛'], '寅': ['甲', '丙', '戊'],
+      '卯': ['乙'], '辰': ['戊', '乙', '癸'], '巳': ['丙', '戊', '庚'],
+      '午': ['丁', '己'], '未': ['己', '丁', '乙'], '申': ['庚', '壬', '戊'],
+      '酉': ['辛'], '戌': ['戊', '辛', '丁'], '亥': ['壬', '甲']
+    };
+    // 日主元素對應的天干（本氣藏干）
+    const stemToMainElement = { '甲': 'wood', '丙': 'fire', '戊': 'earth', '庚': 'metal', '壬': 'water' };
+    const mainStems = ['甲', '丙', '戊', '庚', '壬'];
+
+    let hasRoot = false;
+    let rootSources = [];
+    let exposed = false;
+
+    for (const [pos, p] of Object.entries(pillars)) {
+      if (!p) continue;
+      // 檢查地支本氣是否為同五行
+      if (p.branch && branchElementMap[p.branch] === dayMasterElement) {
+        hasRoot = true;
+        rootSources.push(`${pos}支${p.branch}`);
+      }
+      // 檢查藏干本氣（寅中甲、卯中乙等）
+      if (p.branch && hiddenStemsMap[p.branch]) {
+        const mainStem = hiddenStemsMap[p.branch][0];
+        if (this._getStemElement(mainStem) === dayMasterElement) {
+          hasRoot = true;
+          rootSources.push(`${pos}支藏${mainStem}`);
+        }
+      }
+      // 檢查透出：天干與日主相同元素
+      if (p.stem && pos !== 'day' && this._getStemElement(p.stem) === dayMasterElement) {
+        exposed = true;
+      }
+    }
+
+    // 計算 modifier
+    let modifier = 0;
+    if (dayMasterElement) {
+      if (hasRoot && exposed) modifier = 4;
+      else if (hasRoot) modifier = 2;
+      else modifier = -3; // 無根虛浮
+    }
+
+    return { hasRoot, rootSources: [...new Set(rootSources)], exposed, modifier };
+  }
+
+  /**
+   * 合化調整五行分布
+   * 三合局/六合局成功時，局中地支五行轉化為化神五行
+   * @private
+   * @param {Object} elementCount - 原始五行計數
+   * @param {Object} branchRelations - getBranchRelations 結果
+   * @returns {Object} 調整後的五行計數
+   */
+  _adjustElementsForCombinations(elementCount, branchRelations) {
+    if (!branchRelations) return elementCount;
+    const counts = { ...elementCount };
+
+    // 三合化氣：申子辰 → 水, 亥卯未 → 木, 寅午戌 → 火, 巳酉丑 → 金
+    for (const rel of branchRelations.sanHe || []) {
+      if (rel.element) {
+        // 減去原始地支的五行計數，加上化神五行
+        for (const br of rel.branches) {
+          const origEl = this._getMonthElement(br);
+          if (counts[origEl] > 0) counts[origEl]--;
+        }
+        counts[rel.element] = (counts[rel.element] || 0) + 3;
+      }
+    }
+
+    // 六合化氣：子丑→土, 寅亥→木, 卯戌→火, 辰酉→金, 巳申→水, 午未→火
+    for (const rel of branchRelations.liuHe || []) {
+      if (rel.element) {
+        for (const br of rel.branches) {
+          const origEl = this._getMonthElement(br);
+          if (counts[origEl] > 0) counts[origEl]--;
+        }
+        counts[rel.element] = (counts[rel.element] || 0) + 2;
+      }
+    }
+
+    // 三會也可考慮（增加方局力量，但不轉化）
+    return counts;
   }
 
   _elementToChinese(el) {

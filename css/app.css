@@ -1178,6 +1178,17 @@ small {
 .shensha-item.good { color: #2F7D32; }
 .shensha-item.bad { color: #B85C3A; }
 
+.bazi-root {
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: rgba(201, 164, 92, 0.06);
+  border-radius: var(--radius-sm);
+}
+.root-yes { color: #2F7D32; font-weight: 600; }
+.root-no { color: #A32828; font-weight: 600; }
+.root-exposed { color: #4CAF50; font-weight: 600; }
+
 .bazi-branch-score {
   font-size: 0.85rem;
   margin-bottom: var(--spacing-sm);
