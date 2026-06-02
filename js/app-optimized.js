@@ -1058,6 +1058,8 @@ class App {
     const fStem = flowDayPillar.stem;
     const fBranch = flowDayPillar.branch;
 
+    const elZh = el => ({wood:'木',fire:'火',earth:'土',metal:'金',water:'水'}[el] || el);
+
     for (const key of pillarKeys) {
       const p = baziResult[key];
       if (!p) continue;
@@ -1072,7 +1074,28 @@ class App {
         const s = 3;
         totalScore += s;
         stemInt.push({ stem: fStem, target: key, type: '合', element: heMap[fStem].el, score: s });
-        traces.push({ rule: 'flowStemHe', key, score: s, reason: `流日${fStem}與${key}柱${pStem}五合化${heMap[fStem].el}` });
+        traces.push({ rule: 'flowStemHe', key, score: s, reason: `流日${fStem}與${key}柱${pStem}五合化${elZh(heMap[fStem].el)}` });
+      }
+      // 天干相沖
+      if (chongMap[fStem] === pStem) {
+        const s = -3;
+        totalScore += s;
+        stemInt.push({ stem: fStem, target: key, type: '沖', score: s });
+        traces.push({ rule: 'flowStemChong', key, score: s, reason: `流日${fStem}沖${key}柱${pStem}` });
+      }
+      // 天干生入（流日生日柱）
+      if (generateMap[fStemEl] === pStemEl && key !== 'day') {
+        const s = 2;
+        totalScore += s;
+        stemInt.push({ stem: fStem, target: key, type: '生', score: s });
+        traces.push({ rule: 'flowStemGenerate', key, score: s, reason: `流日${fStem}(${elZh(fStemEl)})生${key}柱${pStem}(${elZh(pStemEl)})` });
+      }
+      // 天干剋入（流日剋日柱）— 視為凶
+      if (controlMap[fStemEl] === pStemEl && key === 'day') {
+        const s = -2;
+        totalScore += s;
+        stemInt.push({ stem: fStem, target: key, type: '剋', score: s });
+        traces.push({ rule: 'flowStemControl', key, score: s, reason: `流日${fStem}(${elZh(fStemEl)})剋日主${pStem}(${elZh(pStemEl)})` });
       }
       // 天干相沖
       if (chongMap[fStem] === pStem) {
