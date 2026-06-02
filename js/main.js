@@ -3,6 +3,24 @@
  * 使用延遲載入和並行處理來提升性能
  */
 
+const APP_VERSION = 'v27';
+
+// 檢查是否有舊版快取需要清除
+async function checkStaleCache() {
+  if (!('caches' in window)) return;
+  try {
+    const keys = await caches.keys();
+    const staleKeys = keys.filter(k => !k.includes(APP_VERSION) && k.includes('su-kui'));
+    if (staleKeys.length > 0) {
+      await Promise.all(staleKeys.map(k => caches.delete(k)));
+      console.log(`已清除 ${staleKeys.length} 個舊版快取`, staleKeys);
+    }
+  } catch (e) {
+    // ignore
+  }
+}
+checkStaleCache();
+
 const perfMonitor = new PerformanceMonitor();
 
 async function loadCritical() {
