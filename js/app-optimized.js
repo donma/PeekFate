@@ -915,10 +915,11 @@ class App {
         });
         if (qimenChart.zhiFu?.star) {
           qimenTrace.push({
-          system: 'qimen', rule: 'star', value: qimenChart.zhiFu.star,
-          score: this._getQimenStarScore(qimenChart.zhiFu.star),
-          reason: `值符星${qimenChart.zhiFu.star}`
-        });
+            system: 'qimen', rule: 'star', value: qimenChart.zhiFu.star,
+            score: this._getQimenStarScore(qimenChart.zhiFu.star),
+            reason: `值符星${qimenChart.zhiFu.star}`
+          });
+        }
       }
     } catch (error) {
       console.warn('奇門計算錯誤:', error);
