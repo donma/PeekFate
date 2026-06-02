@@ -1901,7 +1901,11 @@ class App {
         </div>
         ${summary.bestHours.length > 0 ? `<p class="day-best">最佳時辰：${summary.bestHours.join('、')}</p>` : ''}
         ${summary.riskHours.length > 0 ? `<p class="day-risk">注意時辰：${summary.riskHours.join('、')}</p>` : ''}
-        ${luckyNum ? `<p class="day-lucky">幸運數字：${luckyNum}</p>` : ''}
+        ${luckyNum ? `
+        <div class="lucky-section">
+          <span class="lucky-label">今日幸運數字</span>
+          <div class="lucky-numbers">${luckyNum.split('、').map(n => `<span class="lucky-num">${n}</span>`).join('')}</div>
+        </div>` : ''}
       </div>
     `;
   }
