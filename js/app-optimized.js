@@ -773,8 +773,9 @@ class App {
       }
     }
 
-    // 流日：當日日干十神 + 日支與時支關係
+    // 流日完整互動
     if (flowDayPillar) {
+      // 流日十神（原有）
       const flowDayTenGod = this.baziEngine.getTenGod(baziResult.day.stem, flowDayPillar.stem);
       if (flowDayTenGod) {
         const fdScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[flowDayTenGod.name] || 0;
@@ -787,7 +788,7 @@ class App {
           });
         }
       }
-      // 流日支與時支關係
+      // 流日支與時支關係（原有）
       const flowDayBranches = [flowDayPillar.branch, hourBranch.branch].filter(Boolean);
       if (flowDayBranches.length >= 2) {
         const flowDayRels = this.baziEngine.getBranchRelations(flowDayBranches);
@@ -799,6 +800,14 @@ class App {
             score: Math.round(fdRelScore),
             reason: fdRelScore > 0 ? '流日支與時支合會，吉' : '流日支與時支刑沖，凶'
           });
+        }
+      }
+      // 流日天干 vs 四柱 + 伏吟反吟（新增）
+      const fdi = this._calculateFlowDayInteractions(flowDayPillar, baziResult);
+      if (fdi.totalScore !== 0) {
+        baziScore += fdi.totalScore;
+        for (const t of fdi.traces) {
+          baziTrace.push({ system: 'bazi', rule: t.rule, score: t.score, reason: t.reason });
         }
       }
     }
@@ -936,6 +945,109 @@ class App {
     const tenGod = this.baziEngine.getTenGod(birthDayStem, stem);
 
     return { stem, branch: hourBranch, name: stem + hourBranch, tenGod };
+  }
+
+  /**
+   * 流日干支 vs 本命四柱完整互動計算
+   * 回傳 { stemInt, branchInt, fuYin, fanYin, totalScore, traces }
+   */
+  _calculateFlowDayInteractions(flowDayPillar, baziResult) {
+    const pillarKeys = ['year', 'month', 'day', 'hour'];
+    const stems = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+    const branches = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+    const stemEl = s => ({ '甲':'wood','乙':'wood','丙':'fire','丁':'fire','戊':'earth','己':'earth','庚':'metal','辛':'metal','壬':'water','癸':'water' }[s]||'');
+    const branchEl = b => ({ '子':'water','丑':'earth','寅':'wood','卯':'wood','辰':'earth','巳':'fire','午':'fire','未':'earth','申':'metal','酉':'metal','戌':'earth','亥':'water' }[b]||'');
+
+    // 天干五合
+    const heMap = { '甲':{p:'己',el:'earth'},'乙':{p:'庚',el:'metal'},'丙':{p:'辛',el:'water'},'丁':{p:'壬',el:'wood'},'戊':{p:'癸',el:'fire'},'己':{p:'甲',el:'earth'},'庚':{p:'乙',el:'metal'},'辛':{p:'丙',el:'water'},'壬':{p:'丁',el:'wood'},'癸':{p:'戊',el:'fire'} };
+    // 天干相沖: 甲庚乙辛丙壬丁癸
+    const chongMap = { '甲':'庚','庚':'甲','乙':'辛','辛':'乙','丙':'壬','壬':'丙','丁':'癸','癸':'丁' };
+    // 五行生
+    const generateMap = { wood:'fire', fire:'earth', earth:'metal', metal:'water', water:'wood' };
+    // 五行剋
+    const controlMap = { wood:'earth', earth:'water', water:'fire', fire:'metal', metal:'wood' };
+
+    const traces = [];
+    let totalScore = 0;
+    const stemInt = [];
+    const branchInt = [];
+    const fuYin = {};
+    const fanYin = {};
+
+    if (!flowDayPillar) return { stemInt, branchInt, fuYin, fanYin, totalScore, traces };
+
+    const fStem = flowDayPillar.stem;
+    const fBranch = flowDayPillar.branch;
+
+    for (const key of pillarKeys) {
+      const p = baziResult[key];
+      if (!p) continue;
+
+      // === 天干互動 ===
+      const pStem = p.stem;
+      const pStemEl = stemEl(pStem);
+      const fStemEl = stemEl(fStem);
+
+      // 天干五合
+      if (heMap[fStem] && heMap[fStem].p === pStem) {
+        const s = 3;
+        totalScore += s;
+        stemInt.push({ stem: fStem, target: key, type: '合', element: heMap[fStem].el, score: s });
+        traces.push({ rule: 'flowStemHe', key, score: s, reason: `流日${fStem}與${key}柱${pStem}五合化${heMap[fStem].el}` });
+      }
+      // 天干相沖
+      if (chongMap[fStem] === pStem) {
+        const s = -3;
+        totalScore += s;
+        stemInt.push({ stem: fStem, target: key, type: '沖', score: s });
+        traces.push({ rule: 'flowStemChong', key, score: s, reason: `流日${fStem}沖${key}柱${pStem}` });
+      }
+      // 天干生入（流日生日柱）
+      if (generateMap[fStemEl] === pStemEl && key !== 'day') {
+        const s = 2;
+        totalScore += s;
+        stemInt.push({ stem: fStem, target: key, type: '生', score: s });
+        traces.push({ rule: 'flowStemGenerate', key, score: s, reason: `流日${fStem}(${fStemEl})生${key}柱${pStem}(${pStemEl})` });
+      }
+      // 天干剋入（流日剋日柱）— 視為凶
+      if (controlMap[fStemEl] === pStemEl && key === 'day') {
+        const s = -2;
+        totalScore += s;
+        stemInt.push({ stem: fStem, target: key, type: '剋', score: s });
+        traces.push({ rule: 'flowStemControl', key, score: s, reason: `流日${fStem}(${fStemEl})剋日主${pStem}(${pStemEl})` });
+      }
+
+      // === 地支互動 ===
+      const pBranch = p.branch;
+      const rels = this.baziEngine.getBranchRelations([fBranch, pBranch]);
+      if (rels) {
+        const relScore = this.baziEngine._calculateBranchRelationScore(rels);
+        if (relScore !== 0) {
+          const s = Math.round(relScore * 0.7);
+          totalScore += s;
+          branchInt.push({ branch: fBranch, target: key, type: rels.summary?.[0] || '刑', score: s });
+          traces.push({ rule: 'flowBranchRelation', key, score: s, reason: `流日${fBranch}與${key}柱${pBranch}${rels.summary?.[0] || '刑沖'}` });
+        }
+      }
+
+      // === 伏吟/反吟 ===
+      if (fStem === pStem && fBranch === pBranch) {
+        const s = key === 'day' ? 8 : 5;
+        totalScore += s;
+        fuYin[key] = true;
+        traces.push({ rule: 'fuYin', key, score: s, reason: `流日${flowDayPillar.name}與${key}柱伏吟` });
+      }
+      // 反吟：天干相沖 + 地支相沖
+      const branchOpposite = { '子':'午','丑':'未','寅':'申','卯':'酉','辰':'戌','巳':'亥','午':'子','未':'丑','申':'寅','酉':'卯','戌':'辰','亥':'巳' };
+      if (chongMap[fStem] === pStem && branchOpposite[fBranch] === pBranch) {
+        const s = key === 'day' ? -8 : -5;
+        totalScore += s;
+        fanYin[key] = true;
+        traces.push({ rule: 'fanYin', key, score: s, reason: `流日${flowDayPillar.name}與${key}柱反吟` });
+      }
+    }
+
+    return { stemInt, branchInt, fuYin, fanYin, totalScore, traces };
   }
 
   _getBranchElement(branch) {
@@ -1246,7 +1358,7 @@ class App {
             hourScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fmTenGod.name] || 0) * 0.2);
           }
         }
-        // 流日
+        // 流日完整互動
         if (fdPillar) {
           const fdTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fdPillar.stem);
           if (fdTenGod) {
@@ -1255,6 +1367,10 @@ class App {
           const fdr = this.baziEngine.getBranchRelations([fdPillar.branch, hourBranches[h]].filter(Boolean));
           if (fdr) {
             hourScore += Math.round(this.baziEngine._calculateBranchRelationScore(fdr) * 0.5);
+          }
+          const fdi = this._calculateFlowDayInteractions(fdPillar, baziResult);
+          if (fdi.totalScore !== 0) {
+            hourScore += fdi.totalScore;
           }
         }
 
