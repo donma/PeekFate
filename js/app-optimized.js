@@ -638,6 +638,31 @@ class App {
       }
     }
 
+    // 藏干透出十神
+    if (baziResult.hiddenStemDetails) {
+      const rules = this.scoringEngine.scoreRules?.baziScores?.tenGods || {};
+      let hiddenScore = 0;
+      for (const [pos, items] of Object.entries(baziResult.hiddenStemDetails)) {
+        if (!items || items.length === 0) continue;
+        items.forEach((item, idx) => {
+          const baseScore = rules[item.tenGod] || 0;
+          // 本氣藏干全分，餘者半數
+          let s = idx === 0 ? baseScore : Math.round(baseScore * 0.5);
+          // 透出加倍
+          if (item.isExposed) s *= 2;
+          hiddenScore += s;
+        });
+      }
+      if (hiddenScore !== 0) {
+        baziScore += hiddenScore;
+        baziTrace.push({
+          system: 'bazi', rule: 'hiddenStem',
+          score: hiddenScore,
+          reason: hiddenScore > 0 ? '藏干透出十神多為吉' : '藏干透出十神多為凶'
+        });
+      }
+    }
+
     // 流年/流月影響
     const flowYear = this.baziEngine.calculateYearPillar(date);
     const flowMonth = this.baziEngine.calculateMonthPillar(date);
@@ -1165,6 +1190,21 @@ class App {
     if (baziResult.rootInfo) {
       totalScore += baziResult.rootInfo.modifier;
     }
+    // 藏干透出十神
+    if (baziResult.hiddenStemDetails) {
+      const rules = this.scoringEngine.scoreRules?.baziScores?.tenGods || {};
+      let hs = 0;
+      for (const [pos, items] of Object.entries(baziResult.hiddenStemDetails)) {
+        if (!items) continue;
+        items.forEach((item, idx) => {
+          const bs = rules[item.tenGod] || 0;
+          let s = idx === 0 ? bs : Math.round(bs * 0.5);
+          if (item.isExposed) s *= 2;
+          hs += s;
+        });
+      }
+      totalScore += hs;
+    }
     // 流年流月
     const fy = this.baziEngine.calculateYearPillar(date);
     const fm = this.baziEngine.calculateMonthPillar(date);
@@ -1476,6 +1516,13 @@ class App {
       ? `<p class="bazi-yongshen"><span class="yongshen-label">用神：</span><span class="yongshen-val">${bazi.yongShen.yongShenLabel}</span>　<span class="jishen-label">忌神：</span><span class="jishen-val">${bazi.yongShen.jiShenLabel || '無'}</span></p>`
       : '';
 
+    const hiddenStemInfo = bazi.hiddenStemDetails
+      ? `<p class="bazi-hidden-stems">藏干透出：${Object.entries(bazi.hiddenStemDetails).filter(([,v]) => v?.length).map(([pos, items]) => {
+        const labels = { year: '年', month: '月', day: '日', hour: '時' };
+        return `${labels[pos]||pos}：${items.map(i => `${i.stem}(${i.tenGod})${i.isExposed ? '透' : ''}`).join(' ')}`;
+      }).join(' | ')}</p>`
+      : '';
+
     const shenShaInfo = bazi.shenSha?.length > 0
       ? `<p class="bazi-shensha">神煞：${bazi.shenSha.map(s => `<span class="shensha-item ${s.isGood ? 'good' : 'bad'}">${s.name}</span>`).join('、')}</p>`
       : '';
@@ -1493,6 +1540,7 @@ class App {
         ${rootInfo}
         ${kongWangInfo}
         ${yongShenInfo}
+        ${hiddenStemInfo}
         ${shenShaInfo}
         ${branchScoreInfo}
         ${tenGodInfo ? `<p class="bazi-tengod">${tenGodInfo}</p>` : ''}

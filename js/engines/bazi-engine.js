@@ -201,6 +201,9 @@ class BaziEngine {
     // 神煞
     const shenSha = this._calculateShenSha({ year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar });
 
+    // 藏干透出十神
+    const hiddenStemDetails = this._calculateHiddenStemDetails(dayPillar.stem, { year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar });
+
     // 日主有根/無根
     const rootInfo = this._calculateRoot(dayMaster.element, { year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar });
 
@@ -220,6 +223,7 @@ class BaziEngine {
       adjustedElementCount,
       yongShen,
       shenSha,
+      hiddenStemDetails,
       rootInfo,
       branchRelationScore,
       tenGods,
@@ -1653,6 +1657,37 @@ class BaziEngine {
       if (p.branch && elementMap[p.branch]) counts[elementMap[p.branch]]++;
     }
     return counts;
+  }
+
+  /**
+   * 計算藏干透出十神（原始資料，不計分）
+   * 每個地支的藏干與日主產生十神，透出天干時標記
+   * @private
+   * @param {string} dayStem - 日干
+   * @param {Object} pillars - 四柱
+   * @returns {Object} { details: { position: [{stem, tenGod, tenGodType, isExposed}] } }
+   */
+  _calculateHiddenStemDetails(dayStem, pillars) {
+    const results = {};
+
+    const stemPositions = [];
+    for (const [pos, p] of Object.entries(pillars)) {
+      if (p && p.stem && p.stem !== '?') stemPositions.push(p.stem);
+    }
+
+    for (const [pos, p] of Object.entries(pillars)) {
+      if (!p || !p.branch) continue;
+      const hiddenStems = this.getHiddenStems(p.branch);
+      if (hiddenStems.length === 0) { results[pos] = []; continue; }
+
+      results[pos] = hiddenStems.map(stem => {
+        const tenGod = this.getTenGod(dayStem, stem);
+        const isExposed = stemPositions.some(s => s === stem);
+        return { stem, tenGod: tenGod.name, tenGodType: tenGod.type, isExposed, isMain: true };
+      });
+    }
+
+    return results;
   }
 
   /**

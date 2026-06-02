@@ -1174,6 +1174,16 @@ small {
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-sm);
 }
+.bazi-hidden-stems {
+  font-size: 0.8rem;
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: rgba(111, 91, 70, 0.04);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
 .shensha-item { display: inline-block; padding: 0 4px; }
 .shensha-item.good { color: #2F7D32; }
 .shensha-item.bad { color: #B85C3A; }
