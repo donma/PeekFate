@@ -1582,14 +1582,9 @@ class App {
       btnToggle.textContent = '▼ 展開輸入區';
     }
     
-    // 滾動到個人基本盤卡片上方
+    // 滾動到頁面頂部（hero 區）
     setTimeout(() => {
-      const baziSummary = document.querySelector('.bazi-summary');
-      if (baziSummary) {
-        const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
-        const cardTop = baziSummary.getBoundingClientRect().top + window.pageYOffset - headerHeight - 16;
-        window.scrollTo({ top: cardTop, behavior: 'smooth' });
-      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 150);
   }
 
