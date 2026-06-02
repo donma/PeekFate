@@ -309,6 +309,20 @@ class App {
           unknownTimeCheckbox.checked = true;
           if (birthTimeInput) birthTimeInput.disabled = true;
         }
+
+        // 恢復時辰下拉
+        const birthHourInput = document.getElementById('birthHour');
+        if (birthHourInput && profile.birthHour) {
+          birthHourInput.value = profile.birthHour;
+        }
+
+        // 恢復性別
+        if (profile.gender) {
+          const radios = document.querySelectorAll('input[name="gender"]');
+          for (const r of radios) {
+            if (r.value === profile.gender) { r.checked = true; break; }
+          }
+        }
         
         // 有資料時自動推算
         if (profile.birthDate) {
@@ -996,7 +1010,9 @@ class App {
       localStorage.setItem('fortunePwaUserProfile', JSON.stringify({
         birthDate: formData.birthDate,
         birthTime: formData.birthTime,
-        unknownTime: formData.unknownTime
+        birthHour: formData.birthHour || '',
+        unknownTime: formData.unknownTime,
+        gender: formData.gender || ''
       }));
     } catch (error) {
       console.warn('無法儲存資料:', error);
