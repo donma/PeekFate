@@ -145,6 +145,22 @@
   <!-- 載入進度條 -->
   <div class="loading-progress" id="loadingProgress"></div>
 
+  <script>
+    // 確保按鈕可以正常工作
+    document.addEventListener('DOMContentLoaded', function() {
+      const btnToggle = document.getElementById('btnToggleSection');
+      const formContainer = document.getElementById('formContainer');
+      
+      if (btnToggle && formContainer) {
+        btnToggle.addEventListener('click', function() {
+          const isCollapsed = formContainer.classList.contains('collapsed');
+          formContainer.classList.toggle('collapsed');
+          btnToggle.textContent = isCollapsed ? '▲ 收合輸入區' : '▼ 修改資料';
+        });
+      }
+    });
+  </script>
+
   <script src="js/performance-monitor.js"></script>
   <script src="js/app-optimized.js"></script>
   <script src="js/main.js"></script>
