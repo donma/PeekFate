@@ -1129,6 +1129,29 @@ small {
   padding-top: var(--spacing-md);
 }
 
+.bazi-details .bazi-row {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: 5px 0;
+  border-bottom: 1px dashed rgba(230,214,184,0.3);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.bazi-details .bazi-label {
+  flex-shrink: 0;
+  width: 70px;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: right;
+}
+
+.bazi-details .bazi-value {
+  flex: 1;
+  color: var(--text-color);
+  margin: 0;
+}
+
 .bazi-strength-detail {
   margin-bottom: var(--spacing-sm);
   font-size: 0.9rem;
@@ -2462,17 +2485,17 @@ small {
   gap: var(--spacing-sm);
   cursor: pointer;
   font-size: 0.95rem;
-  color: var(--text-primary);
+  color: #F0DCC0;
   padding: 8px 20px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(245,214,128,0.3);
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
-  background: var(--bg-primary);
+  background: rgba(255,255,255,0.08);
 }
 
 .gender-label:hover {
-  border-color: var(--primary-color);
-  background: color-mix(in srgb, var(--primary-color) 8%, var(--bg-primary));
+  border-color: #F5D680;
+  background: rgba(255,255,255,0.15);
 }
 
 .gender-radio {
@@ -2483,13 +2506,13 @@ small {
 }
 
 .gender-radio:checked + .gender-custom {
-  color: var(--primary-color);
+  color: #F5D680;
   font-weight: 600;
 }
 
 .gender-label:has(.gender-radio:checked) {
-  border-color: var(--primary-color);
-  background: color-mix(in srgb, var(--primary-color) 12%, var(--bg-primary));
+  border-color: #F5D680;
+  background: rgba(245,214,128,0.15);
 }
 
 /* ========== 表單操作按鈕 ========== */

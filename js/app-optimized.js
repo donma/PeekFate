@@ -1753,79 +1753,87 @@ class App {
   }
 
   _renderBaziSummary(bazi) {
-    const tenGodInfo = bazi.tenGods?.hour ? `時柱十神：${bazi.tenGods.hour.name}` : '';
-    const branchSummary = bazi.branchRelations?.summary?.length > 0
-      ? `<p class="bazi-relations">地支關係：${bazi.branchRelations.summary.join('、')}</p>`
-      : '';
-
     const strengthLabels = { '旺': '旺（得令）', '相': '相（得生）', '休': '休（退休）', '囚': '囚（受制）', '死': '死（受剋）' };
-    const strengthInfo = bazi.dayMasterStrength
-      ? `<p class="bazi-strength">日主旺衰：<span class="strength-${bazi.dayMasterStrength}">${strengthLabels[bazi.dayMasterStrength] || bazi.dayMasterStrength}</span></p>`
+    const strengthVal = bazi.dayMasterStrength
+      ? `<span class="strength-${bazi.dayMasterStrength}">${strengthLabels[bazi.dayMasterStrength] || bazi.dayMasterStrength}</span>`
       : '';
 
-    const rootInfo = bazi.rootInfo
-      ? `<p class="bazi-root">日主根基：${bazi.rootInfo.hasRoot ? `<span class="root-yes">有根</span>（${bazi.rootInfo.rootSources.slice(0, 2).join('、')}）${bazi.rootInfo.exposed ? '<span class="root-exposed">且透出</span>' : ''}` : `<span class="root-no">無根（虛浮）</span>`}</p>`
+    const rootVal = bazi.rootInfo
+      ? (bazi.rootInfo.hasRoot
+        ? `<span class="root-yes">有根</span>（${bazi.rootInfo.rootSources.slice(0, 2).join('、')}）${bazi.rootInfo.exposed ? '<span class="root-exposed">且透出</span>' : ''}`
+        : `<span class="root-no">無根（虛浮）</span>`)
       : '';
 
-    const kongWangInfo = bazi.kongWang?.length > 0
-      ? `<p class="bazi-kongwang">旬空：${bazi.kongWang.join('、')}</p>`
+    const kongWangVal = bazi.kongWang?.length > 0 ? bazi.kongWang.join('、') : '';
+
+    const yongShenVal = bazi.yongShen?.yongShen
+      ? `<span class="yongshen-val">${bazi.yongShen.yongShenLabel}</span>`
+      : '';
+    const jiShenVal = bazi.yongShen?.yongShen
+      ? `<span class="jishen-val">${bazi.yongShen.jiShenLabel || '無'}</span>`
       : '';
 
-    const yongShenInfo = bazi.yongShen?.yongShen
-      ? `<p class="bazi-yongshen"><span class="yongshen-label">用神：</span><span class="yongshen-val">${bazi.yongShen.yongShenLabel}</span>　<span class="jishen-label">忌神：</span><span class="jishen-val">${bazi.yongShen.jiShenLabel || '無'}</span></p>`
+    const bodyStrengthVal = bazi.bodyStrength
+      ? `<span class="${bazi.bodyStrength.level === '身強' ? 'root-yes' : 'root-no'}">${bazi.bodyStrength.level}</span>（${bazi.bodyStrength.deLing.detail}、${bazi.bodyStrength.deDi.detail}、${bazi.bodyStrength.deShi.detail}）`
       : '';
 
-    const bodyStrengthInfo = bazi.bodyStrength
-      ? `<p class="bazi-strength-detail">身強身弱：<span class="${bazi.bodyStrength.level === '身強' ? 'root-yes' : 'root-no'}">${bazi.bodyStrength.level}</span>（${bazi.bodyStrength.deLing.detail}、${bazi.bodyStrength.deDi.detail}、${bazi.bodyStrength.deShi.detail}）</p>`
-      : '';
+    const patternVal = bazi.pattern ? `<span class="pattern-name">${bazi.pattern.name}</span>` : '';
 
-    const patternInfo = bazi.pattern
-      ? `<p class="bazi-pattern">格局：<span class="pattern-name">${bazi.pattern.name}</span></p>`
-      : '';
-
-    const miscInfo = [
+    const miscItems = [
       bazi.taiYuan ? `胎元：${bazi.taiYuan.name}` : '',
       bazi.mingGong?.branch ? `命宮：${bazi.mingGong.branch}` : '',
       bazi.renYuanSiLing?.stem ? `司令：${bazi.renYuanSiLing.stem}` : '',
       bazi.stemCombinations?.yearMonth?.combined ? `年干合化：${bazi.stemCombinations.yearMonth.element}` : '',
       bazi.stemCombinations?.monthDay?.combined ? `月干合化：${bazi.stemCombinations.monthDay.element}` : ''
     ].filter(Boolean);
-    const miscInfoHtml = miscInfo.length > 0 ? `<p class="bazi-misc">${miscInfo.join(' | ')}</p>` : '';
 
-    const hiddenStemInfo = bazi.hiddenStemDetails
-      ? `<p class="bazi-hidden-stems">藏干透出：${Object.entries(bazi.hiddenStemDetails).filter(([,v]) => v?.length).map(([pos, items]) => {
+    const hiddenStemVal = bazi.hiddenStemDetails
+      ? Object.entries(bazi.hiddenStemDetails).filter(([,v]) => v?.length).map(([pos, items]) => {
         const labels = { year: '年', month: '月', day: '日', hour: '時' };
         return `${labels[pos]||pos}：${items.map(i => `${i.stem}(${i.tenGod})${i.isExposed ? '透' : ''}`).join(' ')}`;
-      }).join(' | ')}</p>`
+      }).join(' | ')
       : '';
 
-    const shenShaInfo = bazi.shenSha?.length > 0
-      ? `<p class="bazi-shensha">神煞：${bazi.shenSha.map(s => `<span class="shensha-item ${s.isGood ? 'good' : 'bad'}">${s.name}</span>`).join('、')}</p>`
+    const shenShaVal = bazi.shenSha?.length > 0
+      ? bazi.shenSha.map(s => `<span class="shensha-item ${s.isGood ? 'good' : 'bad'}">${s.name}</span>`).join('、')
       : '';
 
-    const branchScoreInfo = bazi.branchRelationScore
-      ? `<p class="bazi-branch-score">地支氣場：${bazi.branchRelationScore >= 0 ? '和諧' : '動盪'}（${bazi.branchRelationScore >= 0 ? '+' : ''}${bazi.branchRelationScore}）</p>`
+    const branchScoreVal = bazi.branchRelationScore
+      ? `${bazi.branchRelationScore >= 0 ? '和諧' : '動盪'}（${bazi.branchRelationScore >= 0 ? '+' : ''}${bazi.branchRelationScore}）`
       : '';
+
+    const tenGodVal = bazi.tenGods?.hour ? bazi.tenGods.hour.name : '';
+
+    const branchRels = bazi.branchRelations?.summary?.length > 0
+      ? bazi.branchRelations.summary.join('、')
+      : '';
+
+    const rows = [
+      ['日主旺衰', strengthVal],
+      ['日主根基', rootVal],
+      ['旬空', kongWangVal],
+      ['用神', yongShenVal],
+      ['忌神', jiShenVal],
+      ['身強身弱', bodyStrengthVal],
+      ['格局', patternVal],
+      ['基本資訊', miscItems.join(' | ')],
+      ['藏干透出', hiddenStemVal],
+      ['神煞', shenShaVal],
+      ['地支氣場', branchScoreVal],
+      ['時柱十神', tenGodVal],
+      ['地支關係', branchRels],
+      ['備註', bazi.birthInfo?.note || '']
+    ].filter(([,val]) => val);
+
+    const dlHtml = rows.map(([label, value]) =>
+      `<div class="bazi-row"><dt class="bazi-label">${label}</dt><dd class="bazi-value">${value}</dd></div>`
+    ).join('');
 
     return `
       <div class="result-card bazi-summary">
         <h3 class="card-title">個人基本盤</h3>
         <div class="bazi-chart-container">${this._renderBaziChartSVG(bazi)}</div>
-        <div class="bazi-details">
-          ${strengthInfo}
-          ${rootInfo}
-          ${kongWangInfo}
-          ${yongShenInfo}
-          ${bodyStrengthInfo}
-          ${patternInfo}
-          ${miscInfoHtml}
-          ${hiddenStemInfo}
-          ${shenShaInfo}
-          ${branchScoreInfo}
-          ${tenGodInfo ? `<p class="bazi-tengod">${tenGodInfo}</p>` : ''}
-          ${branchSummary}
-          ${bazi.birthInfo?.note ? `<p class="bazi-note">${bazi.birthInfo.note}</p>` : ''}
-        </div>
+        <dl class="bazi-details">${dlHtml}</dl>
       </div>
     `;
   }
