@@ -1110,6 +1110,21 @@ small {
   padding-top: var(--spacing-md);
 }
 
+.bazi-strength-detail {
+  margin-bottom: var(--spacing-sm);
+  font-size: 0.9rem;
+}
+
+.bazi-pattern {
+  margin-bottom: var(--spacing-sm);
+  font-size: 0.9rem;
+}
+
+.pattern-name {
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
 .master-info,
 .tengod-info {
   display: flex;

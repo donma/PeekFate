@@ -243,6 +243,30 @@ class BaziEngine {
     // 暗合暗沖
     const anHeScore = this._calculateAnHeAnChong({ year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar });
 
+    // 身強身弱精確判定
+    const bodyStrength = this._calculateBodyStrength(dayMaster, dayMasterStrength, rootInfo, { year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar }, adjustedElementCount);
+
+    // 格局判斷
+    const pattern = this._determinePattern(dayMaster, monthPillar, { year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar }, bodyStrength, adjustedElementCount);
+
+    // 用神修正（基於格局+身強身弱）
+    const generateMap2 = { wood:'fire', fire:'earth', earth:'metal', metal:'water', water:'wood' };
+    const controlMap2 = { wood:'earth', earth:'water', water:'fire', fire:'metal', metal:'wood' };
+    if (pattern.type === '從格' && pattern.follow) {
+      yongShen = { yongShen: pattern.follow, yongShenLabel: `喜${this._elementToChinese(pattern.follow)}`, jiShen: dayMaster.element, jiShenLabel: `忌${this._elementToChinese(dayMaster.element)}` };
+    } else if (pattern.type === '專旺格') {
+      yongShen = { yongShen: dayMaster.element, yongShenLabel: `喜${this._elementToChinese(dayMaster.element)}(順旺)`, jiShen: generateMap2[dayMaster.element], jiShenLabel: `忌${this._elementToChinese(generateMap2[dayMaster.element])}(逆旺)` };
+    } else if (bodyStrength.level === '身弱' || bodyStrength.level === '偏弱') {
+      const generateMap3 = { wood:'water', fire:'wood', earth:'fire', metal:'earth', water:'metal' };
+      const xi = generateMap3[dayMaster.element];
+      const ji2 = controlMap2[dayMaster.element];
+      yongShen = { yongShen: xi, yongShenLabel: `喜${this._elementToChinese(xi)}(扶身)`, jiShen: ji2, jiShenLabel: `忌${this._elementToChinese(ji2)}(剋洩)` };
+    } else if (bodyStrength.level === '身強' || bodyStrength.level === '偏強') {
+      const xi = controlMap2[dayMaster.element];
+      const ji2 = generateMap2[dayMaster.element];
+      yongShen = { yongShen: xi, yongShenLabel: `喜${this._elementToChinese(xi)}(剋洩)`, jiShen: ji2, jiShenLabel: `忌${this._elementToChinese(ji2)}(生扶)` };
+    }
+
     // 大運細化（若有大運）
     let enhancedDayun = null;
     if (dayun) {
@@ -273,6 +297,8 @@ class BaziEngine {
       nayinDepth,
       renYuanSiLing,
       anHeScore,
+      bodyStrength,
+      pattern,
       dayun: enhancedDayun || dayun,
       tenGods,
       branchRelations: branchRels,
@@ -1891,6 +1917,116 @@ class BaziEngine {
       if (branches.includes(a) && branches.includes(b)) anHeScore += 2;
     }
     return anHeScore;
+  }
+
+  /**
+   * 身強身弱精確判定
+   * 三條件：得令 + 得地 + 得勢
+   * 身強(≥1) 中和(=0) 身弱(≤-1)
+   */
+  _calculateBodyStrength(dayMaster, dayMasterStrength, rootInfo, pillars, elementCount) {
+    const dayEl = dayMaster.element;
+    const peerElements = ['wood','fire','earth','metal','water'];
+    // 同五行天干（比劫）數量
+    const sameStemCount = Object.values(pillars).filter(p => p && p.stem).filter(p => {
+      const e = this._getStemElement(p.stem);
+      return e === dayEl;
+    }).length;
+    // 印星天干（生日主）
+    const generateMap = { wood:'water', fire:'wood', earth:'fire', metal:'earth', water:'metal' };
+    const resourceStemCount = Object.values(pillars).filter(p => p && p.stem).filter(p => {
+      const e = this._getStemElement(p.stem);
+      return e === generateMap[dayEl];
+    }).length;
+    const peerAndResource = sameStemCount + resourceStemCount;
+
+    // 得令: 旺/相→+1, 休→0, 囚/死→-1
+    const deLing = { '旺': 1, '相': 1, '休': 0, '囚': -1, '死': -1 }[dayMasterStrength] || 0;
+    // 得地: 有根→+1, 多支有根→+2, 無根→-1
+    const deDi = rootInfo?.hasRoot ? (rootInfo.rootSources?.length >= 2 ? 2 : 1) : -1;
+    // 得勢: 同五行(印+比)天干≥2→+1, 1→0, 0→-1
+    const deShi = peerAndResource >= 2 ? 1 : (peerAndResource === 0 ? -1 : 0);
+    const total = deLing + deDi + deShi;
+    let level = '中和';
+    if (total >= 2) level = '身強';
+    else if (total >= 1) level = '偏強';
+    else if (total <= -2) level = '身弱';
+    else if (total <= -1) level = '偏弱';
+
+    return {
+      total,
+      level,
+      deLing: { score: deLing, detail: dayMasterStrength + (deLing > 0 ? '(得令)' : deLing < 0 ? '(失令)' : '(平)') },
+      deDi: { score: deDi, detail: rootInfo?.hasRoot ? `有根${rootInfo.rootSources?.length >= 2 ? '(根深)' : ''}` : '無根(失地)' },
+      deShi: { score: deShi, detail: `印比${peerAndResource}個${deShi > 0 ? '(得勢)' : deShi < 0 ? '(失勢)' : ''}` }
+    };
+  }
+
+  /**
+   * 格局判斷
+   */
+  _determinePattern(dayMaster, monthPillar, pillars, bodyStrength, elementCount) {
+    if (!monthPillar?.branch) return { name: '無格', type: '普通' };
+    const dayStem = dayMaster.stem;
+    // 月支本氣（第一個藏干）
+    const hiddenStems = this.getHiddenStems(monthPillar.branch);
+    if (!hiddenStems || hiddenStems.length === 0) return { name: '無格', type: '普通' };
+    const mainQi = hiddenStems[0];
+    const mainTenGod = this.getTenGod(dayStem, mainQi);
+    // 八格 (月支本氣十神)
+    const geTypes = ['officer','output','wealth','resource']; // 正官七殺, 食神傷官, 正偏財, 正偏印
+    const geNames = { officer: { 正官: '正官格', 七殺: '七殺格' }, output: { 食神: '食神格', 傷官: '傷官格' }, wealth: { 正財: '正財格', 偏財: '偏財格' }, resource: { 正印: '正印格', 偏印: '偏印格' } };
+    let pattern = { name: '無格', type: '普通' };
+    if (mainTenGod && geTypes.includes(mainTenGod.type)) {
+      const ge = geNames[mainTenGod.type];
+      if (ge && ge[mainTenGod.name]) pattern = { name: ge[mainTenGod.name], type: '八格' };
+    }
+
+    // 從格檢查
+    const dayEl = dayMaster.element;
+    const isBodyWeak = bodyStrength.level === '身弱' || bodyStrength.level === '偏弱';
+    const isBodyStrong = bodyStrength.level === '身強' || bodyStrength.level === '偏強';
+    const generateMap = { wood:'fire', fire:'earth', earth:'metal', metal:'water', water:'wood' };
+    const controlMap = { wood:'earth', earth:'water', water:'fire', fire:'metal', metal:'wood' };
+
+    if (bodyStrength.total <= -3) {
+      // 極弱 → 從格檢查
+      const allStems = Object.values(pillars).filter(p => p && p.stem).map(p => p.stem);
+      const allBranches = Object.values(pillars).filter(p => p && p.branch).map(p => p.branch);
+      // 計算非日主五行比例
+      const nonPeerCount = allStems.filter(s => this._getStemElement(s) !== dayEl).length +
+        allBranches.filter(b => this._getBranchElement(b) !== dayEl).length;
+      const totalCount = allStems.length + allBranches.length;
+      if (totalCount > 0 && nonPeerCount / totalCount >= 0.75) {
+        // 從弱：非日主五行占主導
+        // 確定從什麼（看主要非日主五行）
+        const elCounts = { wood:0, fire:0, earth:0, metal:0, water:0 };
+        for (const s of allStems) { const e = this._getStemElement(s); if (e !== dayEl) elCounts[e]++; }
+        for (const b of allBranches) { const e = this._getBranchElement(b); if (e !== dayEl) elCounts[e]++; }
+        const maxEl = Object.entries(elCounts).sort((a,b) => b[1]-a[1])[0];
+        const maxCount = maxEl ? maxEl[1] : 0;
+        if (maxCount >= 3) {
+          if (controlMap[dayEl] === maxEl[0]) pattern = { name: `從${this._elementToChinese(maxEl[0])}格(從財/官)`, type: '從格', follow: maxEl[0] };
+          else if (generateMap[dayEl] === maxEl[0]) pattern = { name: `從${this._elementToChinese(maxEl[0])}格(從兒)`, type: '從格', follow: maxEl[0] };
+        }
+      }
+    }
+
+    // 專旺格檢查
+    if (bodyStrength.total >= 3) {
+      const allStems = Object.values(pillars).filter(p => p && p.stem).map(p => p.stem);
+      const allBranches = Object.values(pillars).filter(p => p && p.branch).map(p => p.branch);
+      const elCounts = { wood:0, fire:0, earth:0, metal:0, water:0 };
+      for (const s of allStems) elCounts[this._getStemElement(s)]++;
+      for (const b of allBranches) elCounts[this._getBranchElement(b)]++;
+      const totalEl = Object.values(elCounts).reduce((a,b)=>a+b,0);
+      if (totalEl > 0 && elCounts[dayEl] / totalEl >= 0.65) {
+        const zhuanWang = { wood:'曲直仁壽格', fire:'炎上格', earth:'稼穡格', metal:'從革格', water:'潤下格' };
+        if (zhuanWang[dayEl]) pattern = { name: zhuanWang[dayEl], type: '專旺格', element: dayEl };
+      }
+    }
+
+    return pattern;
   }
 
   _elementToChinese(el) {

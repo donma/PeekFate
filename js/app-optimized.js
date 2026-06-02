@@ -684,6 +684,25 @@ class App {
       baziTrace.push({ system: 'bazi', rule: 'anHe', score: baziResult.anHeScore, reason: '地支暗合，氣場暗通' });
     }
 
+    // 身強身弱精確判定（新增）
+    if (baziResult.bodyStrength) {
+      const bs = baziResult.bodyStrength;
+      const bsScore = Math.round(bs.total * 1.5);
+      if (bsScore !== 0) {
+        baziScore += bsScore;
+        baziTrace.push({ system: 'bazi', rule: 'bodyStrength', score: bsScore, reason: `身強身弱：${bs.level}(${bs.deLing.detail}, ${bs.deDi.detail}, ${bs.deShi.detail})` });
+      }
+    }
+
+    // 格局加分（新增）
+    if (baziResult.pattern) {
+      const pScore = baziResult.pattern.type === '從格' ? 5 : baziResult.pattern.type === '專旺格' ? 5 : baziResult.pattern.type === '八格' ? 2 : 0;
+      if (pScore !== 0) {
+        baziScore += pScore;
+        baziTrace.push({ system: 'bazi', rule: 'pattern', score: pScore, reason: `格局：${baziResult.pattern.name}` });
+      }
+    }
+
     // 十二長生（日主在時支狀態）
     if (baziResult.shiErChangSheng?.hour) {
       const ces = baziResult.shiErChangSheng.hour;
@@ -1340,6 +1359,12 @@ class App {
         }
         if (baziResult.nayinDepth?.totalScore) hourScore += baziResult.nayinDepth.totalScore;
         if (baziResult.anHeScore) hourScore += baziResult.anHeScore;
+        // 格局+身強身弱
+        if (baziResult.bodyStrength) hourScore += Math.round(baziResult.bodyStrength.total * 1.5);
+        if (baziResult.pattern) {
+          const pS = { '從格': 5, '專旺格': 5, '八格': 2 }[baziResult.pattern.type] || 0;
+          hourScore += pS;
+        }
         if (baziResult.shiErChangSheng?.hour) hourScore += baziResult.shiErChangSheng.hour.score;
         if (baziResult.stemClashScore) hourScore += baziResult.stemClashScore;
         if (baziResult.dayun?.pillars?.length > 0) {
@@ -1467,6 +1492,8 @@ class App {
     }
     if (baziResult.nayinDepth?.totalScore) totalScore += baziResult.nayinDepth.totalScore;
     if (baziResult.anHeScore) totalScore += baziResult.anHeScore;
+    if (baziResult.bodyStrength) totalScore += Math.round(baziResult.bodyStrength.total * 1.5);
+    if (baziResult.pattern) totalScore += ({ '從格': 5, '專旺格': 5, '八格': 2 }[baziResult.pattern.type] || 0);
     if (baziResult.shiErChangSheng?.hour) totalScore += baziResult.shiErChangSheng.hour.score;
     if (baziResult.stemClashScore) totalScore += baziResult.stemClashScore;
     if (baziResult.dayun?.pillars?.length > 0) {
@@ -1920,6 +1947,14 @@ class App {
       ? `<p class="bazi-yongshen"><span class="yongshen-label">用神：</span><span class="yongshen-val">${bazi.yongShen.yongShenLabel}</span>　<span class="jishen-label">忌神：</span><span class="jishen-val">${bazi.yongShen.jiShenLabel || '無'}</span></p>`
       : '';
 
+    const bodyStrengthInfo = bazi.bodyStrength
+      ? `<p class="bazi-strength-detail">身強身弱：<span class="${bazi.bodyStrength.level === '身強' ? 'root-yes' : 'root-no'}">${bazi.bodyStrength.level}</span>（${bazi.bodyStrength.deLing.detail}、${bazi.bodyStrength.deDi.detail}、${bazi.bodyStrength.deShi.detail}）</p>`
+      : '';
+
+    const patternInfo = bazi.pattern
+      ? `<p class="bazi-pattern">格局：<span class="pattern-name">${bazi.pattern.name}</span></p>`
+      : '';
+
     const miscInfo = [
       bazi.taiYuan ? `胎元：${bazi.taiYuan.name}` : '',
       bazi.mingGong?.branch ? `命宮：${bazi.mingGong.branch}` : '',
@@ -1953,6 +1988,8 @@ class App {
           ${rootInfo}
           ${kongWangInfo}
           ${yongShenInfo}
+          ${bodyStrengthInfo}
+          ${patternInfo}
           ${miscInfoHtml}
           ${hiddenStemInfo}
           ${shenShaInfo}
