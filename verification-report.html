@@ -35,7 +35,7 @@ tr.fail td{background:#fff5f5}
 </style>
 </head>
 <body>
-<h1>⚡ 速窺運勢 — 命理驗證報告</h1>
+<h1>⚡ 速窺運勢 — 命理驗證報告 <span style="font-size:0.7rem;color:#999">v45-test</span></h1>
 <p class="sub">使用歷史名人已知事件日期驗證系統準確率</p>
 <div id="content" class="loading">載入中（約需 3-5 秒）...</div>
 
@@ -89,6 +89,8 @@ async function main() {
     qimen.loaded = true;
     iching.solarTerms = solarTerms;
     iching.loaded = true;
+
+    console.log('⚡ 速窺運勢驗證 v45-test (純流日互動 ×3/×2/×3, 中位數)');
 
     // Store engines globally for _calculateDayScore
     window.__baziEngine = bazi;
