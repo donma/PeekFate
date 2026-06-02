@@ -260,13 +260,14 @@ small {
 
 .form-container {
   position: relative;
+  margin-bottom: var(--spacing-lg);
 }
 
 .form-label {
   display: block;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #F0DCC0;
+  color: var(--text-color);
   margin-bottom: var(--spacing-xs);
 }
 
@@ -303,15 +304,15 @@ small {
 
 .form-hint {
   font-size: 0.8rem;
-  color: #D4BFA0;
+  color: var(--text-secondary);
   margin-top: var(--spacing-xs);
 }
 
 .hint-light {
   font-weight: 400;
   font-size: 0.75rem;
-  color: #D4BFA0;
-  opacity: 0.8;
+  color: var(--text-secondary);
+  opacity: 0.7;
 }
 
 .form-row {
@@ -2462,7 +2463,7 @@ small {
   gap: var(--spacing-sm);
   cursor: pointer;
   font-size: 0.9rem;
-  color: #F0DCC0;
+  color: var(--text-secondary);
 }
 
 .form-checkbox {
@@ -2485,17 +2486,17 @@ small {
   gap: var(--spacing-sm);
   cursor: pointer;
   font-size: 0.95rem;
-  color: #F0DCC0;
+  color: var(--text-color);
   padding: 8px 20px;
-  border: 1px solid rgba(245,214,128,0.3);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
-  background: rgba(255,255,255,0.08);
+  background: var(--card-bg);
 }
 
 .gender-label:hover {
-  border-color: #F5D680;
-  background: rgba(255,255,255,0.15);
+  border-color: var(--primary-color);
+  background: color-mix(in srgb, var(--primary-color) 8%, var(--card-bg));
 }
 
 .gender-radio {
@@ -2506,13 +2507,13 @@ small {
 }
 
 .gender-radio:checked + .gender-custom {
-  color: #F5D680;
+  color: var(--primary-color);
   font-weight: 600;
 }
 
 .gender-label:has(.gender-radio:checked) {
-  border-color: #F5D680;
-  background: rgba(245,214,128,0.15);
+  border-color: var(--primary-color);
+  background: color-mix(in srgb, var(--primary-color) 12%, var(--card-bg));
 }
 
 /* ========== 表單操作按鈕 ========== */
@@ -2524,7 +2525,7 @@ small {
 }
 
 .required {
-  color: #FFD700;
+  color: var(--unlucky-color);
 }
 
 /* ========== 結果區域操作按鈕 ========== */
