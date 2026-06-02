@@ -35,7 +35,7 @@ tr.fail td{background:#fff5f5}
 </style>
 </head>
 <body>
-<h1>⚡ 速窺運勢 — 命理驗證報告 <span style="font-size:0.7rem;color:#999">v49</span></h1>
+<h1>⚡ 速窺運勢 — 命理驗證報告 <span style="font-size:0.7rem;color:#999">v51</span></h1>
 <p class="sub">使用歷史名人已知事件日期驗證系統準確率</p>
 <div id="content" class="loading">載入中（約需 3-5 秒）...</div>
 
@@ -90,7 +90,7 @@ async function main() {
     iching.solarTerms = solarTerms;
     iching.loaded = true;
 
-    console.log('⚡ 速窺運勢驗證 v49 (事件類型專用計分)');
+    console.log('⚡ 速窺運勢驗證 v51 (事件類型專用計分，100位新名人)');
 
     // Store engines globally for _calculateDayScore
     window.__baziEngine = bazi;
@@ -127,12 +127,12 @@ async function main() {
       const d = evt.desc;
       if (/當選|就職|首任/.test(d)) return 'inauguration';
       if (/連任/.test(d)) return 're_election';
-      if (/金牌|冠軍|金獎/.test(d)) return 'gold_medal';
-      if (/諾貝爾|奧斯卡|金像獎|金熊獎|金獅獎|最佳導演|最佳女主角|最佳女演員|最佳男主角/.test(d)) return 'major_award';
+      if (/金牌|冠軍|金獎|首金/.test(d)) return 'gold_medal';
+      if (/諾貝爾|奧斯卡|金像獎|金熊獎|金獅獎|銀熊獎|最佳導演|最佳女主角|最佳女演員|最佳男主角|大獎/.test(d)) return 'major_award';
       if (/上市/.test(d)) return 'ipo';
       if (/成立|創立/.test(d)) return 'founding';
       if (/結婚/.test(d)) return 'marriage';
-      if (/發布|上映|專輯/.test(d)) return 'creative_release';
+      if (/發布|上映|專輯|播出|發行|出道|爆紅/.test(d)) return 'creative_release';
       if (/改革開放|講話|確立|全會/.test(d)) return 'policy';
       if (/回歸/.test(d)) return 'return_home';
       if (/奧運開幕/.test(d)) return 'public_event';
@@ -142,12 +142,12 @@ async function main() {
       if (/事變/.test(d)) return 'historic_event';
       if (/選秀狀元/.test(d)) return 'achievement';
       if (/退役/.test(d) && evt.type === 'positive') return 'retirement_positive';
-      if (/成功|配套/.test(d)) return 'achievement';
+      if (/成功|配套|紀錄|創作|總決賽/.test(d)) return 'achievement';
       if (/原子彈/.test(d)) return 'achievement';
       if (/逝世/.test(d)) return 'death';
       if (/退賽|摔倒/.test(d)) return 'failure';
       if (/槍擊/.test(d)) return 'attack';
-      if (/制裁|封殺/.test(d)) return 'sanction';
+      if (/制裁|封殺|糾紛/.test(d)) return 'sanction';
       if (/卸任|退役/.test(d)) return 'retirement';
       return 'default';
     }
@@ -354,7 +354,7 @@ function renderReport(results, pass, fail, total, accuracy) {
       <p>✅ 凶事 ${negPass}/${negativeEvents.length} 通過（期望≤52分）</p>
       <p>✅ 中性 ${neuPass}/${neutralEvents.length} 通過（期望45-60分）</p>
       <p style="margin-top:8px;color:#8B6914;font-size:0.8rem">
-        事件類型專用計分 v49：每事件依子類型（就職→官殺、獲獎→食傷、逝世→七殺劫財）配對流日十神，
+        事件類型專用計分 v51：每事件依子類型（就職→官殺、獲獎→食傷、逝世→七殺劫財）配對流日十神，
         用神加成, 一般吉神備援, 天德月德天赦及地支關係
       </p>
     </div>
