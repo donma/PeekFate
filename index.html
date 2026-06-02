@@ -124,22 +124,8 @@
               </div>
 
               <div class="form-group">
-                <label for="birthTime" class="form-label">
-                   出生時間
-                </label>
-                <input 
-                  type="time" 
-                  id="birthTime" 
-                  name="birthTime" 
-                  class="form-input"
-                  placeholder="HH:mm"
-                >
-                <span class="form-hint">選填，如已知請填寫以獲得更精確的推算</span>
-              </div>
-
-              <div class="form-group">
                 <label for="birthHour" class="form-label">
-                  出生時辰
+                   出生時辰
                 </label>
                 <select id="birthHour" name="birthHour" class="form-select">
                   <option value="">-- 請選擇時辰 --</option>
@@ -157,6 +143,19 @@
                   <option value="hai">亥時 (21:00-23:00)</option>
                 </select>
                 <span class="form-hint">選填，若不確定精確時間可選擇時辰</span>
+              </div>
+
+              <div class="form-group">
+                <label for="birthTime" class="form-label">
+                   出生時間 <span class="hint-light">(除非 23:00~01:00，否則用時辰即可)</span>
+                </label>
+                <input 
+                  type="time" 
+                  id="birthTime" 
+                  name="birthTime" 
+                  class="form-input"
+                  placeholder="HH:mm"
+                >
               </div>
 
               <div class="form-group form-group-checkbox">

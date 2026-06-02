@@ -303,6 +303,13 @@ small {
   margin-top: var(--spacing-xs);
 }
 
+.hint-light {
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
 .form-row {
   display: grid;
   gap: var(--spacing-md);
