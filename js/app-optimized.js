@@ -293,6 +293,7 @@ class App {
   _loadSavedProfile() {
     try {
       const saved = localStorage.getItem('fortunePwaUserProfile');
+      const formContainer = document.getElementById('formContainer');
       if (saved) {
         const profile = JSON.parse(saved);
         const birthDateInput = document.getElementById('birthDate');
@@ -329,6 +330,9 @@ class App {
           console.log('已載入儲存的用戶資料，自動推算中...');
           setTimeout(() => this._handleFormSubmit(), 100);
         }
+      } else {
+        // 無儲存資料時展開表單
+        if (formContainer) formContainer.classList.remove('collapsed');
       }
     } catch (error) {
       console.warn('無法載入已儲存的資料:', error);
