@@ -776,18 +776,6 @@ class App {
           baziTrace.push({ system: 'bazi', rule: 'suiYunBingLin', score: Math.round(fyScore * 0.3), reason: `歲運並臨：流年${flowYear.name}=大運，效應加倍` });
         }
       }
-        }
-        if (fyAdjusted !== 0) {
-          baziScore += fyAdjusted;
-          baziTrace.push({
-            system: 'bazi', rule: 'flowYear', value: `${flowYear.name} ${flowYearTenGod.name}`,
-            score: fyAdjusted, reason: `流年${flowYear.name}對日主形成${flowYearTenGod.name}（${fyScore >= 0 ? '吉' : '凶'}）${matchDayun ? '，歲運並臨加倍' : ''}`
-          });
-          if (matchDayun) {
-            baziTrace.push({ system: 'bazi', rule: 'suiYunBingLin', score: Math.round(fyScore * 0.3), reason: `歲運並臨：流年${flowYear.name}=大運，效應加倍` });
-          }
-        }
-      }
       // 流年支與四柱刑沖合會
       const flowYearBranches = [flowYear.branch, baziResult.year?.branch, baziResult.month?.branch, baziResult.day?.branch, hourBranch?.branch].filter(Boolean);
       if (flowYearBranches.length >= 2) {
