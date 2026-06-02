@@ -6,36 +6,49 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#F7EFE1;color:#3E3232;font-family:'Noto Sans TC',sans-serif;padding:20px}
-h1{font-size:1.5rem;margin-bottom:8px;color:#5D4037}
-h2{font-size:1.1rem;margin:20px 0 10px;color:#8B6914}
-.sub{color:#8B7355;font-size:0.85rem;margin-bottom:16px}
-.stats{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px}
-.stat{padding:14px 20px;border-radius:8px;background:#fff;flex:1;min-width:140px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.stat .num{font-size:1.8rem;font-weight:700;display:block}
-.stat .lbl{font-size:0.8rem;color:#8B7355}
+body{background:#F7EFE1;color:#3E3232;font-family:'Noto Sans TC',sans-serif;padding:12px;max-width:100%;overflow-x:hidden}
+h1{font-size:1.2rem;margin-bottom:6px;color:#5D4037;line-height:1.4}
+h2{font-size:1rem;margin:16px 0 8px;color:#8B6914}
+.sub{color:#8B7355;font-size:0.8rem;margin-bottom:12px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+.stat{padding:10px 12px;border-radius:8px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.stat .num{font-size:1.4rem;font-weight:700;display:block}
+.stat .lbl{font-size:0.7rem;color:#8B7355}
 .green{color:#2E7D32}
 .red{color:#C62828}
 .neutral{color:#8B6914}
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:20px}
-th{background:#5D4037;color:#fff;padding:10px 8px;font-size:0.8rem;text-align:left}
-td{padding:8px;font-size:0.85rem;border-bottom:1px solid #f0e8d8}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:16px}
+table{width:100%;min-width:600px;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+th{background:#5D4037;color:#fff;padding:8px 6px;font-size:0.7rem;text-align:left;white-space:nowrap;position:sticky;top:0}
+td{padding:6px;font-size:0.75rem;border-bottom:1px solid #f0e8d8}
 tr.pass td{background:#f0f8f0}
 tr.fail td{background:#fff5f5}
-.badge{display:inline-block;padding:2px 8px;border-radius:10px;color:#fff;font-size:0.75rem;font-weight:600}
+.badge{display:inline-block;padding:2px 6px;border-radius:10px;color:#fff;font-size:0.65rem;font-weight:600}
 .badge-pos{background:#2E7D32}
 .badge-neg{background:#C62828}
 .badge-neu{background:#8B6914}
 .score-hi{color:#2E7D32;font-weight:700}
 .score-lo{color:#C62828;font-weight:700}
 .score-md{color:#8B6914}
-.loading{padding:40px;text-align:center;color:#8B7355}
-.summary-detail{margin-bottom:20px;padding:16px;background:#fff;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.summary-detail p{margin:4px 0;font-size:0.9rem}
+.loading{padding:20px;text-align:center;color:#8B7355;font-size:0.85rem}
+.summary-detail{margin-bottom:16px;padding:12px;background:#fff;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.summary-detail p{margin:3px 0;font-size:0.8rem}
+.summary-detail p:last-child{font-size:0.7rem}
+@media(min-width:768px){
+  body{padding:20px}
+  h1{font-size:1.5rem}
+  .stats{display:flex;flex-wrap:wrap;gap:12px}
+  .stat{flex:1;min-width:140px;padding:14px 20px}
+  .stat .num{font-size:1.8rem}
+  .stat .lbl{font-size:0.8rem}
+  td{padding:8px;font-size:0.85rem}
+  th{padding:10px 8px;font-size:0.8rem}
+  .summary-detail p{font-size:0.9rem}
+}
 </style>
 </head>
 <body>
-<h1>⚡ 速窺運勢 — 命理驗證報告 <span style="font-size:0.7rem;color:#999">v105</span></h1>
+<h1>⚡ 速窺運勢 — 命理驗證報告 <span style="font-size:0.7rem;color:#999">v106</span></h1>
 <p class="sub">使用歷史名人已知事件日期驗證系統準確率</p>
 <div id="content" class="loading">載入中（約需 3-5 秒）...</div>
 
@@ -90,7 +103,7 @@ async function main() {
     iching.solarTerms = solarTerms;
     iching.loaded = true;
 
-    console.log('⚡ 速窺運勢驗證 v105 (柱名稱year→年、month→月、day→日、hour→時)');
+    console.log('⚡ 速窺運勢驗證 v106 (手機自適應)');
 
     // Store engines globally for _calculateDayScore
     window.__baziEngine = bazi;
@@ -363,10 +376,11 @@ function renderReport(results, pass, fail, total, accuracy) {
       <p>✅ 凶事 ${negPass}/${negativeEvents.length} 通過（期望≤52分）</p>
       <p>✅ 中性 ${neuPass}/${neutralEvents.length} 通過（期望45-60分）</p>
       <p style="margin-top:8px;color:#8B6914;font-size:0.8rem">
-        事件類型專用計分 v105：柱名稱中文化，
+        事件類型專用計分 v106：手機自適應，
         用神加成, 一般吉神備援, 天德月德天赦及地支關係
       </p>
     </div>
+    <div class="table-wrap">
     <table>
       <thead><tr>
         <th>名人</th><th>日期</th><th>類型</th><th>子類型</th><th>事件</th><th>分數</th><th>閾值</th><th>結果</th>
@@ -386,6 +400,7 @@ function renderReport(results, pass, fail, total, accuracy) {
         `).join('')}
       </tbody>
     </table>
+    </div>
   `;
 }
 
