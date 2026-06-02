@@ -522,7 +522,8 @@ class App {
 
   _calculateSingleHour(baziResult, date, hourBranch, dayMasterElement) {
     const dateStr = this._formatDate(date);
-    const hourGanzhi = this._calculateHourGanzhi(baziResult.day.stem, hourBranch.branch);
+    const flowDayPillar = this.baziEngine.calculateDayPillar(date);
+    const hourGanzhi = this._calculateHourGanzhi(flowDayPillar.stem, baziResult.day.stem, hourBranch.branch);
 
     let baziScore = 0;
     const baziTrace = [];
@@ -709,6 +710,36 @@ class App {
       }
     }
 
+    // 流日：當日日干十神 + 日支與時支關係
+    if (flowDayPillar) {
+      const flowDayTenGod = this.baziEngine.getTenGod(baziResult.day.stem, flowDayPillar.stem);
+      if (flowDayTenGod) {
+        const fdScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[flowDayTenGod.name] || 0;
+        const fdAdjusted = Math.round(fdScore * 0.4);
+        if (fdAdjusted !== 0) {
+          baziScore += fdAdjusted;
+          baziTrace.push({
+            system: 'bazi', rule: 'flowDay', value: `${flowDayPillar.name} ${flowDayTenGod.name}`,
+            score: fdAdjusted, reason: `流日${flowDayPillar.name}對日主形成${flowDayTenGod.name}`
+          });
+        }
+      }
+      // 流日支與時支關係
+      const flowDayBranches = [flowDayPillar.branch, hourBranch.branch].filter(Boolean);
+      if (flowDayBranches.length >= 2) {
+        const flowDayRels = this.baziEngine.getBranchRelations(flowDayBranches);
+        const fdRelScore = this.baziEngine._calculateBranchRelationScore(flowDayRels) * 0.5;
+        if (Math.abs(fdRelScore) > 0) {
+          baziScore += Math.round(fdRelScore);
+          baziTrace.push({
+            system: 'bazi', rule: 'flowDayBranch',
+            score: Math.round(fdRelScore),
+            reason: fdRelScore > 0 ? '流日支與時支合會，吉' : '流日支與時支刑沖，凶'
+          });
+        }
+      }
+    }
+
     baziScore = Math.max(-25, Math.min(25, baziScore));
 
     let ichingResult = null;
@@ -827,17 +858,19 @@ class App {
     };
   }
 
-  _calculateHourGanzhi(dayStem, hourBranch) {
+  _calculateHourGanzhi(calcDayStem, birthDayStem, hourBranch) {
     const stems = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
     const branches = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
 
-    const dayStemIndex = stems.indexOf(dayStem);
+    // calcDayStem: 用於五鼠遁推定時干（當日日干）
+    // birthDayStem: 用於十神關係（相對於命主日干）
+    const calcIndex = stems.indexOf(calcDayStem);
     const hourBranchIndex = branches.indexOf(hourBranch);
     const hourStemStart = [0, 2, 4, 6, 8];
-    const hourStemIndex = (hourStemStart[dayStemIndex % 5] + hourBranchIndex) % 10;
+    const hourStemIndex = (hourStemStart[calcIndex % 5] + hourBranchIndex) % 10;
 
     const stem = stems[hourStemIndex];
-    const tenGod = this.baziEngine.getTenGod(dayStem, stem);
+    const tenGod = this.baziEngine.getTenGod(birthDayStem, stem);
 
     return { stem, branch: hourBranch, name: stem + hourBranch, tenGod };
   }
@@ -1065,7 +1098,8 @@ class App {
 
     for (let h = 0; h < 12; h++) {
       try {
-        const hourGanzhi = this._calculateHourGanzhi(baziResult.day.stem, hourBranches[h]);
+        const fdPillar = this.baziEngine.calculateDayPillar(date);
+        const hourGanzhi = this._calculateHourGanzhi(fdPillar.stem, baziResult.day.stem, hourBranches[h]);
         let tenGodScore = this.scoringEngine.scoreRules?.baziScores?.tenGods?.[hourGanzhi.tenGod?.name] || 0;
         // 日主旺衰動態調整
         const strength = baziResult.dayMasterStrength || '休';
@@ -1135,6 +1169,17 @@ class App {
           const fmTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fm.stem);
           if (fmTenGod) {
             hourScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fmTenGod.name] || 0) * 0.2);
+          }
+        }
+        // 流日
+        if (fdPillar) {
+          const fdTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fdPillar.stem);
+          if (fdTenGod) {
+            hourScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fdTenGod.name] || 0) * 0.4);
+          }
+          const fdr = this.baziEngine.getBranchRelations([fdPillar.branch, hourBranches[h]].filter(Boolean));
+          if (fdr) {
+            hourScore += Math.round(this.baziEngine._calculateBranchRelationScore(fdr) * 0.5);
           }
         }
 
@@ -1224,6 +1269,18 @@ class App {
         totalScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fmTenGod.name] || 0) * 0.2);
       }
     }
+    // 流日
+    const fdPillar2 = this.baziEngine.calculateDayPillar(date);
+    if (fdPillar2) {
+      const fdTenGod = this.baziEngine.getTenGod(baziResult.day.stem, fdPillar2.stem);
+      if (fdTenGod) {
+        totalScore += Math.round((this.scoringEngine.scoreRules?.baziScores?.tenGods?.[fdTenGod.name] || 0) * 0.4);
+      }
+      const fdr2 = this.baziEngine.getBranchRelations([fdPillar2.branch, dayGanzhi.branch].filter(Boolean));
+      if (fdr2) {
+        totalScore += Math.round(this.baziEngine._calculateBranchRelationScore(fdr2) * 0.5);
+      }
+    }
 
     totalScore = Math.max(0, Math.min(100, totalScore));
     const levelInfo = this.scoringEngine.getScoreLevel(totalScore);
@@ -1231,13 +1288,16 @@ class App {
     return {
       date: this._formatDate(date),
       weekday: `週${weekdays[date.getDay()]}`,
-      score: Math.round(totalScore),
+      flowDay: flowDayPillar?.name || '',
+      score: avgScore,
       level: levelInfo.level,
       levelColor: levelInfo.color,
-      theme: this._getDayTheme(tenGod.name, totalScore),
+      description: summary.description,
+      maxScore,
+      minScore,
       bestHours: bestHours.slice(0, 3),
       riskHours: riskHours.slice(0, 2),
-      advice: this._getDayAdvice(totalScore)
+      averageScore: avgScore
     };
   }
 
@@ -1247,6 +1307,7 @@ class App {
     const avgScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
     const maxScore = Math.max(...scores);
     const minScore = Math.min(...scores);
+    const flowDayPillar = this.baziEngine.calculateDayPillar(date);
     const bestHours = hours.filter(h => h.score >= 70).map(h => h.hourName);
     const riskHours = hours.filter(h => h.score < 40).map(h => h.hourName);
     const levelInfo = this.scoringEngine.getScoreLevel(avgScore);
@@ -1575,6 +1636,7 @@ class App {
             <h3 class="card-title">${title}</h3>
             <span class="day-date">${summary.date} ${summary.weekday}</span>
             <span class="day-level" style="background-color:${scoreColor}">${summary.level}</span>
+            ${summary.flowDay ? `<span class="day-flow-pillar">流日 ${summary.flowDay}</span>` : ''}
             <div class="day-range">最高 ${summary.maxScore} / 最低 ${summary.minScore}</div>
           </div>
         </div>

@@ -1199,6 +1199,13 @@ small {
 .root-no { color: #A32828; font-weight: 600; }
 .root-exposed { color: #4CAF50; font-weight: 600; }
 
+.day-flow-pillar {
+  font-size: 0.75rem;
+  color: var(--accent-gold);
+  font-family: var(--font-serif);
+  margin-left: var(--spacing-sm);
+}
+
 .bazi-branch-score {
   font-size: 0.85rem;
   margin-bottom: var(--spacing-sm);
