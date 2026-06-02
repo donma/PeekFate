@@ -170,7 +170,7 @@ function _calculateDayScore(baziResult, date) {
   const baseDate = new Date(2024,0,1);
   const diffDays = Math.round((date.getTime() - baseDate.getTime()) / 86400000);
   const dayStem = stems[((diffDays % 10) + 10) % 10];
-  const dayBranch = branches[diffDays % 12];
+  const dayBranch = branches[((diffDays % 12) + 12) % 12];
   const dayGanzhi = { stem: dayStem, branch: dayBranch, name: dayStem + dayBranch };
   const flowMonth = baziEngine.calculateMonthPillar(date);
   const flowYear = baziEngine.calculateYearPillar(date);
