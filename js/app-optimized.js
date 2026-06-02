@@ -705,7 +705,26 @@ class App {
     const strengthScores = { '強旺': 8, '平穩': 3, '偏弱': -3, '衰弱': -8 };
     let score = strengthScores[personalized.strengthLevel] || 0;
 
-    if (ichingResult.changedHexagram) {
+    // 加入卦象基礎分（取自 score-rules.json）
+    if (ichingResult && ichingResult.hexagram && ichingResult.hexagram.name) {
+      const hexagramRules = this.scoringEngine?.scoreRules?.ichingScores?.hexagram;
+      if (hexagramRules) {
+        const name = ichingResult.hexagram.name;
+        // 先取首字（八純卦：乾為天→乾），再取末二字（小畜、无妄），最後取末字（屯、蒙）
+        let hexScore = hexagramRules[name.charAt(0)];
+        if (hexScore === undefined) {
+          const lastTwo = name.slice(-2);
+          hexScore = hexagramRules[lastTwo];
+        }
+        if (hexScore === undefined) {
+          const lastOne = name.slice(-1);
+          hexScore = hexagramRules[lastOne];
+        }
+        if (hexScore && hexScore !== 0) score += hexScore;
+      }
+    }
+
+    if (ichingResult && ichingResult.changedHexagram) {
       const changedKeywords = ichingResult.changedHexagram.keywords || [];
       const positiveKeywords = ['開創', '完成', '合作', '成長', '順利'];
       const negativeKeywords = ['阻滯', '衝突', '危險', '結束', '不穩'];
