@@ -285,7 +285,7 @@ class App {
       btnToggle.addEventListener('click', () => {
         const isCollapsed = formContainer.classList.contains('collapsed');
         formContainer.classList.toggle('collapsed');
-        btnToggle.textContent = isCollapsed ? '▲ 收合輸入區' : '▼ 展開輸入區';
+        btnToggle.textContent = isCollapsed ? '▲ 收合輸入區' : '▼ 修改資料';
       });
     }
   }
