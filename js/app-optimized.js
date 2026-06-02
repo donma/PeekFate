@@ -1634,8 +1634,8 @@ class App {
   _renderBaziChartSVG(bazi) {
     const stemEl = s => ({ '甲':'wood','乙':'wood','丙':'fire','丁':'fire','戊':'earth','己':'earth','庚':'metal','辛':'metal','壬':'water','癸':'water' }[s]||'');
     const branchEl = b => ({ '寅':'wood','卯':'wood','巳':'fire','午':'fire','申':'metal','酉':'metal','亥':'water','子':'water','辰':'earth','戌':'earth','丑':'earth','未':'earth' }[b]||'');
-    const elColor = e => ({ wood:'#4CAF50', fire:'#E53935', earth:'#FF8F00', metal:'#B8860B', water:'#1565C0' }[e]||'#999');
-    const tenGodPos = { year:'年', month:'月', hour:'時' };
+    const elColor = e => ({ wood:'#6B8E6B', fire:'#B8433A', earth:'#C9A45C', metal:'#8B7D6B', water:'#4A7C8C' }[e]||'#999');
+    const elLight = e => ({ wood:'#E8F0E8', fire:'#F5E6E6', earth:'#F5EDD6', metal:'#EFEAE4', water:'#E4EDF0' }[e]||'#f5f0eb');
     const pillarData = [
       { key:'year', label:'年', pillar:bazi.year },
       { key:'month', label:'月', pillar:bazi.month },
@@ -1643,77 +1643,106 @@ class App {
       { key:'hour', label:'時', pillar:bazi.hour?.isUnknown ? null : bazi.hour }
     ];
 
-    const W = 360, H = 300, gap = 10;
+    const W = 380, H = 320, gap = 12;
     const cw = (W - gap * 5) / 4;
+    const isMobile = window.innerWidth < 420;
+    const scale = isMobile ? 0.85 : 1;
+
     let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" class="bazi-chart-svg">`;
     svg += `<defs>
-      <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="gDay"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="shadow"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.08"/></filter>
+      <linearGradient id="goldBar" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#D4A84B"/><stop offset="50%" stop-color="#F0D68A"/><stop offset="100%" stop-color="#D4A84B"/></linearGradient>
     </defs>`;
+
+    // Background
+    svg += `<rect x="0" y="0" width="${W}" height="300" rx="4" fill="none"/>`;
 
     pillarData.forEach((d, i) => {
       if (!d.pillar) return;
       const x = gap + i * (cw + gap);
       const cx = x + cw / 2;
       const pillarEl = branchEl(d.pillar.branch);
-
-      // Card background
       const isDay = d.key === 'day';
-      svg += `<rect x="${x}" y="0" width="${cw}" height="280" rx="8" fill="${isDay?'#FFF8E1':'#FFFBF0'}" stroke="${isDay?'#D4A84B':'#D4C5A9'}" stroke-width="${isDay?'2':'1'}" opacity="0.95"/>`;
-
-      // Column label
-      svg += `<text x="${cx}" y="22" text-anchor="middle" font-size="13" fill="#8B7355" font-family="sans-serif">${d.label}柱</text>`;
-
-      // Heavenly stem
       const stem = d.pillar.stem;
+      const branch = d.pillar.branch;
       const sEl = stemEl(stem);
       const sColor = elColor(sEl);
-      const r1 = 18;
-      svg += `<circle cx="${cx}" cy="60" r="${r1}" fill="${sColor}" opacity="0.9"${isDay?' filter="url(#glow)"':''}/>`;
-      svg += `<text x="${cx}" y="66" text-anchor="middle" font-size="20" fill="#fff" font-weight="bold" font-family="serif">${stem}</text>`;
+      const sLight = elLight(sEl);
+      const bColor = elColor(pillarEl);
+      const bLight = elLight(pillarEl);
 
-      // Ten god above stem (for non-day)
+      // Card background
+      svg += `<rect x="${x}" y="4" width="${cw}" height="280" rx="6" fill="${isDay?'#FFFDF5':'#FFFBF0'}" stroke="${isDay?'url(#goldBar)':'#D4C5A9'}" stroke-width="${isDay?'2':'1'}" filter="url(#shadow)"/>`;
+
+      // Top decorative band
+      const bandH = 28;
+      svg += `<rect x="${x}" y="4" width="${cw}" height="${bandH}" rx="6" fill="${isDay?'url(#goldBar)':'#E8DDCC'}"/>`;
+      svg += `<rect x="${x}" y="4" width="${cw}" height="6" rx="6" fill="${isDay?'url(#goldBar)':'#E8DDCC'}"/>`;
+      svg += `<text x="${cx}" y="${24}" text-anchor="middle" font-size="14" fill="${isDay?'#5D4037':'#6B5D4F'}" font-weight="700" font-family="'Noto Serif CJK SC','Source Han Serif SC',serif">${d.label}柱</text>`;
+
+      // Ten god badge
       const tgKey = d.key === 'day' ? null : d.key;
       if (tgKey && bazi.tenGods?.[tgKey]) {
         const tg = bazi.tenGods[tgKey];
-        svg += `<text x="${cx}" y="44" text-anchor="middle" font-size="11" fill="${tg.type==='good'?'#2E7D32':'#C62828'}" font-family="sans-serif">${tg.name}</text>`;
+        const isGood = tg.type === 'good';
+        const badgeW = 34;
+        const badgeH = 16;
+        svg += `<rect x="${cx - badgeW/2}" y="${36}" width="${badgeW}" height="${badgeH}" rx="8" fill="${isGood?'#E8F0E8':'#F5E6E6'}" stroke="${isGood?'#6B8E6B':'#B8433A'}" stroke-width="0.5"/>`;
+        svg += `<text x="${cx}" y="${48}" text-anchor="middle" font-size="9" fill="${isGood?'#2E5C2E':'#8B2C2C'}" font-weight="600" font-family="sans-serif">${tg.name}</text>`;
       }
 
-      // Earthly branch
-      const branch = d.pillar.branch;
-      const bColor = elColor(pillarEl);
-      const r2 = 20;
-      svg += `<rect x="${cx - r2}" y="${95 - r2}" width="${r2*2}" height="${r2*2}" rx="6" fill="${bColor}" opacity="0.85"/>`;
-      svg += `<text x="${cx}" y="101" text-anchor="middle" font-size="22" fill="#fff" font-weight="bold" font-family="serif">${branch}</text>`;
+      // Heavenly stem - large rounded box
+      const sh = 40, sw = 36;
+      const stemY = 60;
+      svg += `<rect x="${cx - sw/2}" y="${stemY}" width="${sw}" height="${sh}" rx="6" fill="${sLight}" stroke="${sColor}" stroke-width="1"/>`;
+      svg += `<text x="${cx}" y="${stemY + sh - 12}" text-anchor="middle" font-size="24" fill="${sColor}" font-weight="700" font-family="'Noto Serif CJK SC','Source Han Serif SC',serif">${stem}</text>`;
 
-      // Hidden stems below branch
+      // Small element label below stem
+      const sElName = { wood:'木', fire:'火', earth:'土', metal:'金', water:'水' }[sEl]||'';
+      svg += `<text x="${cx}" y="${stemY + sh + 14}" text-anchor="middle" font-size="8" fill="${sColor}" opacity="0.6" font-family="sans-serif">${sElName}</text>`;
+
+      // Earthly branch - large rounded box
+      const bh = 40, bw = 36;
+      const branchY = stemY + sh + 20;
+      svg += `<rect x="${cx - bw/2}" y="${branchY}" width="${bw}" height="${bh}" rx="6" fill="${bLight}" stroke="${bColor}" stroke-width="1"/>`;
+      svg += `<text x="${cx}" y="${branchY + bh - 12}" text-anchor="middle" font-size="24" fill="${bColor}" font-weight="700" font-family="'Noto Serif CJK SC','Source Han Serif SC',serif">${branch}</text>`;
+
+      // Small element label below branch
+      const bElName = { wood:'木', fire:'火', earth:'土', metal:'金', water:'水' }[pillarEl]||'';
+      svg += `<text x="${cx}" y="${branchY + bh + 14}" text-anchor="middle" font-size="8" fill="${bColor}" opacity="0.6" font-family="sans-serif">${bElName}</text>`;
+
+      // Separator line
+      const sepY = branchY + bh + 22;
+      svg += `<line x1="${x + 6}" y1="${sepY}" x2="${x + cw - 6}" y2="${sepY}" stroke="#E8DDCC" stroke-width="1" stroke-dasharray="2,2"/>`;
+
+      // Hidden stems row
       const hsKey = { year:'year', month:'month', day:'day', hour:'hour' }[d.key];
       const hiddenStems = bazi.hiddenStemDetails?.[hsKey];
       if (hiddenStems && hiddenStems.length > 0) {
-        const hsText = hiddenStems.map(h => h.stem).join(' ');
-        svg += `<text x="${cx}" y="138" text-anchor="middle" font-size="10" fill="#A08060" font-family="sans-serif">${hsText}</text>`;
-      }
-
-      // Nayin
-      if (d.pillar.nayin) {
-        svg += `<text x="${cx}" y="160" text-anchor="middle" font-size="9" fill="#B8966A" font-family="sans-serif">${d.pillar.nayin}</text>`;
-      }
-
-      // Bottom accent: branch relation icons
-      if (d.key !== 'day' && bazi.branchRelations?.summary?.length > 0) {
-        const myBranch = d.pillar.branch;
-        const dayBranch = bazi.day?.branch;
-        if (myBranch && dayBranch && myBranch !== dayBranch) {
-          const rels = bazi.branchRelations.summary.filter(r => r.includes(myBranch) && r.includes(dayBranch));
-          if (rels.length > 0) {
-            svg += `<text x="${cx}" y="190" text-anchor="middle" font-size="9" fill="#C62828" font-family="sans-serif">${rels[0]}</text>`;
+        const hsY = sepY + 14;
+        const hsSpacing = 14;
+        const hsStartX = cx - ((hiddenStems.length - 1) * hsSpacing) / 2;
+        hiddenStems.forEach((h, hi) => {
+          const hx = hsStartX + hi * hsSpacing;
+          const hsEl = stemEl(h.stem);
+          const hsClr = elColor(hsEl);
+          svg += `<text x="${hx}" y="${hsY}" text-anchor="middle" font-size="11" fill="${hsClr}" font-weight="600" font-family="serif">${h.stem}</text>`;
+          if (h.isExposed) {
+            svg += `<circle cx="${hx}" cy="${hsY + 6}" r="2" fill="${hsClr}" opacity="0.5"/>`;
           }
-        }
+        });
+      }
+
+      // Nayin text
+      if (d.pillar.nayin) {
+        svg += `<text x="${cx}" y="280" text-anchor="middle" font-size="9" fill="#A08060" font-family="sans-serif" opacity="0.7">${d.pillar.nayin}</text>`;
       }
     });
 
-    // Day master label at bottom
+    // Day master label at bottom center
     if (bazi.dayMaster) {
-      svg += `<text x="${W/2}" y="295" text-anchor="middle" font-size="13" fill="#5D4037" font-family="sans-serif">日主：${bazi.dayMaster.stem}（${bazi.dayMaster.label}）</text>`;
+      svg += `<text x="${W/2}" y="310" text-anchor="middle" font-size="12" fill="#5D4037" font-weight="600" font-family="'Noto Serif CJK SC','Source Han Serif SC',serif">日主　${bazi.dayMaster.stem}（${bazi.dayMaster.label}）</text>`;
     }
 
     svg += '</svg>';
