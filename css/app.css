@@ -1261,7 +1261,6 @@ small {
 }
 
 .score-number {
-  display: inline;
   font-family: var(--font-serif);
   font-size: 1.5rem;
   font-weight: 700;
@@ -1270,10 +1269,8 @@ small {
 }
 
 .score-label {
-  display: inline;
   font-size: 0.7rem;
   color: var(--text-secondary);
-  margin-left: 2px;
 }
 
 .day-info {

@@ -1704,8 +1704,7 @@ class App {
                 stroke-linecap="round" transform="rotate(-90 50 50)"/>
             </svg>
             <div class="score-text">
-              <span class="score-number">${score}</span>
-              <span class="score-label">分</span>
+              <span class="score-number">${score}<span class="score-label">分</span></span>
             </div>
           </div>
           <div class="day-info">
