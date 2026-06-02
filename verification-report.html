@@ -167,8 +167,8 @@ function _calculateDayScore(baziResult, date, baziEngine) {
     const hourStem = stems[hourStemIdx];
     const tenGod = baziEngine.getTenGod(baziResult.day.stem, hourStem);
     
+    const tgScores = { '正官':3,'七殺':-2,'正財':3,'偏財':2,'正印':2,'偏印':1,'食神':3,'傷官':-1,'比肩':0,'劫財':-2 };
     if (tenGod) {
-      const tgScores = { '正官':3,'七殺':-2,'正財':3,'偏財':2,'正印':2,'偏印':1,'食神':3,'傷官':-1,'比肩':0,'劫財':-2 };
       score += tgScores[tenGod.name] || 0;
     }
     
