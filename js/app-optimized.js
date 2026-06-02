@@ -893,7 +893,7 @@ class App {
           ichingScore = this._calculateIchingScore(personalized, ichingResult);
           ichingTrace.push({
             system: 'iching', rule: 'hexagram', value: ichingResult.hexagram.name,
-            score: ichingScore, reason: `卦象${ichingResult.hexagram.name}，五行${personalized.strengthLevel}`
+            score: ichingScore, reason: `卦象${ichingResult.hexagram.name}，五行${personalized.advice?.strengthLevel || '平穩'}`
           });
         } else {
           console.warn('易經引擎返回空結果');
@@ -1159,7 +1159,7 @@ class App {
 
   _calculateIchingScore(personalized, ichingResult) {
     const strengthScores = { '強旺': 8, '平穩': 3, '偏弱': -3, '衰弱': -8 };
-    let score = strengthScores[personalized.strengthLevel] || 0;
+    let score = strengthScores[personalized.advice?.strengthLevel] || 0;
 
     // 加入卦象基礎分（取自 score-rules.json）
     if (ichingResult && ichingResult.hexagram && ichingResult.hexagram.name) {
