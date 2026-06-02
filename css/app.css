@@ -385,32 +385,47 @@ small {
 .hero-section {
   text-align: center;
   padding: var(--spacing-xl) 0;
+  background: linear-gradient(180deg, #8B1E1E 0%, #5C0E0E 100%);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-lg);
+  position: relative;
+  overflow: hidden;
+}
+.hero-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='%23C9A45C' stroke-width='0.3' opacity='0.15'/%3E%3C/svg%3E") repeat;
+  pointer-events: none;
 }
 
 .hero-title {
-  font-family: var(--font-serif);
-  font-size: 2.25rem;
-  font-weight: 800;
-  color: var(--primary-color);
+  font-family: "Noto Serif TC", "PingFang TC", serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #F5D680;
   margin-bottom: var(--spacing-xs);
-  letter-spacing: 0.1em;
-  text-shadow: 1px 1px 2px rgba(139, 30, 30, 0.1);
+  letter-spacing: 0.25em;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  position: relative;
 }
 
 .hero-subtitle {
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  color: var(--text-secondary);
+  font-family: "Noto Serif TC", "PingFang TC", serif;
+  font-size: 0.95rem;
+  color: #F0DCC0;
   margin-bottom: var(--spacing-lg);
-  letter-spacing: 0.15em;
+  letter-spacing: 0.2em;
   font-weight: 400;
+  position: relative;
 }
 
 .hero-divider {
-  width: 60px;
+  width: 80px;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+  background: linear-gradient(90deg, transparent, #C9A45C, transparent);
   margin: var(--spacing-md) auto;
+  position: relative;
 }
 
 .birth-form {
@@ -864,12 +879,12 @@ small {
   }
 
   .hero-title {
-    font-size: 1.75rem;
+    font-size: 1.85rem;
   }
 
   .hero-subtitle {
     font-size: 0.8rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.15em;
   }
 
   .hero-badge {
@@ -2510,26 +2525,29 @@ small {
   display: inline-block;
   font-size: 0.7rem;
   font-weight: 500;
-  color: var(--accent-gold);
-  border: 1px solid var(--accent-gold);
-  padding: 2px 12px;
+  color: #F5D680;
+  border: 1px solid rgba(245,214,128,0.5);
+  padding: 3px 14px;
   border-radius: 20px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   margin-bottom: var(--spacing-md);
-  opacity: 0.8;
+  opacity: 0.9;
+  position: relative;
 }
 
 .hero-desc {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+  font-size: 0.85rem;
+  color: #F0DCC0;
   margin-bottom: var(--spacing-md);
-  opacity: 0.7;
+  opacity: 0.8;
+  position: relative;
+  letter-spacing: 0.1em;
 }
 
 .btn-toggle-section {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(245,214,128,0.3);
+  color: #F0DCC0;
   padding: 10px 20px;
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
@@ -2537,6 +2555,11 @@ small {
   width: 100%;
   max-width: 480px;
   transition: all 0.2s ease;
+  position: relative;
+}
+
+.btn-toggle-section:hover {
+  background-color: rgba(255,255,255,0.2);
 }
 
 .btn-toggle-section:hover {
