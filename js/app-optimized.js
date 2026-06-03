@@ -1648,7 +1648,7 @@ class App {
     html += this._renderBaziSummaryInner(bazi);
     html += `</div></div>`;
     html += this._renderScoreLegend();
-    html += this._renderDaySummary(today.summary, '今日總覽', luckyNum);
+    html += this._renderDaySummary(today.summary, '今日總覽', luckyNum, true);
     html += this._renderDailyMeta(bazi);
     const todayRemaining = today.hours.filter(h => !h._past);
     if (todayRemaining.length > 0) {
@@ -1663,6 +1663,12 @@ class App {
     html += this._renderDisclaimer();
 
     container.innerHTML = html;
+
+    // 綁定產生簡報按鈕
+    const btnShare = document.getElementById('btnShareCard');
+    if (btnShare) {
+      btnShare.addEventListener('click', () => this._generateShareCard(bazi, today));
+    }
 
     // 把表單 DOM 插入到結果區
     if (formContainer) {
@@ -1909,7 +1915,7 @@ class App {
     `;
   }
 
-  _renderDaySummary(summary, title, luckyNum) {
+  _renderDaySummary(summary, title, luckyNum, showBtn) {
     const score = summary.averageScore;
     const circumference = 2 * Math.PI * 40;
     const dashoffset = circumference - (score / 100) * circumference;
@@ -1930,7 +1936,7 @@ class App {
             </div>
           </div>
           <div class="day-info">
-            <h3 class="card-title">${title}</h3>
+            <h3 class="card-title">${title}${showBtn ? ' <button class="btn-share" id="btnShareCard" title="產生簡報">產生簡報</button>' : ''}</h3>
             <span class="day-date">${summary.date} ${summary.weekday}</span>
             <span class="day-level" style="background-color:${scoreColor}">${summary.level}</span>
             ${summary.flowDay ? `<span class="day-flow-pillar">流日 ${summary.flowDay}</span>` : ''}
@@ -2490,6 +2496,157 @@ class App {
 
     html += '</dl></div>';
     return html;
+  }
+
+  // ==================== 分享卡片 Canvas 生成 ====================
+  _generateShareCard(bazi, today) {
+    const W = 480;
+    const PAD = 24;
+    const summary = today.summary;
+    const hours = today.hours || [];
+
+    // 開運色
+    const dayEl = this._getBranchElement(summary.flowDay ? summary.flowDay.charAt(1) : '土');
+    const colorMap = { wood: '綠色系', fire: '紅色系', earth: '黃色系', metal: '白色系', water: '黑色系' };
+    const luckyColor = colorMap[dayEl] || '黃色系';
+    const hetuMap = { 'water': '1、6', 'fire': '2、7', 'wood': '3、8', 'metal': '4、9', 'earth': '5、10' };
+    const luckyNum = bazi.yongShen?.yongShen ? hetuMap[bazi.yongShen.yongShen] || '' : '';
+
+    // 時辰格子高度
+    const gridCols = 4;
+    const gridRows = 3;
+    const cellH = 44;
+    const gridH = gridRows * cellH;
+    const headerH = 120;
+    const metaH = 70;
+    const footerH = 40;
+    const H = headerH + metaH + gridH + footerH + PAD * 2;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    // 背景
+    ctx.fillStyle = '#F7EFE1';
+    ctx.fillRect(0, 0, W, H);
+
+    // 頂部色塊
+    const grad = ctx.createLinearGradient(0, 0, 0, headerH + PAD);
+    grad.addColorStop(0, '#8B1E1E');
+    grad.addColorStop(1, '#5C0E0E');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, headerH + PAD);
+
+    // 菱形暗紋
+    ctx.strokeStyle = 'rgba(201,164,92,0.08)';
+    ctx.lineWidth = 0.5;
+    for (let y = 0; y < headerH + PAD; y += 20) {
+      for (let x = 0; x < W; x += 20) {
+        ctx.beginPath();
+        ctx.moveTo(x, y - 10);
+        ctx.lineTo(x + 10, y);
+        ctx.lineTo(x, y + 10);
+        ctx.lineTo(x - 10, y);
+        ctx.closePath();
+        ctx.stroke();
+      }
+    }
+
+    // 標題
+    ctx.fillStyle = '#F5D680';
+    ctx.font = '700 16px "Noto Serif TC", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('速窺運勢', W / 2, PAD + 24);
+
+    // 日期
+    ctx.fillStyle = '#F0DCC0';
+    ctx.font = '400 12px "Noto Sans TC", sans-serif';
+    ctx.fillText(`${summary.date} ${summary.weekday}　流日 ${summary.flowDay || ''}`, W / 2, PAD + 48);
+
+    // 分數
+    ctx.fillStyle = summary.levelColor;
+    ctx.font = '900 48px "Noto Serif TC", serif';
+    ctx.fillText(`${summary.averageScore}`, W / 2, PAD + 100);
+    ctx.fillStyle = '#F0DCC0';
+    ctx.font = '400 14px "Noto Sans TC", sans-serif';
+    ctx.fillText(`分　${summary.level}`, W / 2, PAD + 118);
+
+    // 元數據區
+    const metaY = headerH + PAD;
+    ctx.fillStyle = '#FFF9ED';
+    ctx.fillRect(0, metaY, W, metaH);
+    ctx.fillStyle = '#C9A45C';
+    ctx.font = '600 12px "Noto Sans TC", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(`開運穿搭：${luckyColor}`, PAD, metaY + 20);
+    ctx.fillText(`幸運數字：${luckyNum}`, PAD, metaY + 42);
+    ctx.textAlign = 'right';
+    ctx.fillText(`最佳時辰：${(summary.bestHours || []).join(' ')}`, W - PAD, metaY + 20);
+    ctx.fillText(`注意時辰：${(summary.riskHours || []).join(' ') || '無'}`, W - PAD, metaY + 42);
+
+    // 時辰格子
+    const gridY = metaY + metaH;
+    ctx.fillStyle = '#FFF9ED';
+    ctx.fillRect(0, gridY, W, gridH);
+
+    const cellW = Math.floor((W - PAD * 2) / gridCols);
+    for (let i = 0; i < hours.length && i < 12; i++) {
+      const h = hours[i];
+      const col = i % gridCols;
+      const row = Math.floor(i / gridCols);
+      const x = PAD + col * cellW;
+      const y = gridY + row * cellH;
+
+      // 格子背景
+      const bgColor = h.score >= 65 ? '#e8f5e9' : h.score < 45 ? '#ffebee' : '#fff8e1';
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(x + 2, y + 2, cellW - 4, cellH - 4);
+      ctx.strokeStyle = '#E6D6B8';
+      ctx.lineWidth = 0.5;
+      ctx.strokeRect(x + 2, y + 2, cellW - 4, cellH - 4);
+
+      // 時辰名
+      ctx.fillStyle = '#2B2118';
+      ctx.font = '600 13px "Noto Sans TC", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(h.hourName, x + cellW / 2, y + 18);
+
+      // 分數 + 徽章
+      const badge = h.score >= 65 ? '🟢' : h.score < 45 ? '🔴' : '🟡';
+      ctx.fillStyle = h.levelColor;
+      ctx.font = '700 12px "Noto Sans TC", sans-serif';
+      ctx.fillText(`${badge} ${h.score}`, x + cellW / 2, y + 36);
+    }
+
+    // 浮水印
+    ctx.fillStyle = 'rgba(139,30,30,0.08)';
+    ctx.font = '400 11px "Noto Sans TC", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('當麻實驗室  donmalab.com', W / 2, H - 12);
+
+    // 顯示預覽
+    const dataUrl = canvas.toDataURL('image/png');
+    const overlay = document.createElement('div');
+    overlay.className = 'share-overlay';
+    overlay.innerHTML = `
+      <img src="${dataUrl}" alt="今日運勢簡報">
+      <div class="share-actions">
+        <button class="btn-download" id="btnDownloadCard">下載圖片</button>
+        <button class="btn-close-share" id="btnCloseShare">關閉</button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    document.getElementById('btnCloseShare').addEventListener('click', () => overlay.remove());
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+    document.getElementById('btnDownloadCard').addEventListener('click', () => {
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `速窺運勢_${summary.date}.png`;
+      a.click();
+    });
   }
 
   _renderDisclaimer() {

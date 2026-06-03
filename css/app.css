@@ -2281,6 +2281,57 @@ small {
 .dir-bad { color: var(--unlucky-color); font-size: 0.85rem; margin: 4px 0; }
 .dir-neutral { color: var(--text-secondary); font-size: 0.85rem; margin: 4px 0; }
 
+/* 產生簡報按鈕 */
+.btn-share {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 3px 10px;
+  border: 1px solid var(--accent-gold);
+  background: transparent;
+  color: var(--accent-gold);
+  border-radius: 12px;
+  cursor: pointer;
+  vertical-align: middle;
+  margin-left: 8px;
+  transition: all 0.2s;
+}
+.btn-share:hover {
+  background: var(--accent-gold);
+  color: #fff;
+}
+
+/* 分享圖片預覽 */
+.share-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+}
+.share-overlay img {
+  max-width: 90vw;
+  max-height: 80vh;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.share-overlay .share-actions {
+  display: flex;
+  gap: 12px;
+}
+.share-overlay .share-actions button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.share-overlay .btn-download { background: var(--accent-gold); color: #fff; }
+.share-overlay .btn-close-share { background: rgba(255,255,255,0.2); color: #fff; }
+
 .disclaimer-text:last-child {
   margin-bottom: 0;
 }

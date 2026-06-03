@@ -3,7 +3,7 @@
  * 使用延遲載入和並行處理來提升性能
  */
 
-const APP_VERSION = 'v115';
+const APP_VERSION = 'v116';
 console.log(`⚡ 速窺運勢 ${APP_VERSION}`);
 setTimeout(() => {
   const el = document.getElementById('footerVersion');
