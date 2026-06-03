@@ -1656,6 +1656,9 @@ class App {
     html += this._renderDaySummary(tomorrow.summary, '明日總覽');
     html += this._renderHourCards(tomorrow.hours, '明日時辰');
     html += this._render14Days(fourteenDays);
+    html += this._renderDailyAdvice(bazi, today);
+    html += this._renderDirectionAdvice(today);
+    html += this._renderYearMonthAnalysis(bazi);
     html += this._renderDisclaimer();
 
     container.innerHTML = html;
@@ -2248,6 +2251,157 @@ class App {
     
     // 限制預測數量
     return predictions.slice(0, 4);
+  }
+
+  // ==================== 每日吉時建議 ====================
+  _renderDailyAdvice(bazi, today) {
+    const tenGodActivities = {
+      '正官': ['簽約', '面試', '開會', '拜訪長官', '考試'],
+      '七殺': ['競爭', '談判', '運動', '解決糾紛'],
+      '正印': ['讀書', '進修', '拜佛', '養生', '簽長約'],
+      '偏印': ['研究', '獨處', '冥想', '藝術創作'],
+      '食神': ['聚餐', '創作', '表演', '約會', '享受美食'],
+      '傷官': ['運動', '改革', '表達意見', '突破現狀'],
+      '正財': ['收帳', '投資', '買賣', '存錢', '務實工作'],
+      '偏財': ['投資', '社交', '拓展人脈', '意外收入'],
+      '比肩': ['合作', '聚會', '同儕交流', '運動'],
+      '劫財': ['競爭', '討債', '處理財務糾紛']
+    };
+
+    const doorActivities = {
+      '開門': '開業、求職、出行',
+      '休門': '休閒、約會、療癒',
+      '生門': '投資、開業、動土',
+      '傷門': '運動、競爭、醫療',
+      '杜門': '保密、躲藏、閉關',
+      '景門': '考試、表演、聚會',
+      '死門': '送葬、拆除、收尾',
+      '驚門': '小心、防範、祈福'
+    };
+
+    const bestHours = today.summary.bestHours || [];
+    if (bestHours.length === 0 && today.hours.length === 0) return '';
+
+    // 找出分數最高的 2-3 個時辰
+    const sortedHours = [...today.hours].sort((a, b) => b.score - a.score).slice(0, 3);
+
+    let rows = '';
+    for (const h of sortedHours) {
+      const tenGod = h.systems?.bazi?.tenGod || '';
+      const door = h.systems?.qimen?.door || '';
+      const activities = tenGodActivities[tenGod] || ['一般事務'];
+      const doorAct = doorActivities[door] || '';
+      rows += `
+        <div class="advice-row">
+          <span class="advice-hour">${h.hourName}</span>
+          <span class="advice-score" style="color:${h.levelColor}">${h.score}分</span>
+          <span class="advice-god">${tenGod}</span>
+          <span class="advice-activities">${activities.slice(0, 3).join('、')}${doorAct ? '；' + doorAct : ''}</span>
+        </div>`;
+    }
+
+    return `
+      <div class="result-card advice-card">
+        <h3 class="card-title">今日吉時建議</h3>
+        <div class="advice-list">${rows}</div>
+      </div>
+    `;
+  }
+
+  // ==================== 方位建議 ====================
+  _renderDirectionAdvice(today) {
+    if (!today.hours || today.hours.length === 0) return '';
+
+    // 統計今日各方位的吉凶
+    const doorDirMap = {
+      '開門': '西北', '休門': '北方', '生門': '東北',
+      '傷門': '東方', '杜門': '東南', '景門': '南方',
+      '死門': '西南', '驚門': '西方'
+    };
+
+    const dirScores = {};
+    for (const h of today.hours) {
+      const door = h.systems?.qimen?.door;
+      if (!door) continue;
+      const dir = doorDirMap[door];
+      if (!dir) continue;
+      if (!dirScores[dir]) dirScores[dir] = { total: 0, count: 0 };
+      dirScores[dir].total += h.score;
+      dirScores[dir].count++;
+    }
+
+    const dirs = Object.entries(dirScores)
+      .map(([dir, d]) => ({ dir, avg: Math.round(d.total / d.count) }))
+      .sort((a, b) => b.avg - a.avg);
+
+    if (dirs.length === 0) return '';
+
+    const goodDirs = dirs.filter(d => d.avg >= 55).map(d => d.dir);
+    const badDirs = dirs.filter(d => d.avg < 45).map(d => d.dir);
+
+    let html = '<div class="result-card direction-card"><h3 class="card-title">今日吉方位</h3>';
+    if (goodDirs.length > 0) {
+      html += `<p class="dir-good">吉方：${goodDirs.join('、')}（出行、開會、開業優先選擇）</p>`;
+    }
+    if (badDirs.length > 0) {
+      html += `<p class="dir-bad">凶方：${badDirs.join('、')}（避免重要事務）</p>`;
+    }
+    if (goodDirs.length === 0 && badDirs.length === 0) {
+      html += `<p class="dir-neutral">各方位平穩，無特別吉凶。</p>`;
+    }
+    html += '</div>';
+    return html;
+  }
+
+  // ==================== 流年流月分析 ====================
+  _renderYearMonthAnalysis(bazi) {
+    const now = new Date();
+    const flowYear = this.baziEngine.calculateYearPillar(now);
+    const flowMonth = this.baziEngine.calculateMonthPillar(now);
+    const dayMaster = bazi.day.stem;
+
+    const tenGodDesc = {
+      '正官': '事業穩定，有貴人相助',
+      '七殺': '壓力較大，需謹慎應對',
+      '正印': '學習成長，適合進修',
+      '偏印': '思緒活躍，適合研究',
+      '食神': '才華展現，社交順暢',
+      '傷官': '變動較多，注意口舌',
+      '正財': '財運穩定，適合理財',
+      '偏財': '偏財運佳，拓展人脈',
+      '比肩': '同儕助力，合作有利',
+      '劫財': '財務波動，避免借貸'
+    };
+
+    const yearTG = flowYear ? this.baziEngine.getTenGod(dayMaster, flowYear.stem) : null;
+    const monthTG = flowMonth ? this.baziEngine.getTenGod(dayMaster, flowMonth.stem) : null;
+
+    // 大運
+    let dayunInfo = '';
+    if (bazi.dayun?.pillars?.length > 0) {
+      const dy = bazi.dayun.pillars[0];
+      dayunInfo = `${dy.name}（${dy.tenGod || ''}）`;
+    }
+
+    let html = '<div class="result-card year-month-card"><h3 class="card-title">流年流月概述</h3>';
+    html += '<dl class="bazi-details">';
+
+    if (dayunInfo) {
+      html += `<div class="bazi-row"><dt class="bazi-label">當前大運</dt><dd class="bazi-value">${dayunInfo}</dd></div>`;
+    }
+
+    if (flowYear && yearTG) {
+      const desc = tenGodDesc[yearTG.name] || '';
+      html += `<div class="bazi-row"><dt class="bazi-label">${flowYear.name}年</dt><dd class="bazi-value">${yearTG.name}年 — ${desc}</dd></div>`;
+    }
+
+    if (flowMonth && monthTG) {
+      const desc = tenGodDesc[monthTG.name] || '';
+      html += `<div class="bazi-row"><dt class="bazi-label">${flowMonth.name}月</dt><dd class="bazi-value">${monthTG.name}月 — ${desc}</dd></div>`;
+    }
+
+    html += '</dl></div>';
+    return html;
   }
 
   _renderDisclaimer() {

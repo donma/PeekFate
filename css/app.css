@@ -2221,6 +2221,31 @@ small {
   margin-bottom: var(--spacing-sm);
 }
 
+/* 每日吉時建議 */
+.advice-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+.advice-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 0.85rem;
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(230,214,184,0.3);
+}
+.advice-row:last-child { border-bottom: none; }
+.advice-hour { font-weight: 600; min-width: 40px; }
+.advice-score { font-weight: 600; min-width: 36px; }
+.advice-god { color: var(--primary-color); min-width: 36px; font-size: 0.8rem; }
+.advice-activities { color: var(--text-secondary); font-size: 0.8rem; }
+
+/* 方位建議 */
+.dir-good { color: var(--lucky-color); font-size: 0.85rem; margin: 4px 0; }
+.dir-bad { color: var(--unlucky-color); font-size: 0.85rem; margin: 4px 0; }
+.dir-neutral { color: var(--text-secondary); font-size: 0.85rem; margin: 4px 0; }
+
 .disclaimer-text:last-child {
   margin-bottom: 0;
 }
