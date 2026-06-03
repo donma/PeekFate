@@ -2332,6 +2332,69 @@ small {
 .share-overlay .btn-download { background: var(--accent-gold); color: #fff; }
 .share-overlay .btn-close-share { background: rgba(255,255,255,0.2); color: #fff; }
 
+/* 每日一言 */
+.wisdom-quote {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  color: var(--primary-color);
+  text-align: center;
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px dashed var(--border-color);
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: 0.05em;
+}
+
+/* 五行平衡圖 */
+.five-el-body {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+.five-el-chart {
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
+}
+.five-el-bars {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.el-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+.el-name {
+  width: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+.el-bar {
+  flex: 1;
+  height: 10px;
+  background: rgba(0,0,0,0.06);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.el-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s;
+}
+.el-pct {
+  width: 32px;
+  text-align: right;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+@media(max-width:480px) {
+  .five-el-body { flex-direction: column; }
+  .five-el-chart { width: 140px; height: 140px; }
+}
+
 .disclaimer-text:last-child {
   margin-bottom: 0;
 }

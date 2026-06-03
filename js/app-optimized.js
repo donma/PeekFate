@@ -1650,6 +1650,8 @@ class App {
     html += this._renderScoreLegend();
     html += this._renderDaySummary(today.summary, '今日總覽', luckyNum, true);
     html += this._renderDailyMeta(bazi);
+    html += this._renderDailyWisdom(bazi);
+    html += this._renderFiveElementChart(bazi);
     const todayRemaining = today.hours.filter(h => !h._past);
     if (todayRemaining.length > 0) {
       html += this._renderHourCards(todayRemaining, '今日時辰');
@@ -2349,6 +2351,165 @@ class App {
 
     html += '</dl></div>';
     return html;
+  }
+
+  // ==================== 每日一言 + 健康 + 開運食物 ====================
+  _renderDailyWisdom(bazi) {
+    const now = new Date();
+    const flowDay = this.baziEngine.calculateDayPillar(now);
+    if (!flowDay) return '';
+
+    const dayTG = this.baziEngine.getTenGod(bazi.day.stem, flowDay.stem);
+    const dayEl = this._getBranchElement(flowDay.branch);
+
+    // 每日一言（依流日十神）
+    const wisdomMap = {
+      '正官': '守正道，行正事，貴人自來。',
+      '七殺': '壓力即動力，逆境見真章。',
+      '正印': '靜心學習，厚積薄發。',
+      '偏印': '獨處是養分，沉默是力量。',
+      '食神': '享受當下，才華自顯。',
+      '傷官': '打破框架，才能突破。',
+      '正財': '穩紮穩打，積少成多。',
+      '偏財': '廣結善緣，機遇自來。',
+      '比肩': '同行者眾，攜手共進。',
+      '劫財': '守財為上，靜待時機。'
+    };
+    const wisdom = dayTG ? wisdomMap[dayTG.name] : '順應天時，把握當下。';
+
+    // 健康建議（依流日五行）
+    const healthMap = {
+      wood: { organ: '肝膽', advice: '少熬夜，多護眼，情緒勿鬱結。' },
+      fire: { organ: '心臟、血壓', advice: '避免過勞，少辛辣，保持心態平和。' },
+      earth: { organ: '脾胃', advice: '飲食規律，少油膩，注意消化。' },
+      metal: { organ: '肺、呼吸道', advice: '注意保暖，避免過敏源，多深呼吸。' },
+      water: { organ: '腎臟、泌尿', advice: '多喝水，少憋尿，注意腰部保暖。' }
+    };
+    const health = healthMap[dayEl] || healthMap.earth;
+
+    // 開運食物（依流日五行）
+    const foodMap = {
+      wood: '綠色蔬菜、酸味食物、芽菜類',
+      fire: '紅色食物、苦味、番茄、紅豆',
+      earth: '黃色食物、甜味、地瓜、南瓜、小米',
+      metal: '白色食物、辛味、白蘿蔔、梨子',
+      water: '黑色食物、湯類、海帶、黑豆、芝麻'
+    };
+    const food = foodMap[dayEl] || '均衡飲食';
+
+    return `
+      <div class="result-card wisdom-card">
+        <div class="wisdom-quote">「${wisdom}」</div>
+        <dl class="bazi-details">
+          <div class="bazi-row"><dt class="bazi-label">健康提醒</dt><dd class="bazi-value">${health.organ}：${health.advice}</dd></div>
+          <div class="bazi-row"><dt class="bazi-label">開運食物</dt><dd class="bazi-value">${food}</dd></div>
+        </dl>
+      </div>
+    `;
+  }
+
+  // ==================== 今日五行平衡圖 ====================
+  _renderFiveElementChart(bazi) {
+    const now = new Date();
+    const flowDay = this.baziEngine.calculateDayPillar(now);
+    const flowMonth = this.baziEngine.calculateMonthPillar(now);
+    const flowYear = this.baziEngine.calculateYearPillar(now);
+
+    const elMap = { '甲':'wood','乙':'wood','丙':'fire','丁':'fire','戊':'earth','己':'earth','庚':'metal','辛':'metal','壬':'water','癸':'water' };
+    const brElMap = { '子':'water','丑':'earth','寅':'wood','卯':'wood','辰':'earth','巳':'fire','午':'fire','未':'earth','申':'metal','酉':'metal','戌':'earth','亥':'water' };
+
+    // 統計今日五行：流日干支 + 流月干支 + 流年干支
+    const count = { wood: 0, fire: 0, earth: 0, metal: 0, water: 0 };
+    const add = el => { if (count[el] !== undefined) count[el]++; };
+
+    if (flowDay) { add(elMap[flowDay.stem]); add(brElMap[flowDay.branch]); }
+    if (flowMonth) { add(elMap[flowMonth.stem]); add(brElMap[flowMonth.branch]); }
+    if (flowYear) { add(elMap[flowYear.stem]); add(brElMap[flowYear.branch]); }
+
+    const total = Object.values(count).reduce((a, b) => a + b, 0) || 1;
+    const elNames = { wood: '木', fire: '火', earth: '土', metal: '金', water: '水' };
+    const elColors = { wood: '#4CAF50', fire: '#E57373', earth: '#BCAAA4', metal: '#BDBDBD', water: '#64B5F6' };
+
+    // 用 Canvas 畫雷達圖
+    const size = 180;
+    const cx = size / 2, cy = size / 2, R = 60;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+
+    const elements = ['wood', 'fire', 'earth', 'metal', 'water'];
+    const angles = elements.map((_, i) => (Math.PI * 2 * i) / 5 - Math.PI / 2);
+
+    // 背景五邊形
+    ctx.strokeStyle = '#E6D6B8';
+    ctx.lineWidth = 0.5;
+    for (let r = 0.2; r <= 1; r += 0.2) {
+      ctx.beginPath();
+      for (let i = 0; i < 5; i++) {
+        const x = cx + Math.cos(angles[i]) * R * r;
+        const y = cy + Math.sin(angles[i]) * R * r;
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.stroke();
+    }
+
+    // 軸線
+    for (let i = 0; i < 5; i++) {
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(angles[i]) * R, cy + Math.sin(angles[i]) * R);
+      ctx.stroke();
+    }
+
+    // 資料點
+    const maxVal = Math.max(...Object.values(count), 1);
+    ctx.fillStyle = 'rgba(139,30,30,0.2)';
+    ctx.strokeStyle = '#8B1E1E';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i < 5; i++) {
+      const val = count[elements[i]] / maxVal;
+      const x = cx + Math.cos(angles[i]) * R * val;
+      const y = cy + Math.sin(angles[i]) * R * val;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // 標籤
+    ctx.textAlign = 'center';
+    ctx.font = '600 12px "Noto Serif TC", serif';
+    for (let i = 0; i < 5; i++) {
+      const lx = cx + Math.cos(angles[i]) * (R + 16);
+      const ly = cy + Math.sin(angles[i]) * (R + 16);
+      ctx.fillStyle = elColors[elements[i]];
+      ctx.fillText(elNames[elements[i]], lx, ly + 4);
+    }
+
+    const dataUrl = canvas.toDataURL('image/png');
+
+    // 數據列表
+    const bars = elements.map(el => {
+      const pct = Math.round((count[el] / total) * 100);
+      return `<div class="el-bar-row">
+        <span class="el-name" style="color:${elColors[el]}">${elNames[el]}</span>
+        <div class="el-bar"><div class="el-bar-fill" style="width:${pct}%;background:${elColors[el]}"></div></div>
+        <span class="el-pct">${pct}%</span>
+      </div>`;
+    }).join('');
+
+    return `
+      <div class="result-card five-el-card">
+        <h3 class="card-title">今日五行分佈</h3>
+        <div class="five-el-body">
+          <img src="${dataUrl}" alt="五行雷達圖" class="five-el-chart">
+          <div class="five-el-bars">${bars}</div>
+        </div>
+      </div>
+    `;
   }
 
   // ==================== 每日吉時建議 ====================
