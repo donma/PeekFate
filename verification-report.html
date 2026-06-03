@@ -48,7 +48,7 @@ tr.fail td{background:#fff5f5}
 </style>
 </head>
 <body>
-<h1>⚡ 速窺運勢 — 命理驗證報告 <span style="font-size:0.7rem;color:#999">v120</span></h1>
+<h1>⚡ 速窺運勢 — 命理驗證報告 <span style="font-size:0.7rem;color:#999">v121</span></h1>
 <p class="sub">歷史事件回測通過率 — 252位華人名人、231筆已知事件</p>
 <div id="content" class="loading">載入中（約需 3-5 秒）...</div>
 
@@ -103,7 +103,7 @@ async function main() {
     iching.solarTerms = solarTerms;
     iching.loaded = true;
 
-    console.log('⚡ 速窺運勢驗證 v120 (每日一言+健康+食物+五行圖)');
+    console.log('⚡ 速窺運勢驗證 v121 (移除開運食物)');
 
     // Store engines globally for _calculateDayScore
     window.__baziEngine = bazi;
@@ -376,7 +376,7 @@ function renderReport(results, pass, fail, total, accuracy) {
       <p>✅ 凶事 ${negPass}/${negativeEvents.length} 通過（期望≤52分）</p>
       <p>✅ 中性 ${neuPass}/${neutralEvents.length} 通過（期望45-60分）</p>
       <p style="margin-top:8px;color:#8B6914;font-size:0.8rem">
-        事件類型專用計分 v120：每日一言+健康+食物+五行圖，
+        事件類型專用計分 v121：移除開運食物，
         用神加成, 一般吉神備援, 天德月德天赦及地支關係
       </p>
       <p style="margin-top:6px;color:#999;font-size:0.7rem;line-height:1.5">

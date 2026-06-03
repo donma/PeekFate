@@ -2402,7 +2402,6 @@ class App {
         <div class="wisdom-quote">「${wisdom}」</div>
         <dl class="bazi-details">
           <div class="bazi-row"><dt class="bazi-label">健康提醒</dt><dd class="bazi-value">${health.organ}：${health.advice}</dd></div>
-          <div class="bazi-row"><dt class="bazi-label">開運食物</dt><dd class="bazi-value">${food}</dd></div>
         </dl>
       </div>
     `;
