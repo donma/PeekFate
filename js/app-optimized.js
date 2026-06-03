@@ -691,7 +691,8 @@ class App {
       for (const nd of baziResult.nayinDepth.details) {
         if (nd.score !== 0) {
           baziScore += nd.score;
-          baziTrace.push({ system: 'bazi', rule: 'nayinDepth', value: nd.nayin, score: nd.score, reason: `${nd.position}柱納音${nd.nayin}${nd.relation}日主` });
+          const posZh = {year:'年',month:'月',day:'日',hour:'時'}[nd.position] || nd.position;
+          baziTrace.push({ system: 'bazi', rule: 'nayinDepth', value: nd.nayin, score: nd.score, reason: `${posZh}柱納音${nd.nayin}${nd.relation}日主` });
         }
       }
     }
