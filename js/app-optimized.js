@@ -2517,7 +2517,7 @@ class App {
     const gridRows = 3;
     const cellH = 44;
     const gridH = gridRows * cellH;
-    const headerH = 120;
+    const headerH = 140;
     const metaH = 70;
     const footerH = 40;
     const H = headerH + metaH + gridH + footerH + PAD * 2;
@@ -2567,10 +2567,10 @@ class App {
     // 分數
     ctx.fillStyle = summary.levelColor;
     ctx.font = '900 48px "Noto Serif TC", serif';
-    ctx.fillText(`${summary.averageScore}`, W / 2, PAD + 100);
+    ctx.fillText(`${summary.averageScore}`, W / 2, PAD + 108);
     ctx.fillStyle = '#F0DCC0';
     ctx.font = '400 14px "Noto Sans TC", sans-serif';
-    ctx.fillText(`分　${summary.level}`, W / 2, PAD + 118);
+    ctx.fillText(`分　${summary.level}`, W / 2, PAD + 130);
 
     // 元數據區
     const metaY = headerH + PAD;
