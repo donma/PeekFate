@@ -1649,6 +1649,7 @@ class App {
     html += `</div></div>`;
     html += this._renderScoreLegend();
     html += this._renderDaySummary(today.summary, '今日總覽', luckyNum);
+    html += this._renderDailyMeta(bazi);
     const todayRemaining = today.hours.filter(h => !h._past);
     if (todayRemaining.length > 0) {
       html += this._renderHourCards(todayRemaining, '今日時辰');
@@ -1964,10 +1965,12 @@ class App {
     const cards = hours.map(h => {
       // 生成具體事件預測
       const predictions = this._generatePredictions(h);
+      const badge = h.score >= 65 ? '🟢' : h.score < 45 ? '🔴' : '🟡';
       
       return `
         <div class="hour-card" data-hour="${h.hourBranch}">
           <div class="hour-header">
+            <span class="hour-badge-icon">${badge}</span>
             <span class="hour-name">${h.hourName}</span>
             <span class="hour-time">${h.timeRange}</span>
             <span class="hour-score" style="color:${h.levelColor}">${h.score}分</span>
@@ -2251,6 +2254,91 @@ class App {
     
     // 限制預測數量
     return predictions.slice(0, 4);
+  }
+
+  // ==================== 每日元數據（開運色/節氣/宜忌/神煞） ====================
+  _renderDailyMeta(bazi) {
+    const now = new Date();
+    const flowDay = this.baziEngine.calculateDayPillar(now);
+    if (!flowDay) return '';
+
+    const dayEl = this._getBranchElement(flowDay.branch);
+    const colorMap = {
+      wood: { name: '綠色系', colors: ['綠','青','翠'], avoid: '白色系' },
+      fire: { name: '紅色系', colors: ['紅','粉','紫'], avoid: '黑色系' },
+      earth: { name: '黃色系', colors: ['黃','棕','米'], avoid: '綠色系' },
+      metal: { name: '白色系', colors: ['白','銀','金'], avoid: '紅色系' },
+      water: { name: '黑色系', colors: ['黑','藍','灰'], avoid: '黃色系' }
+    };
+    const lucky = colorMap[dayEl] || colorMap.earth;
+
+    // 節氣
+    let solarTerm = '';
+    try {
+      const terms = this.baziEngine.solarTerms;
+      if (terms) {
+        const y = now.getFullYear();
+        const m = now.getMonth() + 1;
+        const d = now.getDate();
+        const yearTerms = terms[y] || terms[String(y)];
+        if (yearTerms) {
+          for (const t of yearTerms) {
+            const td = new Date(t.date + 'T12:00:00');
+            const nextTd = yearTerms[yearTerms.indexOf(t) + 1];
+            const nextDate = nextTd ? new Date(nextTd.date + 'T12:00:00') : new Date(y + 1, 0, 1);
+            if (now >= td && now < nextDate) {
+              solarTerm = t.name;
+              break;
+            }
+          }
+        }
+      }
+    } catch (e) {}
+
+    // 每日宜忌（依流日十神）
+    const dayTG = this.baziEngine.getTenGod(bazi.day.stem, flowDay.stem);
+    const yiJiMap = {
+      '正官': { yi: ['簽約', '面試', '拜訪', '考試'], ji: ['訴訟', '冒險'] },
+      '七殺': { yi: ['競爭', '運動', '解決問題'], ji: ['投資', '簽約'] },
+      '正印': { yi: ['讀書', '進修', '拜佛', '養生'], ji: ['投機', '爭吵'] },
+      '偏印': { yi: ['研究', '冥想', '藝術'], ji: ['社交', '合夥'] },
+      '食神': { yi: ['聚餐', '創作', '約會', '享受'], ji: ['爭辯', '冒險'] },
+      '傷官': { yi: ['運動', '改革', '表達'], ji: ['簽約', '面試'] },
+      '正財': { yi: ['理財', '購物', '存錢', '務實'], ji: ['投機', '借貸'] },
+      '偏財': { yi: ['投資', '社交', '拓展'], ji: ['賭博', '衝動消費'] },
+      '比肩': { yi: ['合作', '聚會', '運動'], ji: ['獨斷', '借貸'] },
+      '劫財': { yi: ['競爭', '討債'], ji: ['投資', '合夥', '借貸'] }
+    };
+    const yiJi = dayTG ? yiJiMap[dayTG.name] : null;
+
+    // 流日神煞
+    const activeShenSha = [];
+    if (bazi.shenSha) {
+      for (const ss of bazi.shenSha) {
+        activeShenSha.push(ss.name);
+      }
+    }
+
+    let html = '<div class="result-card daily-meta-card">';
+    html += '<dl class="bazi-details">';
+
+    html += `<div class="bazi-row"><dt class="bazi-label">開運穿搭</dt><dd class="bazi-value">宜<span style="color:${dayEl === 'fire' ? '#C62828' : dayEl === 'water' ? '#1565C0' : dayEl === 'wood' ? '#2E7D32' : dayEl === 'metal' ? '#9E9E9E' : '#8D6E63'};font-weight:600">${lucky.name}</span>（${lucky.colors.join('、')}），忌${lucky.avoid}</dd></div>`;
+
+    if (solarTerm) {
+      html += `<div class="bazi-row"><dt class="bazi-label">當前節氣</dt><dd class="bazi-value">${solarTerm}</dd></div>`;
+    }
+
+    if (yiJi) {
+      html += `<div class="bazi-row"><dt class="bazi-label">今日宜</dt><dd class="bazi-value" style="color:var(--lucky-color)">${yiJi.yi.join('、')}</dd></div>`;
+      html += `<div class="bazi-row"><dt class="bazi-label">今日忌</dt><dd class="bazi-value" style="color:var(--unlucky-color)">${yiJi.ji.join('、')}</dd></div>`;
+    }
+
+    if (activeShenSha.length > 0) {
+      html += `<div class="bazi-row"><dt class="bazi-label">流日神煞</dt><dd class="bazi-value">${activeShenSha.join('、')}</dd></div>`;
+    }
+
+    html += '</dl></div>';
+    return html;
   }
 
   // ==================== 每日吉時建議 ====================

@@ -3,11 +3,21 @@
  * 使用延遲載入和並行處理來提升性能
  */
 
-const APP_VERSION = 'v114';
+const APP_VERSION = 'v115';
 console.log(`⚡ 速窺運勢 ${APP_VERSION}`);
 setTimeout(() => {
   const el = document.getElementById('footerVersion');
   if (el) el.textContent = APP_VERSION.replace('v', '');
+  // 深色模式
+  const toggle = document.getElementById('themeToggle');
+  const saved = localStorage.getItem('theme');
+  if (saved === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); if (toggle) toggle.textContent = '☀️'; }
+  if (toggle) toggle.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', isDark ? '' : 'dark');
+    toggle.textContent = isDark ? '🌙' : '☀️';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  });
 }, 0);
 
 // 檢查是否有舊版快取需要清除

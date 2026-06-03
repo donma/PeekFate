@@ -33,6 +33,24 @@
   --spacing-2xl: 48px;
 }
 
+/* 深色模式 */
+[data-theme="dark"] {
+  --bg-color: #1a1410;
+  --card-bg: #2a221a;
+  --primary-color: #D4A574;
+  --secondary-color: #C4956A;
+  --text-color: #E8DCC8;
+  --text-secondary: #A89880;
+  --accent-gold: #C9A45C;
+  --border-color: #3D3228;
+  --lucky-color: #6BCB77;
+  --neutral-color: #D4A017;
+  --unlucky-color: #E57373;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
 /* ========== 基礎重置 ========== */
 *,
 *::before,
@@ -143,6 +161,23 @@ small {
   align-items: center;
   justify-content: space-between;
   height: 56px;
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: background 0.2s;
+  line-height: 1;
+}
+.theme-toggle:hover {
+  background: rgba(0,0,0,0.08);
+}
+[data-theme="dark"] .theme-toggle:hover {
+  background: rgba(255,255,255,0.1);
 }
 
 .logo {
