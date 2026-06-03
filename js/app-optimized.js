@@ -2657,14 +2657,31 @@ class App {
   _generateBaziCard(bazi) {
     const W = 480;
     const PAD = 24;
-    const pillarW = 90;
-    const pillarH = 110;
-    const headerH = 60;
-    const infoH = 160;
-    const pillarAreaH = pillarH + 40;
-    const detailH = 200;
-    const footerH = 30;
-    const H = PAD + headerH + infoH + pillarAreaH + detailH + footerH + PAD;
+    const ROW_H = 24;
+    const HEADER_H = 56;
+    const PILLAR_H = 80;
+    const FOOTER_H = 30;
+
+    // 資料列
+    const strengthLabels = { '旺': '旺（得令）', '相': '相（得生）', '休': '休（退休）', '囚': '囚（受制）', '死': '死（受剋）' };
+    const rows = [
+      ['日主旺衰', strengthLabels[bazi.dayMasterStrength] || bazi.dayMasterStrength || ''],
+      ['日主根基', bazi.rootInfo?.hasRoot ? '有根' : '無根（虛浮）'],
+      ['旬空', bazi.kongWang?.join('、') || ''],
+      ['用神', bazi.yongShen?.yongShenLabel || ''],
+      ['忌神', bazi.yongShen?.jiShenLabel || ''],
+      ['身強身弱', bazi.bodyStrength ? `${bazi.bodyStrength.level}（${bazi.bodyStrength.deLing.detail}、${bazi.bodyStrength.deDi.detail}、${bazi.bodyStrength.deShi.detail}）` : ''],
+      ['格局', bazi.pattern?.name || ''],
+      ['胎元', bazi.taiYuan?.name || ''],
+      ['命宮', bazi.mingGong?.branch || ''],
+      ['司令', bazi.renYuanSiLing?.stem || ''],
+      ['神煞', bazi.shenSha?.map(s => s.name).join('、') || ''],
+      ['地支氣場', bazi.branchRelationScore ? `${bazi.branchRelationScore >= 0 ? '和諧' : '動盪'}（${bazi.branchRelationScore >= 0 ? '+' : ''}${bazi.branchRelationScore}）` : ''],
+      ['地支關係', bazi.branchRelations?.summary?.join('、') || ''],
+    ].filter(([, v]) => v);
+
+    const detailRows = rows.length;
+    const H = PAD + HEADER_H + PILLAR_H + PAD + detailRows * ROW_H + PAD + FOOTER_H + PAD;
 
     const canvas = document.createElement('canvas');
     canvas.width = W;
@@ -2675,17 +2692,12 @@ class App {
     ctx.fillStyle = '#F7EFE1';
     ctx.fillRect(0, 0, W, H);
 
-    // 頂部色塊
-    const grad = ctx.createLinearGradient(0, 0, 0, headerH + PAD);
-    grad.addColorStop(0, '#8B1E1E');
-    grad.addColorStop(1, '#5C0E0E');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, headerH + PAD);
-
-    // 菱形暗紋
+    // 頂部紅底
+    ctx.fillStyle = '#8B1E1E';
+    ctx.fillRect(0, 0, W, HEADER_H + PAD);
     ctx.strokeStyle = 'rgba(201,164,92,0.08)';
     ctx.lineWidth = 0.5;
-    for (let y = 0; y < headerH + PAD; y += 20) {
+    for (let y = 0; y < HEADER_H + PAD; y += 20) {
       for (let x = 0; x < W; x += 20) {
         ctx.beginPath();
         ctx.moveTo(x, y - 10); ctx.lineTo(x + 10, y); ctx.lineTo(x, y + 10); ctx.lineTo(x - 10, y);
@@ -2697,112 +2709,72 @@ class App {
     ctx.fillStyle = '#F5D680';
     ctx.font = '700 16px "Noto Serif TC", serif';
     ctx.textAlign = 'center';
-    ctx.fillText('速窺運勢 — 個人命盤', W / 2, PAD + 24);
+    ctx.fillText('速窺運勢 — 個人命盤', W / 2, PAD + 22);
+
+    // 性別/生日
+    ctx.fillStyle = '#F0DCC0';
+    ctx.font = '400 11px "Noto Sans TC", sans-serif';
+    const gender = bazi.gender === 'male' ? '男' : bazi.gender === 'female' ? '女' : '';
+    const bd = bazi.birthInfo?.birthDate || '';
+    ctx.fillText(`${bd} ${gender}`, W / 2, PAD + 42);
 
     // 四柱
     const pillars = [
-      { label: '年柱', stem: bazi.year?.stem || '', branch: bazi.year?.branch || '', tenGod: bazi.tenGods?.year?.name || '' },
-      { label: '月柱', stem: bazi.month?.stem || '', branch: bazi.month?.branch || '', tenGod: bazi.tenGods?.month?.name || '' },
-      { label: '日柱', stem: bazi.day?.stem || '', branch: bazi.day?.branch || '', tenGod: bazi.tenGods?.day?.name || '' },
-      { label: '時柱', stem: bazi.hour?.stem || '', branch: bazi.hour?.branch || '', tenGod: bazi.tenGods?.hour?.name || '' }
+      { label: '年柱', stem: bazi.year?.stem || '', branch: bazi.year?.branch || '', tg: bazi.tenGods?.year?.name || '' },
+      { label: '月柱', stem: bazi.month?.stem || '', branch: bazi.month?.branch || '', tg: bazi.tenGods?.month?.name || '' },
+      { label: '日柱', stem: bazi.day?.stem || '', branch: bazi.day?.branch || '', tg: bazi.tenGods?.day?.name || '' },
+      { label: '時柱', stem: bazi.hour?.stem || '', branch: bazi.hour?.branch || '', tg: bazi.tenGods?.hour?.name || '' }
     ];
 
-    const elColor = { '甲':'#2E7D32','乙':'#4CAF50','丙':'#C62828','丁':'#E57373','戊':'#8D6E63','己':'#A1887F','庚':'#9E9E9E','辛':'#BDBDBD','壬':'#1565C0','癸':'#42A5F5' };
-    const brElColor = { '子':'#1565C0','丑':'#8D6E63','寅':'#2E7D32','卯':'#4CAF50','辰':'#A1887F','巳':'#C62828','午':'#E57373','未':'#BCAAA4','申':'#9E9E9E','酉':'#BDBDBD','戌':'#795548','亥':'#42A5F5' };
+    const elColor = { '甲':'#2E7D32','乙':'#4CAF50','丙':'#C62828','丁':'#E57373','戊':'#8D6E63','己':'#A1887F','庚':'#78909C','辛':'#BDBDBD','壬':'#1565C0','癸':'#42A5F5' };
+    const brElColor = { '子':'#1565C0','丑':'#8D6E63','寅':'#2E7D32','卯':'#4CAF50','辰':'#A1887F','巳':'#C62828','午':'#E57373','未':'#BCAAA4','申':'#78909C','酉':'#BDBDBD','戌':'#795548','亥':'#42A5F5' };
 
-    const pillarY = PAD + headerH + infoH;
-    const startX = (W - (4 * pillarW + 3 * 8)) / 2;
+    const pillarY = HEADER_H + PAD;
+    const cellW = Math.floor((W - PAD * 2) / 4);
 
+    // 四柱標籤行
+    ctx.textAlign = 'center';
+    ctx.font = '600 11px "Noto Sans TC", sans-serif';
     for (let i = 0; i < 4; i++) {
-      const p = pillars[i];
-      const x = startX + i * (pillarW + 8);
-      const y = pillarY;
-
-      // 柱框
-      ctx.fillStyle = '#FFF9ED';
-      ctx.strokeStyle = '#E6D6B8';
-      ctx.lineWidth = 1;
-      const rx = x, ry = y, rw = pillarW, rh = pillarH, r = 6;
-      ctx.beginPath();
-      ctx.moveTo(rx + r, ry); ctx.lineTo(rx + rw - r, ry); ctx.quadraticCurveTo(rx + rw, ry, rx + rw, ry + r);
-      ctx.lineTo(rx + rw, ry + rh - r); ctx.quadraticCurveTo(rx + rw, ry + rh, rx + rw - r, ry + rh);
-      ctx.lineTo(rx + r, ry + rh); ctx.quadraticCurveTo(rx, ry + rh, rx, ry + rh - r);
-      ctx.lineTo(rx, ry + r); ctx.quadraticCurveTo(rx, ry, rx + r, ry);
-      ctx.closePath(); ctx.fill(); ctx.stroke();
-
-      // 柱標籤
+      const cx = PAD + i * cellW + cellW / 2;
       ctx.fillStyle = '#8B6914';
-      ctx.font = '600 10px "Noto Sans TC", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(p.label, x + pillarW / 2, y + 16);
-
-      // 天干
-      ctx.fillStyle = elColor[p.stem] || '#2B2118';
-      ctx.font = '700 28px "Noto Serif TC", serif';
-      ctx.fillText(p.stem, x + pillarW / 2, y + 50);
-
-      // 地支
-      ctx.fillStyle = brElColor[p.branch] || '#2B2118';
-      ctx.font = '700 28px "Noto Serif TC", serif';
-      ctx.fillText(p.branch, x + pillarW / 2, y + 84);
-
-      // 十神
-      ctx.fillStyle = '#6F5B46';
-      ctx.font = '400 11px "Noto Sans TC", sans-serif';
-      ctx.fillText(p.tenGod, x + pillarW / 2, y + 104);
+      ctx.fillText(pillars[i].label, cx, pillarY + 14);
     }
 
-    // 基本資訊區
-    const infoY = PAD + headerH;
-    ctx.fillStyle = '#FFF9ED';
-    ctx.fillRect(0, infoY, W, infoH);
+    // 天干行
+    for (let i = 0; i < 4; i++) {
+      const cx = PAD + i * cellW + cellW / 2;
+      ctx.fillStyle = elColor[pillars[i].stem] || '#2B2118';
+      ctx.font = '700 24px "Noto Serif TC", serif';
+      ctx.fillText(pillars[i].stem, cx, pillarY + 42);
+    }
 
-    const strengthLabels = { '旺': '旺（得令）', '相': '相（得生）', '休': '休（退休）', '囚': '囚（受制）', '死': '死（受剋）' };
-    const rows = [
-      ['日主', `${bazi.day?.stem || ''}（${bazi.dayMaster?.element || ''}）`],
-      ['旺衰', strengthLabels[bazi.dayMasterStrength] || bazi.dayMasterStrength || '-'],
-      ['身強身弱', bazi.bodyStrength?.level || '-'],
-      ['格局', bazi.pattern?.name || '-'],
-      ['用神', bazi.yongShen?.yongShenLabel || '-'],
-      ['忌神', bazi.yongShen?.jiShenLabel || '-']
-    ];
+    // 地支行
+    for (let i = 0; i < 4; i++) {
+      const cx = PAD + i * cellW + cellW / 2;
+      ctx.fillStyle = brElColor[pillars[i].branch] || '#2B2118';
+      ctx.font = '700 24px "Noto Serif TC", serif';
+      ctx.fillText(pillars[i].branch, cx, pillarY + 66);
+    }
 
-    ctx.textAlign = 'left';
-    ctx.font = '400 11px "Noto Sans TC", sans-serif';
+    // 資料列
+    const dataY = pillarY + PILLAR_H + PAD;
     for (let i = 0; i < rows.length; i++) {
-      const col = i < 3 ? 0 : 1;
-      const row = i % 3;
-      const rx = PAD + col * (W / 2 - PAD);
-      const ry = infoY + 8 + row * 18;
-      ctx.fillStyle = '#8B6914';
-      ctx.font = '600 11px "Noto Sans TC", sans-serif';
-      ctx.fillText(rows[i][0] + '：', rx, ry + 12);
+      const y = dataY + i * ROW_H;
+      // 背景條紋
+      if (i % 2 === 0) {
+        ctx.fillStyle = 'rgba(255,249,237,0.5)';
+        ctx.fillRect(PAD, y, W - PAD * 2, ROW_H);
+      }
+      // 標籤
+      ctx.fillStyle = '#8B1E1E';
+      ctx.font = '600 12px "Noto Sans TC", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(rows[i][0], PAD + 4, y + 16);
+      // 值
       ctx.fillStyle = '#2B2118';
-      ctx.font = '400 11px "Noto Sans TC", sans-serif';
-      ctx.fillText(rows[i][1], rx + 48, ry + 12);
-    }
-
-    // 詳細區
-    const detailY = pillarY + pillarAreaH;
-    ctx.fillStyle = '#FFF9ED';
-    ctx.fillRect(0, detailY, W, detailH);
-
-    const details = [];
-    if (bazi.kongWang?.length > 0) details.push(['旬空', bazi.kongWang.join('、')]);
-    if (bazi.shenSha?.length > 0) details.push(['神煞', bazi.shenSha.map(s => s.name).join('、')]);
-    if (bazi.branchRelationScore) details.push(['地支氣場', `${bazi.branchRelationScore >= 0 ? '和諧' : '動盪'}（${bazi.branchRelationScore >= 0 ? '+' : ''}${bazi.branchRelationScore}）`]);
-    if (bazi.taiYuan) details.push(['胎元', bazi.taiYuan.name]);
-    if (bazi.mingGong?.branch) details.push(['命宮', bazi.mingGong.branch]);
-
-    ctx.textAlign = 'left';
-    for (let i = 0; i < details.length; i++) {
-      const ry = detailY + 8 + i * 18;
-      ctx.fillStyle = '#8B6914';
-      ctx.font = '600 11px "Noto Sans TC", sans-serif';
-      ctx.fillText(details[i][0] + '：', PAD, ry + 12);
-      ctx.fillStyle = '#2B2118';
-      ctx.font = '400 11px "Noto Sans TC", sans-serif';
-      ctx.fillText(details[i][1], PAD + 56, ry + 12);
+      ctx.font = '400 12px "Noto Sans TC", sans-serif';
+      ctx.fillText(rows[i][1], PAD + 80, y + 16);
     }
 
     // 浮水印
@@ -2811,7 +2783,7 @@ class App {
     ctx.textAlign = 'center';
     ctx.fillText('當麻實驗室  donmalab.com', W / 2, H - 10);
 
-    // 顯示預覽
+    // 預覽
     const dataUrl = canvas.toDataURL('image/png');
     const overlay = document.createElement('div');
     overlay.className = 'share-overlay';
